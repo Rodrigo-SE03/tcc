@@ -20,7 +20,7 @@ def carregar_tarifas(file,folder,grupo):
     elif grupo == 'Grupo A':
         tarifas = {'verde': [df.iloc[12,3],df.iloc[13,3],df.iloc[14,3]],
                    'azul': [df.iloc[18,3],df.iloc[19,3],df.iloc[20,3],df.iloc[21,3]]}
-    os.remove(f'{os.getcwd()}/{folder}/{file}')
+    os.remove(f'{folder}/{file}')
     
     return tarifas
     
