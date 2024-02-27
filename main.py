@@ -94,7 +94,7 @@ def cargas():
             dias = form_add_carga.dias.data
             h_p = form_add_carga.ponta.data
             nome_arquivo = form_salvar_cargas.nome.data
-            planilha.limpar_pasta(folder=UPLOAD_FOLDER)
+            planilha.limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
             return app.redirect(url_for("download"))
         return app.redirect(url_for("cargas"))
     #--------------------------------------------------------------------------------------------------------

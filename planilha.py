@@ -42,7 +42,7 @@ def tab_cargas(cargas_dict,writer):
 #Exclusão de arquivos após concluir ação
 def limpar_pasta(folder):
     for file in os.listdir(folder):
-        os.remove(f'{os.getcwd()}/{folder}/{file}')
+        os.remove(f'{folder}/{file}')
 #--------------------------------------------------------------------------------------------------------
 
 #Função para calcular horas no horário de ponta e fora de ponta

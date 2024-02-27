@@ -44,7 +44,7 @@ def carregar_cargas(file,folder):
         'Remover': []
     }
     df = pd.read_excel(f'{folder}/{file}')
-    os.remove(f'{os.getcwd()}/{folder}/{file}')
+    os.remove(f'{folder}/{file}')
     for col in df.columns:
         for item in df[col]:
             cargas[col].append(item)
