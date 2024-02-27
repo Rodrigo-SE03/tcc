@@ -5,7 +5,7 @@ import os
 import tratar_cargas,tratar_tarifas,planilha
 
 ALLOWED_EXTENSIONS = {'xlsx'}
-UPLOAD_FOLDER = 'Planilhas'
+UPLOAD_FOLDER = 'planilhas'
 
 h_p = 17
 dias = 22
