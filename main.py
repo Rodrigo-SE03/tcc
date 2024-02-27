@@ -71,7 +71,7 @@ def cargas():
             return app.redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             cargas_dict = tratar_cargas.carregar_cargas(file = filename,folder=UPLOAD_FOLDER)
             flash('Arquivo carregado',category='alert-success')
             return app.redirect(url_for('cargas'))
@@ -156,7 +156,7 @@ def tarifas():
             return app.redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             tarifas_dict = tratar_tarifas.carregar_tarifas(file = filename,folder=UPLOAD_FOLDER,grupo=grupo)
             flash('Tarifas carregadas',category='alert-success')
 
