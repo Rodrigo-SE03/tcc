@@ -170,7 +170,7 @@ def tarifas():
 def download():
     global nome_arquivo
     nome = f'{nome_arquivo}.xlsx'
-    planilha.criar_planilha(cargas=cargas_dict,tarifas_dict=tarifas_dict,grupo=grupo,nome=nome,folder=UPLOAD_FOLDER,h_p=h_p,dias=dias)
+    planilha.criar_planilha(cargas=cargas_dict,tarifas_dict=tarifas_dict,grupo=grupo,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER),h_p=h_p,dias=dias)
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=nome)
 
