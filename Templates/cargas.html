@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+    <div class = 'border p-5'>
+        <form method="POST">
+            {{ form_add_carga.csrf_token }}
+            <legend>Adicionar Cargas</legend>
+            <fieldset>
+                <div class = "row mt-4">
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_add_carga.nome_equip.label(class = 'form-control-label') }}
+                            {{ form_add_carga.nome_equip(class = 'form-control') }}
+                        </div>
+                    </div>
+                    
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_add_carga.potencia.label(class = 'form-control-label') }}
+
+                            {% if form_add_carga.potencia.errors %}
+                                {{ form_add_carga.potencia(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_add_carga.fp.errors %}
+                                        {% if erro == 'This field is required.' %}
+                                            {{ 'Use "." ao invés de ","' }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_add_carga.potencia(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_add_carga.ponta.label(class = 'form-control-label') }}
+                            {{ form_add_carga.ponta(class = 'form-control') }}
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_add_carga.dias.label(class = 'form-control-label') }}
+
+                            {% if form_add_carga.dias.errors %}
+                                {{ form_add_carga.dias(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_add_carga.dias.errors %}
+                                        {{ erro }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_add_carga.dias(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class = "row mt-4">
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_add_carga.fp.label(class = 'form-control-label') }}
+
+                            {% if form_add_carga.fp.errors %}
+                                {{ form_add_carga.fp(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_add_carga.fp.errors %}
+                                        {% if erro == 'This field is required.' %}
+                                            {{ 'Use "." ao invés de ","' }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_add_carga.fp(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <div class="form-group">
+                            <p1><br></p1>
+                            {{ form_add_carga.fp_tipo(class = 'form-control') }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class = "row mt-4">
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_add_carga.qtd.label(class = 'form-control-label') }}
+                            {{ form_add_carga.qtd(class = 'form-control') }}
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <div class="form-group">
+                            Horário de funcionamento
+                            <div class = "row align-items-center">
+                                <div class = "col">Início</div>
+                                <div class = "col col-sm-10">
+                                    {% if form_add_carga.hr_inicio.errors %}
+                                        {{ form_add_carga.hr_inicio(class = 'form-control is-invalid') }}
+                                        <div class = 'invalid-feedback'>
+                                            {% for erro in form_add_carga.hr_inicio.errors %}
+                                                {{ erro }}
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form_add_carga.hr_inicio(class = 'form-control') }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <div class="form-group">
+                            <p1><br></p1>
+                            <div class = "row align-items-center">
+                                <div class = "col ms-2">Fim</div>
+                                <div class = "col col-sm-10">
+                                    {% if form_add_carga.hr_fim.errors %}
+                                        {{ form_add_carga.hr_fim(class = 'form-control is-invalid') }}
+                                        <div class = 'invalid-feedback'>
+                                            {% for erro in form_add_carga.hr_fim.errors %}
+                                                {{ erro }}
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form_add_carga.hr_fim(class = 'form-control') }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            {{ form_add_carga.add_button(class = 'btn btn-primary mt-5') }}
+        </form>
+    </div>
+    
+
+    {% include 'Elements/table.html' %}
+
+    <div class = 'pt-2 pb-5'>
+        <form method="POST" enctype = "multipart/form-data" >
+            <div class="input-group mb-3">
+                <input class="form-control" id="inputGroupFile02" style="visibility: visible;" type=file name=file>
+                <input class="btn btn-warning" for="inputGroupFile02" type="submit" value="Carregar" name="load_btn">
+            </div>
+        </form>
+    </div>
+
+    <form method="POST" class="mb-5">
+        <fieldset>
+                <div class = 'row'>
+                        <div class="col">
+                                <div class="form-group">
+                                        {{ form_salvar_cargas.nome.label(class = 'form-control-label') }}
+                                        {{ form_salvar_cargas.nome(class = 'form-control') }}
+                                </div>
+                        </div>
+                        <div class="col">
+                                <div class="form-group">
+                                        <div><br></div>
+                                        {{ form_salvar_cargas.salvar_btn(class = 'btn btn-success') }}
+                                </div>
+                        </div>
+                </div>
+        </fieldset>
+    </form>
+{% endblock %}
