@@ -278,6 +278,8 @@ def tab_consumo(itens,writer,categoria,h_p,equip_dict,tarifas_dict,dias):
     worksheet.autofit()
     if categoria != 'Convencional':
         worksheet.set_column('J:K',16)
+    if categoria == 'Verde' or 'Azul':
+        worksheet.set_column('O:O',16)
     criar_grafico(worksheet,workbook,categoria)
     return [consumo_dict,custos_mensais]
 #--------------------------------------------------------------------------------------------------------
@@ -513,7 +515,7 @@ def comparativo_gpa(m_results_V,m_results_A,r_results_V,r_results_A,grupo,writer
     custo_demanda_rp_A = r_results_A[1][1]
 
     comp_dict = {
-        'Modalidade': ['Convencional','Branca','Diferença'],
+        'Modalidade': ['Verde','Azul','Diferença'],
         'Consumo FP': [custo_consumo_fp_V,custo_consumo_fp_A,abs(custo_consumo_fp_V-custo_consumo_fp_A)],
         'Consumo P': [custo_consumo_p_V,custo_consumo_p_A,abs(custo_consumo_p_V-custo_consumo_p_A)],
         'Demanda': [custo_demanda_V,custo_demanda_fp_A+custo_demanda_p_A,abs(custo_demanda_V-(custo_demanda_fp_A+custo_demanda_p_A))],
