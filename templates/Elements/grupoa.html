@@ -137,11 +137,33 @@
                         </div>
                     </div>
                 </div>
+            <h5 class="mt-4">Tarifa de Reativos</h5>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_tarifas_a.te.label(class = 'form-control-label') }}
+
+                            {% if form_tarifas_a.te.errors %}
+                                {{ form_tarifas_a.te(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_tarifas_a.te.errors %}
+                                        {% if erro == 'This field is required.' %}
+                                            {{ 'Use "." ao invés de ","' }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_tarifas_a.te(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
         </fieldset>
         {{ form_tarifas_a.registrar_a(class = 'btn btn-primary mt-5') }}
     </form>
 
-    <div class = 'pt-2 mt-5'>
+    <div class = 'mt-4'>
+        <legend>Carregar Tarifas</legend>
         <form method="POST" enctype = "multipart/form-data" >
             <div class="input-group mb-3">
                 <input class="form-control" id="inputGroupFile02" style="visibility: visible;" type=file name=file>

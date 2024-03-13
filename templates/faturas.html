@@ -2,7 +2,69 @@
 
 
 {% block body %}
-    <div>
-        <img src="https://www.ccj.ufpb.br/dcx/contents/imagens/figuras/output_zvmmKf.gif/@@images/image.gif" alt="Em desenvolvimento" class="rounded mx-auto d-block">
-    </div>
+<legend>Analisar Fatura</legend>
+{% if tarifas_dict != {'convencional': 0.0,'branca': [0.0,0.0,0.0],'verde':[0.0,0.0,0.0],'azul':[0.0,0.0,0.0,0.0], 'te': 0.0} and grupo == 'Grupo A'  %}
+
+<form method="POST">
+    {{ form_fatura.csrf_token }}
+    <legend>Definir Demanda Contratada Atual</legend>
+    <fieldset>
+        <div class = "row mt-4">
+            <div class = "col">
+                <div class="form-group">
+                    {{ form_fatura.dem_c_fp.label(class = 'form-control-label') }}
+                    {{ form_fatura.dem_c_fp(class = 'form-control') }}
+                </div>
+            </div>
+
+            <div class = "col">
+                <div class="form-group">
+                    {{ form_fatura.dem_c_p.label(class = 'form-control-label') }}
+                    {{ form_fatura.dem_c_p(class = 'form-control') }}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    {{ form_fatura.reg(class = 'btn btn-primary mt-3') }}
+</form>
+
+{% else %}
+    <h4>Preencha o campo de tarifas praticadas para realizar essa ação</h4>
+{% endif %}
+
+{% if dem_c != 0 %}
+
+<div class = 'pt-4 pb-4'>
+    <legend>Carregar Fatura</legend>
+    <form method="POST" enctype = "multipart/form-data" >
+        <div class="input-group mb-3">
+            <input class="form-control" id="inputGroupFile02" style="visibility: visible;" type=file name=file>
+            <input class="btn btn-warning" for="inputGroupFile02" type="submit" value="Carregar" name="load_btn">
+        </div>
+    </form>
+</div>
+{% endif %}
+
+{% if fatura_dict != {} %}
+<form method="POST" class="mb-5">
+    <legend>Salvar Análise</legend>
+    <fieldset>
+            <div class = 'row'>
+                    <div class="col">
+                            <div class="form-group">
+                                    {{ form_salvar_fatura.nome.label(class = 'form-control-label') }}
+                                    {{ form_salvar_fatura.nome(class = 'form-control') }}
+                            </div>
+                    </div>
+                    <div class="col">
+                            <div class="form-group">
+                                    <div><br></div>
+                                    {{ form_salvar_fatura.salvar_btn(class = 'btn btn-success') }}
+                            </div>
+                    </div>
+            </div>
+    </fieldset>
+</form>
+{% endif %}
+
 {% endblock %}

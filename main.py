@@ -1,12 +1,15 @@
 from flask import Flask, render_template, url_for, request, flash, send_from_directory
-from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas
+from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura
 from werkzeug.utils import secure_filename
 import os
-import tratar_cargas,tratar_tarifas,planilha
+from cargas_dir import planilha_cargas,tratar_cargas
+from tarifas_dir import tratar_tarifas
+from fatura_dir import planilha_fatura,tratar_fatura
 
-ALLOWED_EXTENSIONS = {'xlsx'}
-UPLOAD_FOLDER = 'planilhas'
+ALLOWED_EXTENSIONS = {'xlsx','pdf'}
+UPLOAD_FOLDER = 'arquivos'
 
+download_flag = ''
 h_p = 17
 dias = 22
 nome_arquivo = ''
@@ -14,7 +17,8 @@ tarifas_dict = {
     'convencional': 0.0,
     'branca': [0.0,0.0,0.0],
     'verde':[0.0,0.0,0.0],
-    'azul':[0.0,0.0,0.0,0.0]
+    'azul':[0.0,0.0,0.0,0.0],
+    'te': 0.0
 }
 grupo = '-selecionar-'
 cargas_dict = {
@@ -27,6 +31,9 @@ cargas_dict = {
         'Fim':[],
         'Remover': []
     }
+
+fatura_dict = {}
+dem_c = 0
 
 app = Flask(__name__)
 
@@ -48,6 +55,7 @@ def cargas():
     global nome_arquivo
     global h_p
     global dias
+    global download_flag
     
     #Procedimento para adicionar a carga ao dicionário principal
     if form_add_carga.validate_on_submit() and 'add_button' in request.form:    
@@ -94,7 +102,8 @@ def cargas():
             dias = form_add_carga.dias.data
             h_p = form_add_carga.ponta.data
             nome_arquivo = form_salvar_cargas.nome.data
-            planilha.limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+            planilha_cargas.limpar_pasta(folder=UPLOAD_FOLDER)
+            download_flag = 'Cargas'
             return app.redirect(url_for("download"))
         return app.redirect(url_for("cargas"))
     #--------------------------------------------------------------------------------------------------------
@@ -113,7 +122,7 @@ def tarifas():
         form_tarifas_b = FormTarifasB(convencional = tarifas_dict['convencional'],branca_fp=tarifas_dict['branca'][0],branca_i=tarifas_dict['branca'][1],branca_p=tarifas_dict['branca'][2])
         form_tarifas_a = FormTarifasA()
     elif grupo == 'Grupo A':
-        form_tarifas_a = FormTarifasA(verde_fp=tarifas_dict['verde'][0],verde_p=tarifas_dict['verde'][1],verde_dem=tarifas_dict['verde'][2],azul_fp=tarifas_dict['azul'][0],azul_p=tarifas_dict['azul'][1],azul_dem_fp=tarifas_dict['azul'][2],azul_dem_p=tarifas_dict['azul'][3])
+        form_tarifas_a = FormTarifasA(verde_fp=tarifas_dict['verde'][0],verde_p=tarifas_dict['verde'][1],verde_dem=tarifas_dict['verde'][2],azul_fp=tarifas_dict['azul'][0],azul_p=tarifas_dict['azul'][1],azul_dem_fp=tarifas_dict['azul'][2],azul_dem_p=tarifas_dict['azul'][3],te=tarifas_dict['te'])
         form_tarifas_b = FormTarifasB()
     else:
         form_tarifas_b = FormTarifasB()
@@ -127,7 +136,8 @@ def tarifas():
             'convencional': 0.0,
             'branca': [0.0,0.0,0.0],
             'verde':[0.0,0.0,0.0],
-            'azul':[0.0,0.0,0.0,0.0]
+            'azul':[0.0,0.0,0.0,0.0],
+            'te': 0.0
         }
         return app.redirect(url_for('tarifas'))
     #--------------------------------------------------------------------------------------------------------
@@ -135,11 +145,13 @@ def tarifas():
     #Procedimento para definir valor das tarifas do Grupo B
     if form_tarifas_b.validate_on_submit() and 'registrar_b' in request.form:   
         tarifas_dict = tratar_tarifas.registrar_tarifas(tarifas=tarifas,form=form_tarifas_b,grupo=grupo)
+        flash('Tarifas registradas',category='alert-success')
     #--------------------------------------------------------------------------------------------------------
 
     #Procedimento para definir valor das tarifas do Grupo A
     if form_tarifas_a.validate_on_submit() and 'registrar_a' in request.form:   
         tarifas_dict = tratar_tarifas.registrar_tarifas(tarifas=tarifas,form=form_tarifas_a,grupo=grupo)
+        flash('Tarifas registradas',category='alert-success')
     #--------------------------------------------------------------------------------------------------------
 
     #Procedimento para carregar arquivo com valores pré definidos de tarifas
@@ -166,21 +178,112 @@ def tarifas():
     return render_template('tarifas.html',form_selecionar_grupo = form_selecionar_grupo,grupo = grupo,form_tarifas_b=form_tarifas_b,form_tarifas_a=form_tarifas_a)
 
 
+@app.route("/faturas",methods = ['GET','POST'])
+def faturas():
+    global grupo
+    global download_flag
+    global tarifas_dict
+    global fatura_dict
+    global dem_c
+    global nome_arquivo
+    form_salvar_fatura = FormSalvarFatura()
+    form_fatura = FormFatura()
+    
+    if form_fatura.validate_on_submit() and 'reg' in request.form:   
+        dem_c = tratar_fatura.demanda_contratada(form_fatura=form_fatura)
+        print(dem_c)
+        flash('Demandas registradas',category='alert-success')
+
+    #Procedimento para carregar arquivo com valores pré definidos de tarifas
+    if request.method == 'POST' and 'load_btn' in request.form:      
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('Nenhum arquivo selecionado',category='alert-danger')
+            return app.redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('Nenhum arquivo selecionado',category='alert-danger')
+            return app.redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
+            fatura_dict = tratar_fatura.ler_fatura(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),tarifas=tarifas_dict,dem_c=dem_c)
+            flash('Fatura carregada',category='alert-success')
+            return app.redirect(url_for('faturas'))
+    #--------------------------------------------------------------------------------------------------------
+        
+    #Procedimento para salvar a planilha com as análises
+    if 'salvar_btn' in request.form:            
+        msg = tratar_fatura.verificar_save(fatura_dict=fatura_dict)
+        if msg != 'Arquivo salvo com sucesso': 
+            flash(msg,category='alert-danger')
+        else:
+            nome_arquivo = form_salvar_fatura.nome.data
+            planilha_cargas.limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+            download_flag = 'Fatura'
+            return app.redirect(url_for("download"))
+        print('here')
+        return app.redirect(url_for('faturas'))
+    #--------------------------------------------------------------------------------------------------------
+    return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,grupo=grupo)
+
 @app.route('/download')
 def download():
     global nome_arquivo
+    global download_flag
+    global fatura_dict
     nome = f'{nome_arquivo}.xlsx'
-    planilha.criar_planilha(cargas=cargas_dict,tarifas_dict=tarifas_dict,grupo=grupo,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER),h_p=h_p,dias=dias)
+    if download_flag == 'Cargas':
+        planilha_cargas.criar_planilha(cargas=cargas_dict,tarifas_dict=tarifas_dict,grupo=grupo,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER),h_p=h_p,dias=dias)
+    else:
+        planilha_fatura.criar_planilha(fatura_dict=fatura_dict,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER))
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=nome)
 
-
-@app.route("/faturas")
-def faturas():
-    return render_template('faturas.html')
-
 @app.route("/")
 def home():
+    global dem_c
+    return render_template('home.html')
+
+@app.route("/reset")
+def reset():
+    global download_flag
+    global dem_c
+    global fatura_dict
+    global tarifas_dict
+    global cargas_dict
+    global h_p
+    global dias
+    global nome_arquivo
+    global grupo 
+
+    download_flag = ''
+    h_p = 17
+    dias = 22
+    nome_arquivo = ''
+    tarifas_dict = {
+        'convencional': 0.0,
+        'branca': [0.0,0.0,0.0],
+        'verde':[0.0,0.0,0.0],
+        'azul':[0.0,0.0,0.0,0.0],
+        'te': 0.0
+    }
+    grupo = '-selecionar-'
+    cargas_dict = {
+            'Carga':[],
+            'Potência':[],
+            'FP':[],
+            'FP - Tipo':[],
+            'Quantidade':[],
+            'Início':[],
+            'Fim':[],
+            'Remover': []
+        }
+
+    fatura_dict = {}
+    dem_c = 0
     return render_template('home.html')
 
 if __name__ == '__main__':

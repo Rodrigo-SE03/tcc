@@ -41,4 +41,16 @@ class FormTarifasA(FlaskForm):
     azul_dem_fp = FloatField('Valor da tarifa de demanda - horário fora de ponta (R$/kW)', validators= [DataRequired()])
     azul_dem_p = FloatField('Valor da tarifa de demanda - horário de ponta (R$/kW)', validators= [DataRequired()])
 
+    te = FloatField('Valor da tarifa de referência reativa - TE do subgrupo B1 (R$/kW)', validators= [DataRequired()])
+
     registrar_a = SubmitField('Registrar', validators= [DataRequired()])
+
+class FormFatura(FlaskForm):
+    dem_c_fp = FloatField('Demanda contratada Fora de Ponta ou Única (kW)', validators= [DataRequired()])
+    dem_c_p = FloatField('Demanda contratada na Ponta (kW)',default=0)
+
+    reg = SubmitField('Registrar', validators= [DataRequired()])
+
+class FormSalvarFatura(FlaskForm):
+    nome = StringField('Nome do arquivo', validators= [DataRequired()])
+    salvar_btn = SubmitField('Salvar', validators= [DataRequired()])
