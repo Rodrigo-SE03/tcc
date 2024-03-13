@@ -314,6 +314,7 @@ def criar_grafico(worksheet,workbook,categoria):
 
 #Criação da aba com os elementos reativos identificados na instalação   
 def tab_reativos(categoria,consumo_dict,h_p,tarifas_dict,writer,dias):
+    demr=0
     demanda = max(consumo_dict['Potência FP - kW']) if max(consumo_dict['Potência FP - kW']) > max(consumo_dict['Potência P - kW']) else max(consumo_dict['Potência P - kW'])
     demanda_fp = max(consumo_dict['Potência FP - kW'])
     demanda_p = max(consumo_dict['Potência P - kW'])
