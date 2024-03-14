@@ -158,7 +158,7 @@ def comparar_geral_style(worksheet,workbook,verde_dict,azul_dict,fatura_dict,cat
 
     if total[0]-total[1] <= 0:
         worksheet.write('M21','Demanda Contratada Recomendada:')
-        worksheet.write('N22',fatura_dict['Demanda']['Demanda Contratada FP Indicada'],pot_format)
+        worksheet.write('N21',fatura_dict['Demanda']['Demanda Contratada FP Indicada'],pot_format)
     else:
         worksheet.write('M21','Demanda Contratada P Recomendada:')
         worksheet.write('N21',fatura_dict['Demanda']['Demanda Contratada P Indicada'],pot_format)
