@@ -142,13 +142,13 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
     custos_dem_fp = []
     custos_ult_fp = []
     ult_fp = []
-    dem_c_fp_list = []
+    dem_c_v_list = []
     for new_dem_c in range(min_dem_fp,max_dem_fp,5):
         new_ult_fp = []
         new_custo_fp = []
         new_custo_dem = []
         new_custo_ult = []
-        dem_c_fp_list.append(new_dem_c)
+        dem_c_v_list.append(new_dem_c)
         i=0
         for dem in demandas:
             if dem >= 1.05*new_dem_c:
@@ -166,15 +166,16 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
     
     i=0
     id = 0
+    custo_v = []
     minimo = 999999999999
     while i<len(custos):
+        custo_v.append(sum(custos[i]))
         if minimo > sum(custos[i]):
             minimo = sum(custos[i])
             id = i
         i+=1
 
-    new_dem_c_fp = dem_c_fp_list[id]
-    custo_fp = custos[id]
+    new_dem_c_fp = dem_c_v_list[id]
     ult_fp = ult_fp[id]
     custos_ult_fp = custos_ult_fp[id]
     custos_dem_fp = custos_dem_fp[id]
@@ -278,6 +279,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         demandas_dict = {
             'Demanda Contratada FP Indicada': new_dem_c_fp,
             'Demanda Contratada P Indicada': new_dem_c_p,
+            'Demanda Contratada Atual': dem_c,
             'Demanda Verde Medida': dem_v,
             'Demanda Verde Ultrapassada (atual)': ult_atual,
             'Demanda Verde Ultrapassada': ult_v,
@@ -292,12 +294,16 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             'Custos com Demanda - Demanda FP': custos_dem_fp,             
             'Custos com Ultrapassagem - Demanda FP': custos_ult_fp,
             'Custos com Demanda - Demanda P': custos_dem_p,
-            'Custos com Ultrapassagem - Demanda P': custos_ult_p
+            'Custos com Ultrapassagem - Demanda P': custos_ult_p,
+            'Lista de demandas contratadas': dem_c_v_list,
+            'Lista de custos anuais por demanda contratada': custo_v
         }
     else:
         demandas_dict = {
             'Demanda Contratada FP Indicada': new_dem_c_fp,
             'Demanda Contratada P Indicada': new_dem_c_p,
+            'Demanda Contratada FP Atual': dem_c[0],
+            'Demanda Contratada P Atual': dem_c[1],
             'Demanda Verde Medida': dem_v,
             'Demanda Verde Ultrapassada': ult_v,
             'Demanda FP Medida': dem_fp,
