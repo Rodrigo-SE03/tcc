@@ -41,7 +41,7 @@ class FormTarifasA(FlaskForm):
     azul_dem_fp = FloatField('Valor da tarifa de demanda - horário fora de ponta (R$/kW)', validators= [DataRequired()])
     azul_dem_p = FloatField('Valor da tarifa de demanda - horário de ponta (R$/kW)', validators= [DataRequired()])
 
-    te = FloatField('Valor da tarifa de referência reativa - TE do subgrupo B1 (R$/kW)', validators= [DataRequired()])
+    te = FloatField('Valor da tarifa de referência reativa - TE do subgrupo B1 (R$/MWh)', validators= [DataRequired()])
 
     registrar_a = SubmitField('Registrar', validators= [DataRequired()])
 
