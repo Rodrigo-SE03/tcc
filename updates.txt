@@ -1,0 +1,16 @@
+Visual:
+-Verificar se há um retorno adequado para todas as ações do usuário;
+
+Formulários:
+-Retirar do formulário de cargas os campos de dias úteis e início do horário de ponta;
+-Definir as validações adequadas para todos os campos dos formulários;
+-Conferir as unidades de medida de todos os campos dos formulários;
+
+Erros:
+-Consertar o erro que ocorre na segunda tentativa de salvamento de um arquivo após a primeira ser bloqueada por alguma condição (como o não preenchimento das tarifas);
+-Impedir que o usuário envie arquivos de formato inadequado (criar uma função para excel e uma para pdf);
+
+Melhorias:
+-Melhorar o aspecto visual, especialmente da análise de fatura;
+-Implementar uma linha mostrando o fator de potência da unidade ao longo do dia na aba de consumo -> Talvez seja interessante uma série de fp indutivo e uma de fp capacitivo;
+-Desenvolver a análise de fatura para a modalidade tarifária azul;
