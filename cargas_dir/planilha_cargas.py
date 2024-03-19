@@ -39,12 +39,6 @@ def tab_cargas(cargas_dict,writer):
     worksheet.autofit()
 #--------------------------------------------------------------------------------------------------------
 
-#Exclusão de arquivos após concluir ação
-def limpar_pasta(folder):
-    for file in os.listdir(folder):
-        os.remove(f'{folder}/{file}')
-#--------------------------------------------------------------------------------------------------------
-
 #Função para calcular horas no horário de ponta e fora de ponta
 def calc_intervalo(inicio,fim,h_p,grupo):
     ponta = [*range(h_p*60,(h_p+3)*60)]
