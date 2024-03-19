@@ -12,4 +12,3 @@ Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
 -Implementar uma linha mostrando o fator de potência da unidade ao longo do dia na aba de consumo -> Talvez seja interessante uma série de fp indutivo e uma de fp capacitivo;
 -Desenvolver a análise de fatura para a modalidade tarifária azul;
--Corrigir o método de leitura da demanda medida;

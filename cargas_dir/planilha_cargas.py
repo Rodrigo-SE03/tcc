@@ -217,12 +217,51 @@ def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict):
     elif categoria == 'Branca': custo = [0,0,0]
     elif categoria == 'Verde':
         custo = [0,0,0]
-        demanda = max(consumo_dict['Potência FP - kW']) if max(consumo_dict['Potência FP - kW']) > max(consumo_dict['Potência P - kW']) else max(consumo_dict['Potência P - kW'])
+
+        #Cálculo da demanda (valor máximo da média das potências medidas em 15 minutos)
+        demanda = []
+        i = 0
+        d = 0 
+        while i<len(consumo_dict['Potência FP - kW']):
+            if (i % 15) == 0:
+                demanda.append(d/15)
+                d = 0
+            d += consumo_dict['Potência FP - kW'][i] + consumo_dict['Potência P - kW'][i]
+            i+=1
+        demanda = max(demanda)
+        #--------------------------------------------------------------------------------------------------------
+
         custo[2] = demanda*tarifas_dict['verde'][2]
     else: 
         custo = [0,0,0,0]
-        demanda_fp = max(consumo_dict['Potência FP - kW'])
-        demanda_p = max(consumo_dict['Potência P - kW'])
+
+        #Cálculo da demanda fp (valor máximo da média das potências medidas em 15 minutos)
+        demanda_fp = []
+        i = 0
+        d = 0 
+        while i<len(consumo_dict['Potência FP - kW']):
+            print(i,d)
+            if (i % 15) == 0:
+                demanda_fp.append(d/15)
+                d = 0
+            d += consumo_dict['Potência FP - kW'][i]
+            i+=1
+        demanda_fp = max(demanda_fp)
+        #--------------------------------------------------------------------------------------------------------
+        
+        #Cálculo da demanda p (valor máximo da média das potências medidas em 15 minutos)
+        demanda_p = []
+        i = 0
+        d = 0 
+        while i<len(consumo_dict['Potência P - kW']):
+            if (i % 15) == 0:
+                demanda_p.append(d/15)
+                d = 0
+            d += consumo_dict['Potência P - kW'][i]
+            i+=1
+        demanda_p = max(demanda_p)
+        #--------------------------------------------------------------------------------------------------------
+        
         custo[2] = demanda_fp*tarifas_dict['azul'][2]
         custo[3] = demanda_p*tarifas_dict['azul'][3]
     i=0
