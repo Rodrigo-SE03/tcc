@@ -27,8 +27,12 @@ def nova_carga(cargas,form):
 
 #Função para remover uma carga da lista de elementos
 def remover_carga(cargas,i):
+    nome = ''
     for keys in cargas:
+        if keys == 'Carga':
+            nome = cargas[keys][i]
         cargas[keys].pop(i)
+    return nome
 #--------------------------------------------------------------------------------------------------------
 
 #Função para carregar a planilha pré construída com dados de cargas

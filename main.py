@@ -97,8 +97,9 @@ def cargas():
     #Procedimento para remover uma carga do dicionário principal
     length = len(cargas_dict['Carga'])
     
-    if 'remove_btn' in request.form:            
-        tratar_cargas.remover_carga(cargas=cargas_dict,i=int(request.form['remove_btn']))   
+    if 'remove_btn' in request.form:          
+        removida = tratar_cargas.remover_carga(cargas=cargas_dict,i=int(request.form['remove_btn'])) 
+        flash(f'Carga removida - {removida}',category='alert-warning')    
         return app.redirect(url_for("cargas"))
     #--------------------------------------------------------------------------------------------------------
 
@@ -300,7 +301,8 @@ def reset():
 
     fatura_dict = {}
     dem_c = 0
-    return render_template('home.html')
+    flash('Valores resetados',category='alert-success')
+    return app.redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
