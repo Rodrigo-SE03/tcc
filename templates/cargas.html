@@ -33,30 +33,6 @@
                             {% endif %}
                         </div>
                     </div>
-
-                    <div class = "col">
-                        <div class="form-group">
-                            {{ form_add_carga.ponta.label(class = 'form-control-label') }}
-                            {{ form_add_carga.ponta(class = 'form-control') }}
-                        </div>
-                    </div>
-
-                    <div class = "col">
-                        <div class="form-group">
-                            {{ form_add_carga.dias.label(class = 'form-control-label') }}
-
-                            {% if form_add_carga.dias.errors %}
-                                {{ form_add_carga.dias(class = 'form-control is-invalid') }}
-                                <div class = 'invalid-feedback'>
-                                    {% for erro in form_add_carga.dias.errors %}
-                                        {{ erro }}
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {{ form_add_carga.dias(class = 'form-control') }}
-                            {% endif %}
-                        </div>
-                    </div>
                 </div>
 
 
@@ -143,7 +119,40 @@
             {{ form_add_carga.add_button(class = 'btn btn-primary mt-5') }}
         </form>
     </div>
-    
+
+    <div class = 'border p-5'>
+        <form method="POST">
+            {{ form_info.csrf_token }}
+            <fieldset>
+                <div class = "row mt-2">
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_info.ponta.label(class = 'form-control-label') }}
+                            {{ form_info.ponta(class = 'form-control') }}
+                        </div>
+                    </div>
+
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_info.dias.label(class = 'form-control-label') }}
+
+                            {% if form_info.dias.errors %}
+                                {{ form_info.dias(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_info.dias.errors %}
+                                        {{ erro }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_info.dias(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            {{ form_info.registrar_info(class = 'btn btn-primary mt-5') }}
+        </form>
+    </div>
 
     {% include 'Elements/table.html' %}
 

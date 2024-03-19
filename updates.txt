@@ -2,12 +2,10 @@ Visual:
 -Verificar se há um retorno adequado para todas as ações do usuário;
 
 Formulários:
--Retirar do formulário de cargas os campos de dias úteis e início do horário de ponta;
 -Definir as validações adequadas para todos os campos dos formulários;
 -Conferir as unidades de medida de todos os campos dos formulários;
 
 Erros:
--Consertar o erro que ocorre na segunda tentativa de salvamento de um arquivo após a primeira ser bloqueada por alguma condição (como o não preenchimento das tarifas);
 -Impedir que o usuário envie arquivos de formato inadequado (criar uma função para excel e uma para pdf);
 
 Melhorias:

@@ -335,6 +335,9 @@ def tab_reativos(categoria,consumo_dict,h_p,tarifas_dict,writer,dias):
     cap = [*range(0,24)]
     rs = [*range(0,24)]
 
+    demr_p = 0
+    demr_fp = 0
+
     i=0
     while i < len(rs):
         c_fp[i] = 0

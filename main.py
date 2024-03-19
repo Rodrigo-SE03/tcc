@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, flash, send_from_directory
-from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura
+from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura,FormInfo
 from werkzeug.utils import secure_filename
 import os
 from cargas_dir import planilha_cargas,tratar_cargas
@@ -10,8 +10,8 @@ ALLOWED_EXTENSIONS = {'xlsx','pdf'}
 UPLOAD_FOLDER = 'arquivos'
 
 download_flag = ''
-h_p = 17
-dias = 22
+h_p = 0
+dias = 0
 nome_arquivo = ''
 tarifas_dict = {
     'convencional': 0.0,
@@ -40,6 +40,13 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '358823e5046ab23c149ff9a047b30ae8'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+#Exclusão de arquivos
+def limpar_pasta(folder):
+    for file in os.listdir(folder):
+        os.remove(f'{folder}/{file}')
+#--------------------------------------------------------------------------------------------------------
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -47,8 +54,6 @@ def allowed_file(filename):
 
 @app.route("/cargas",methods = ['GET','POST'])
 def cargas():
-    form_add_carga = FormAddCarga()
-    form_salvar_cargas = FormSalvarCargas()
     global cargas_dict
     global tarifas_dict
     global grupo
@@ -56,7 +61,11 @@ def cargas():
     global h_p
     global dias
     global download_flag
-    
+    form_add_carga = FormAddCarga()
+    form_salvar_cargas = FormSalvarCargas()
+    form_info = FormInfo(data = {'ponta':h_p,'dias':dias})
+    print(h_p,dias)
+
     #Procedimento para adicionar a carga ao dicionário principal
     if form_add_carga.validate_on_submit() and 'add_button' in request.form:    
         tratar_cargas.nova_carga(cargas_dict,form_add_carga)  
@@ -93,29 +102,33 @@ def cargas():
         return app.redirect(url_for("cargas"))
     #--------------------------------------------------------------------------------------------------------
 
+    if 'registrar_info' in request.form:
+        h_p = form_info.ponta.data
+        dias = form_info.dias.data
+        flash('Informações registradas com sucesso',category='alert-success')
+        return app.redirect(url_for("cargas"))
+
     #Procedimento para salvar a planilha com as análises
     if 'salvar_btn' in request.form:            
-        msg = tratar_cargas.verificar_save(cargas_dict=cargas_dict,tarifas_dict=tarifas_dict)
+        limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+        msg = tratar_cargas.verificar_save(cargas_dict=cargas_dict,tarifas_dict=tarifas_dict,h_p=h_p,dias=dias)
         if msg != 'Arquivo salvo com sucesso': 
             flash(msg,category='alert-danger')
         else:
-            dias = form_add_carga.dias.data
-            h_p = form_add_carga.ponta.data
             nome_arquivo = form_salvar_cargas.nome.data
-            planilha_cargas.limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
             download_flag = 'Cargas'
             return app.redirect(url_for("download"))
         return app.redirect(url_for("cargas"))
     #--------------------------------------------------------------------------------------------------------
 
-    return render_template('cargas.html',form_add_carga = form_add_carga,cargas_dict=cargas_dict,length=length,form_salvar_cargas=form_salvar_cargas)
+    return render_template('cargas.html',form_add_carga = form_add_carga,cargas_dict=cargas_dict,length=length,form_salvar_cargas=form_salvar_cargas,form_info=form_info)
 
 
 @app.route("/tarifas",methods = ['GET','POST'])
 def tarifas():
     global grupo
     global tarifas_dict
-    form_selecionar_grupo = SelecionarGrupo()
+    form_selecionar_grupo = SelecionarGrupo(data={'grupo':grupo})
     
     #Procedimentos para inicialização das variáveis de tarifas
     if grupo == 'Grupo B':          
@@ -187,7 +200,10 @@ def faturas():
     global dem_c
     global nome_arquivo
     form_salvar_fatura = FormSalvarFatura()
-    form_fatura = FormFatura()
+    if isinstance(dem_c,int) or isinstance(dem_c,float):
+        form_fatura = FormFatura(data = {'dem_c_fp':dem_c,'dem_c_p':0})
+    else:
+        form_fatura = FormFatura(data = {'dem_c_fp':dem_c[0],'dem_c_p':dem_c[1]})
     
     if form_fatura.validate_on_submit() and 'reg' in request.form:   
         dem_c = tratar_fatura.demanda_contratada(form_fatura=form_fatura)
@@ -215,13 +231,13 @@ def faturas():
     #--------------------------------------------------------------------------------------------------------
         
     #Procedimento para salvar a planilha com as análises
-    if 'salvar_btn' in request.form:            
+    if 'salvar_btn' in request.form: 
+        limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))           
         msg = tratar_fatura.verificar_save(fatura_dict=fatura_dict)
         if msg != 'Arquivo salvo com sucesso': 
             flash(msg,category='alert-danger')
         else:
             nome_arquivo = form_salvar_fatura.nome.data
-            planilha_cargas.limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
             download_flag = 'Fatura'
             return app.redirect(url_for("download"))
         print('here')
@@ -260,8 +276,8 @@ def reset():
     global grupo 
 
     download_flag = ''
-    h_p = 17
-    dias = 22
+    h_p = 0
+    dias = 0
     nome_arquivo = ''
     tarifas_dict = {
         'convencional': 0.0,
