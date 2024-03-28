@@ -9,6 +9,7 @@ Erros:
 -Impedir que o usuário envie arquivos de formato inadequado (criar uma função para excel e uma para pdf);
 -Corrigir o valor apresentado no gráfico de Custo Anual X Demanda Contratada -> o valor no marcador é referente ao custo da demanda+ultrapassagem, não ao custo anual total
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil
+-Corrigir o erro do arquivo em uso -> usar o mesmo método do site de Energia
 
 Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
