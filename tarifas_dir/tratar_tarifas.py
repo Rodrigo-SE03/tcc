@@ -8,7 +8,8 @@ def registrar_tarifas(tarifas,form,grupo):
         
     elif grupo == 'Grupo A':
         tarifas = {'verde': [form.verde_fp.data,form.verde_p.data,form.verde_dem.data],
-                   'azul': [form.azul_fp.data,form.azul_p.data,form.azul_dem_fp.data,form.azul_dem_p.data]}
+                   'azul': [form.azul_fp.data,form.azul_p.data,form.azul_dem_fp.data,form.azul_dem_p.data],
+                   'te': form.te.data}
     
     return tarifas
 
@@ -20,7 +21,7 @@ def carregar_tarifas(file,folder,grupo):
     elif grupo == 'Grupo A':
         tarifas = {'verde': [df.iloc[12,3],df.iloc[13,3],df.iloc[14,3]],
                    'azul': [df.iloc[18,3],df.iloc[19,3],df.iloc[20,3],df.iloc[21,3]],
-                   'te':df.iloc[25,3]}
+                   'te': df.iloc[25,3]}
     os.remove(f'{folder}/{file}')
     
     return tarifas

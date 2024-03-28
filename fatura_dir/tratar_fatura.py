@@ -333,13 +333,15 @@ def calc_consumos(con_fp,con_p,hr_con,tarifas,mes):
     t_p_v = tarifas['verde'][1]
     t_fp_a = tarifas['azul'][0]
     t_p_a = tarifas['azul'][1]
-
+    print(hr_con)
+    consumo_fp = []
     custo_fp_v = []
     custo_p_v = []
     custo_fp_a = []
     custo_p_a = []
     i=0
     while i<len(con_fp):
+        consumo_fp.append(con_fp[i]+hr_con[i])
         custo_fp_v.append((con_fp[i]+hr_con[i])*t_fp_v)
         custo_p_v.append(con_p[i]*t_p_v)
         custo_fp_a.append((con_fp[i]+hr_con[i])*t_fp_a)
@@ -347,7 +349,7 @@ def calc_consumos(con_fp,con_p,hr_con,tarifas,mes):
         i+=1
 
     consumos_dict = {
-        'Consumo FP':con_fp,
+        'Consumo FP':consumo_fp,
         'Consumo P':con_p,
         'Custo Consumo - FP Verde': custo_fp_v,
         'Custo Consumo - P Verde': custo_p_v,
