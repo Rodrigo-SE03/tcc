@@ -4,14 +4,15 @@ Visual:
 Formulários:
 -Definir as validações adequadas para todos os campos dos formulários;
 -Conferir as unidades de medida de todos os campos dos formulários;
+-Verificar se na resolução 1000 fala sobre valor máximo de demanda contratada;
 
 Erros:
--Impedir que o usuário envie arquivos de formato inadequado (criar uma função para excel e uma para pdf);
 -Corrigir o valor apresentado no gráfico de Custo Anual X Demanda Contratada -> o valor no marcador é referente ao custo da demanda+ultrapassagem, não ao custo anual total
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil
--Corrigir o erro do arquivo em uso -> usar o mesmo método do site de Energia
+-Corrigir o erro do arquivo em uso -> conferir se funcionou
 
 Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
 -Implementar uma linha mostrando o fator de potência da unidade ao longo do dia na aba de consumo -> Talvez seja interessante uma série de fp indutivo e uma de fp capacitivo;
 -Desenvolver a análise de fatura para a modalidade tarifária azul;
+-Colocar valores percentuais na aba de comparativos

@@ -67,7 +67,7 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
             'Total': [custo[0]*dias/tarifas_dict['branca'][0]+custo[1]*dias/tarifas_dict['branca'][1]+custo[2]*dias/tarifas_dict['branca'][2],(custo[0]+custo[1]+custo[2])*dias]
         }
     elif categoria == 'Verde':
-        col += 1
+        col += 3
         d_results = {
             'Consumo FP': [custo[0]/tarifas_dict['verde'][0],custo[0]],
             'Consumo P': [custo[1]/tarifas_dict['verde'][1],custo[1]],
@@ -80,7 +80,7 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
             'Total': ['-',(custo[0]+custo[1])*dias+custo[2]]
         }
     else:
-        col += 1
+        col += 3
         d_results = {
             'Consumo FP': [custo[0]/tarifas_dict['azul'][0],custo[0]],
             'Consumo P': [custo[1]/tarifas_dict['azul'][1],custo[1]],

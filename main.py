@@ -6,12 +6,12 @@ from cargas_dir import planilha_cargas,tratar_cargas
 from tarifas_dir import tratar_tarifas
 from fatura_dir import planilha_fatura,tratar_fatura
 
-ALLOWED_EXTENSIONS = {'xlsx','pdf'}
+
 UPLOAD_FOLDER = 'arquivos'
 
 download_flag = ''
-h_p = 0
-dias = 0
+h_p = 18
+dias = 22
 nome_arquivo = ''
 tarifas_dict = {
     'convencional': 0.0,
@@ -47,9 +47,9 @@ def limpar_pasta(folder):
         os.remove(f'{folder}/{file}')
 #--------------------------------------------------------------------------------------------------------
 
-def allowed_file(filename):
+def allowed_file(filename,extension):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in extension
 
 
 @app.route("/cargas",methods = ['GET','POST'])
@@ -64,8 +64,9 @@ def cargas():
     form_add_carga = FormAddCarga()
     form_salvar_cargas = FormSalvarCargas()
     form_info = FormInfo(data = {'ponta':h_p,'dias':dias})
-    print(h_p,dias)
-
+    
+    limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+    
     #Procedimento para adicionar a carga ao dicionário principal
     if form_add_carga.validate_on_submit() and 'add_button' in request.form:    
         tratar_cargas.nova_carga(cargas_dict,form_add_carga)  
@@ -86,12 +87,14 @@ def cargas():
         if file.filename == '':
             flash('Nenhum arquivo selecionado',category='alert-danger')
             return app.redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename,['xlsx']):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             cargas_dict = tratar_cargas.carregar_cargas(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER))
             flash('Arquivo carregado',category='alert-success')
             return app.redirect(url_for('cargas'))
+        else:
+            flash('Formato de arquivo inválio. Deve ser um arquivo .xlsx',category='alert-danger')
     #--------------------------------------------------------------------------------------------------------
 
     #Procedimento para remover uma carga do dicionário principal
@@ -131,6 +134,8 @@ def tarifas():
     global tarifas_dict
     form_selecionar_grupo = SelecionarGrupo(data={'grupo':grupo})
     
+    limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+
     #Procedimentos para inicialização das variáveis de tarifas
     if grupo == 'Grupo B':          
         form_tarifas_b = FormTarifasB(convencional = tarifas_dict['convencional'],branca_fp=tarifas_dict['branca'][0],branca_i=tarifas_dict['branca'][1],branca_p=tarifas_dict['branca'][2])
@@ -180,13 +185,15 @@ def tarifas():
         if file.filename == '':
             flash('Nenhum arquivo selecionado',category='alert-danger')
             return app.redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename,'xlsx'):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             tarifas_dict = tratar_tarifas.carregar_tarifas(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),grupo=grupo)
             flash('Tarifas carregadas',category='alert-success')
 
             return app.redirect(url_for('tarifas'))
+        else:
+            flash('Formato de arquivo inválio. Deve ser um arquivo .xlsx',category='alert-danger')
     #--------------------------------------------------------------------------------------------------------
 
     return render_template('tarifas.html',form_selecionar_grupo = form_selecionar_grupo,grupo = grupo,form_tarifas_b=form_tarifas_b,form_tarifas_a=form_tarifas_a)
@@ -206,6 +213,8 @@ def faturas():
     else:
         form_fatura = FormFatura(data = {'dem_c_fp':dem_c[0],'dem_c_p':dem_c[1]})
     
+    limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+    
     if form_fatura.validate_on_submit() and 'reg' in request.form:   
         dem_c = tratar_fatura.demanda_contratada(form_fatura=form_fatura)
         print(dem_c)
@@ -223,12 +232,14 @@ def faturas():
         if file.filename == '':
             flash('Nenhum arquivo selecionado',category='alert-danger')
             return app.redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename,'pdf'):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             fatura_dict = tratar_fatura.ler_fatura(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),tarifas=tarifas_dict,dem_c=dem_c)
             flash('Fatura carregada',category='alert-success')
             return app.redirect(url_for('faturas'))
+        else:
+            flash('Formato de arquivo inválio. Deve ser um arquivo .pdf',category='alert-danger')
     #--------------------------------------------------------------------------------------------------------
         
     #Procedimento para salvar a planilha com as análises
@@ -275,10 +286,11 @@ def reset():
     global dias
     global nome_arquivo
     global grupo 
+    limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
 
     download_flag = ''
-    h_p = 0
-    dias = 0
+    h_p = 18
+    dias = 22
     nome_arquivo = ''
     tarifas_dict = {
         'convencional': 0.0,

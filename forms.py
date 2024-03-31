@@ -14,8 +14,8 @@ class FormAddCarga(FlaskForm):
     add_button = SubmitField('Adicionar', validators= [DataRequired()])
 
 class FormInfo(FlaskForm):
-    dias = IntegerField('Nº de dias úteis', validators= [DataRequired(),NumberRange(min=1,max=31,message="Valor inválido")])
-    ponta = IntegerField('Início do horário de ponta', validators= [DataRequired(),NumberRange(min=0,max=21,message="Valor inválido")])
+    dias = IntegerField('Nº de dias úteis', validators= [DataRequired(),NumberRange(min=1,max=31,message="Valor inválido")],default=22)
+    ponta = IntegerField('Início do horário de ponta', validators= [DataRequired(),NumberRange(min=0,max=21,message="Valor inválido")],default=18)
 
     registrar_info = SubmitField('Registrar', validators= [DataRequired()])
 
@@ -50,8 +50,8 @@ class FormTarifasA(FlaskForm):
     registrar_a = SubmitField('Registrar', validators= [DataRequired()])
 
 class FormFatura(FlaskForm):
-    dem_c_fp = FloatField('Demanda contratada Fora de Ponta ou Única (kW)', validators= [DataRequired()])
-    dem_c_p = FloatField('Demanda contratada na Ponta (kW)',default=0)
+    dem_c_fp = IntegerField('Demanda Contratada Fora de Ponta ou Única (kW)', validators= [DataRequired(),NumberRange(min=30,max=15000,message="Valor inválido")])
+    dem_c_p = IntegerField('Demanda Contratada na Ponta (kW) - Manter 0 Para Modalidade Verde ',validators=[NumberRange(min=30,max=15000,message="Valor inválido")],default=0)
 
     reg = SubmitField('Registrar', validators= [DataRequired()])
 

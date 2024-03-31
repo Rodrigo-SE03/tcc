@@ -183,7 +183,8 @@ def select_consumo(itens,categoria,h_p):
                 consumo_dict['Instante'].append(0)
     
     else:
-        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[]}
+        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP - Capacitivo':[],'FP - Indutivo':[]}
+        j=0
         for h in range(0,24):
             for m in range(0,60):
                 i=0
@@ -204,9 +205,16 @@ def select_consumo(itens,categoria,h_p):
                 consumo_dict['Potência P - kW'].append(pot_p)
                 consumo_dict['Potência Reativa FP - kVAr'].append(potr_fp)
                 consumo_dict['Potência Reativa P - kVAr'].append(potr_p)
+                if h<h_ponta or h>=(h_ponta+3):
+                    consumo_dict['FP - Capacitivo'].append((consumo_dict['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência FP - kW'][j],2)+math.pow(consumo_dict['Potência Reativa FP - kVAr'][j],2))) if consumo_dict['Potência Reativa FP - kVAr'][j] < 0 else 1)
+                    consumo_dict['FP - Indutivo'].append((consumo_dict['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência FP - kW'][j],2)+math.pow(consumo_dict['Potência Reativa FP - kVAr'][j],2))) if consumo_dict['Potência Reativa FP - kVAr'][j] > 0 else 1)
+                else:
+                    consumo_dict['FP - Capacitivo'].append((consumo_dict['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência P - kW'][j],2)+math.pow(consumo_dict['Potência Reativa P - kVAr'][j],2))) if consumo_dict['Potência Reativa P - kVAr'][j] < 0 else 1)
+                    consumo_dict['FP - Indutivo'].append((consumo_dict['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência P - kW'][j],2)+math.pow(consumo_dict['Potência Reativa P - kVAr'][j],2))) if consumo_dict['Potência Reativa P - kVAr'][j] > 0 else 1)
                 consumo_dict['Horas'].append(h)
                 consumo_dict['Minutos'].append(m) 
                 consumo_dict['Instante'].append(0) 
+                j+=1
     
     return consumo_dict
 #--------------------------------------------------------------------------------------------------------
@@ -312,7 +320,7 @@ def tab_consumo(itens,writer,categoria,h_p,equip_dict,tarifas_dict,dias):
     if categoria != 'Convencional':
         worksheet.set_column('J:K',16)
     if categoria == 'Verde' or 'Azul':
-        worksheet.set_column('O:O',16)
+        worksheet.set_column('Q:Q',16)
     criar_grafico(worksheet,workbook,categoria)
     return [consumo_dict,custos_mensais]
 #--------------------------------------------------------------------------------------------------------
@@ -329,6 +337,10 @@ def criar_grafico(worksheet,workbook,categoria):
     else:
         chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
         chart.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
+        line_chart = workbook.add_chart({'type':'line'})
+        line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP - Capacitivo",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'green','width':1.5}})
+        line_chart.add_series({'name':"FP - Indutivo",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
+        chart.combine(line_chart)
     
     chart.set_x_axis(
     {
@@ -340,7 +352,7 @@ def criar_grafico(worksheet,workbook,categoria):
     if categoria == "Branca":
         worksheet.insert_chart('H9', chart)
     elif categoria == 'Verde' or categoria == 'Azul':
-        worksheet.insert_chart('I9', chart)
+        worksheet.insert_chart('K9', chart)
     else:
         worksheet.insert_chart('G9', chart)
 #--------------------------------------------------------------------------------------------------------
