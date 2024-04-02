@@ -7,12 +7,14 @@ Formulários:
 -Verificar se na resolução 1000 fala sobre valor máximo de demanda contratada;
 
 Erros:
--Corrigir o valor apresentado no gráfico de Custo Anual X Demanda Contratada -> o valor no marcador é referente ao custo da demanda+ultrapassagem, não ao custo anual total
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil
 -Corrigir o erro do arquivo em uso -> conferir se funcionou
+-Corrigir o erro de mandar um arquivo fora da formatação adequada
 
 Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
 -Implementar uma linha mostrando o fator de potência da unidade ao longo do dia na aba de consumo -> Talvez seja interessante uma série de fp indutivo e uma de fp capacitivo;
 -Desenvolver a análise de fatura para a modalidade tarifária azul;
--Colocar valores percentuais na aba de comparativos
+-Colocar valores percentuais na aba de comparativos;
+-Conversar com o professor sobre a possibilidade de fazer o dimensionamento do banco de capacitores para correção do fator de potência com base nos valores medidos;
+-Tentar implementar a questão do fim de semana -> usar a planilha do b+p como referência

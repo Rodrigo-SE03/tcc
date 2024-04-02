@@ -227,10 +227,24 @@ def comparativo_style(grupo,comp_dict,writer):
         "valign": "vcenter",
     })
 
+    chart = workbook.add_chart({'type':'column'})
     if grupo == 'Grupo B':
         worksheet.merge_range("C3:E3","Comparação de Custos",merge_format2)
+        chart.add_series({'categories':f"=Comparativo!$D$4",'name': "Convencional",'values':f"=Comparativo!$D$5",'fill':{'color':'#F2EA50'},'overlap':-20})
+        chart.add_series({'name': "Branca",'values':f"=Comparativo!$D$6",'fill':{'color':'#D9D9D9'}})
+        chart.add_series({'name': "Diferença",'values':f"=Comparativo!$D$7",'fill':{'color':'#ED5D5D'}})
+        chart.set_size({'width': 410, 'height': 440})
     else:
+        
         worksheet.merge_range("C3:I3","Comparação de Custos",merge_format2)
+        chart.add_series({'categories':f"=Comparativo!$E$4:$G$4",'name': "Verde",'values':f"=Comparativo!$E$5:$G$5",'fill':{'color':'#00B050'},'overlap':-20})
+        chart.add_series({'name': "Azul",'values':f"=Comparativo!$E$6:$G$6",'fill':{'color':'#0070C0'}})
+        chart.add_series({'name': "Diferença",'values':f"=Comparativo!$E$7:$G$7",'fill':{'color':'#ED5D5D'}})
+        chart.set_size({'width': 860, 'height': 450})
+
+    chart.set_title({'name':'Comparação de Custos'})
+    chart.set_legend({'position': 'right'})
+    worksheet.insert_chart('C11', chart)
 
     i=0
     for key in comp_dict.keys():

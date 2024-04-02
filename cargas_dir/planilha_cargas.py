@@ -340,6 +340,7 @@ def criar_grafico(worksheet,workbook,categoria):
         line_chart = workbook.add_chart({'type':'line'})
         line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP - Capacitivo",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'green','width':1.5}})
         line_chart.add_series({'name':"FP - Indutivo",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
+        line_chart.set_y2_axis({'name':'Fator de Potência'})
         chart.combine(line_chart)
     
     chart.set_x_axis(
@@ -347,8 +348,10 @@ def criar_grafico(worksheet,workbook,categoria):
         "interval_unit": 60,
         "num_format": "h"
     })
+    chart.set_y_axis({'name':'Potência - kW'})
     chart.set_size({'width': 860, 'height': 300})
     chart.set_legend({'position': 'bottom'})
+    chart.set_title({'name':'Perfil de Consumo'})
     if categoria == "Branca":
         worksheet.insert_chart('H9', chart)
     elif categoria == 'Verde' or categoria == 'Azul':
@@ -561,8 +564,8 @@ def comparativo_gpa(m_results_V,m_results_A,r_results_V,r_results_A,grupo,writer
         'Consumo FP': [custo_consumo_fp_V,custo_consumo_fp_A,abs(custo_consumo_fp_V-custo_consumo_fp_A)],
         'Consumo P': [custo_consumo_p_V,custo_consumo_p_A,abs(custo_consumo_p_V-custo_consumo_p_A)],
         'Demanda': [custo_demanda_V,custo_demanda_fp_A+custo_demanda_p_A,abs(custo_demanda_V-(custo_demanda_fp_A+custo_demanda_p_A))],
-        'Consumo Reativo': [custo_consumo_r_V,custo_consumo_r_A,abs(custo_consumo_r_V-custo_consumo_r_A)],
-        'Demanda Reativa': [custo_demanda_r_V,custo_demanda_rfp_A+custo_demanda_rp_A,abs(custo_demanda_r_V-(custo_demanda_rfp_A+custo_demanda_rp_A))],
+        'DMCR': [custo_demanda_r_V,custo_demanda_rfp_A+custo_demanda_rp_A,abs(custo_demanda_r_V-(custo_demanda_rfp_A+custo_demanda_rp_A))],
+        'UFER': [custo_consumo_r_V,custo_consumo_r_A,abs(custo_consumo_r_V-custo_consumo_r_A)],
         'Total':[custo_consumo_fp_V+custo_consumo_p_V+custo_consumo_r_V+custo_demanda_r_V+custo_demanda_V,custo_consumo_fp_A+custo_consumo_p_A+custo_demanda_fp_A+custo_demanda_p_A+custo_consumo_r_A+custo_demanda_rfp_A+custo_demanda_rp_A,abs(custo_consumo_fp_V+custo_consumo_p_V+custo_consumo_r_V+custo_demanda_r_V+custo_demanda_V-(custo_consumo_fp_A+custo_consumo_p_A+custo_demanda_fp_A+custo_demanda_p_A+custo_consumo_r_A+custo_demanda_rfp_A+custo_demanda_rp_A))]
     }
     estilos_cargas.comparativo_style(grupo=grupo,comp_dict=comp_dict,writer=writer)
