@@ -209,11 +209,8 @@ def tabela_reativos(tabela_dict,writer,demr,categoria,consumo_mes):
 #--------------------------------------------------------------------------------------------------------
 
 #Definição do estilo visual da tabela comparativa
-def comparativo_style(grupo,comp_dict,writer):
+def comparativo_style(grupo,comp_dict,pct_dict,writer):
     global merge_style2
-
-    col = 3
-    row = 4
     
     workbook = writer.book
     workbook.add_worksheet('Comparativo')
@@ -226,6 +223,7 @@ def comparativo_style(grupo,comp_dict,writer):
         "align": "center",
         "valign": "vcenter",
     })
+    pct_format = workbook.add_format({'num_format':'0%','border':1,"align": "center"})
 
     chart = workbook.add_chart({'type':'column'})
     if grupo == 'Grupo B':
@@ -237,6 +235,7 @@ def comparativo_style(grupo,comp_dict,writer):
     else:
         
         worksheet.merge_range("C3:I3","Comparação de Custos",merge_format2)
+        worksheet.merge_range("L3:Q3","Representação Percentual",merge_format2)
         chart.add_series({'categories':f"=Comparativo!$E$4:$G$4",'name': "Verde",'values':f"=Comparativo!$E$5:$G$5",'fill':{'color':'#00B050'},'overlap':-20})
         chart.add_series({'name': "Azul",'values':f"=Comparativo!$E$6:$G$6",'fill':{'color':'#0070C0'}})
         chart.add_series({'name': "Diferença",'values':f"=Comparativo!$E$7:$G$7",'fill':{'color':'#ED5D5D'}})
@@ -251,6 +250,13 @@ def comparativo_style(grupo,comp_dict,writer):
         worksheet.write(3,i+2,key,header_format)
         worksheet.write_column(4,i+2,comp_dict[key],rs_format)
         i+=1
+    
+    if grupo == 'Grupo A':
+        for key in pct_dict.keys():
+            worksheet.write(3,i+4,key,header_format)
+            worksheet.write_column(4,i+4,pct_dict[key],pct_format)
+            i+=1
     worksheet.autofit()
     worksheet.set_column('F:F',14)
+    worksheet.set_column('L:Q',14)
 #--------------------------------------------------------------------------------------------------------

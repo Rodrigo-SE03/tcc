@@ -568,5 +568,14 @@ def comparativo_gpa(m_results_V,m_results_A,r_results_V,r_results_A,grupo,writer
         'UFER': [custo_consumo_r_V,custo_consumo_r_A,abs(custo_consumo_r_V-custo_consumo_r_A)],
         'Total':[custo_consumo_fp_V+custo_consumo_p_V+custo_consumo_r_V+custo_demanda_r_V+custo_demanda_V,custo_consumo_fp_A+custo_consumo_p_A+custo_demanda_fp_A+custo_demanda_p_A+custo_consumo_r_A+custo_demanda_rfp_A+custo_demanda_rp_A,abs(custo_consumo_fp_V+custo_consumo_p_V+custo_consumo_r_V+custo_demanda_r_V+custo_demanda_V-(custo_consumo_fp_A+custo_consumo_p_A+custo_demanda_fp_A+custo_demanda_p_A+custo_consumo_r_A+custo_demanda_rfp_A+custo_demanda_rp_A))]
     }
-    estilos_cargas.comparativo_style(grupo=grupo,comp_dict=comp_dict,writer=writer)
+
+    pct_dict = {
+        'Modalidade': ['Verde','Azul'],
+        'Consumo FP': [comp_dict['Consumo FP'][0]/comp_dict['Total'][0],comp_dict['Consumo FP'][1]/comp_dict['Total'][1]],
+        'Consumo P': [comp_dict['Consumo P'][0]/comp_dict['Total'][0],comp_dict['Consumo P'][1]/comp_dict['Total'][1]],
+        'Demanda': [comp_dict['Demanda'][0]/comp_dict['Total'][0],comp_dict['Demanda'][1]/comp_dict['Total'][1]],
+        'DMCR': [comp_dict['DMCR'][0]/comp_dict['Total'][0],comp_dict['DMCR'][1]/comp_dict['Total'][1]],
+        'UFER': [comp_dict['UFER'][0]/comp_dict['Total'][0],comp_dict['UFER'][1]/comp_dict['Total'][1]],
+    }
+    estilos_cargas.comparativo_style(grupo=grupo,comp_dict=comp_dict,writer=writer,pct_dict=pct_dict)
 #--------------------------------------------------------------------------------------------------------
