@@ -40,3 +40,31 @@ def graf_demanda_verde(workbook,worksheet,sheet_name,dem_c,dem_rec,custo_dict):
     chart2.set_legend({'position': 'bottom'})
     chart2.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
     worksheet.insert_chart('L33', chart2)
+
+def graf_demanda_azul(workbook,worksheet,sheet_name):
+
+    chart = workbook.add_chart({'type':'line'})
+    chart.add_series({'categories':f"='{sheet_name}'!$A$2:$A$13",'name': f"='{sheet_name}'!$B$1",'values':f"='{sheet_name}'!$B$2:$B$13",'line':{'color':'#0070C0','width':1.5},'smooth':True})
+    chart.add_series({'name': f"='{sheet_name}'!$D$1",'values':f"='{sheet_name}'!$D$2:$D$13",'line':{'color':'#C0504D','width':1.5}})
+    chart.add_series({'name': f"='{sheet_name}'!$F$1",'values':f"='{sheet_name}'!$F$2:$F$13",'line':{'color':'#00B050','width':1.5}})
+    chart.add_series({'name': f"='{sheet_name}'!$H$1",'values':f"='{sheet_name}'!$H$2:$H$13",'line':{'color':'#FF0000','width':1.5,'dash_type': 'long_dash'}})
+
+    chart.set_y_axis({'name': 'Demanda - kW'}) 
+    chart.set_title({'name': 'Demanda Contratada X Demanda Recomendada (FP)'})
+    chart.set_size({'width': 1071.496063, 'height': 348.8503937}) 
+    chart.set_legend({'position': 'bottom'})
+    chart.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
+    worksheet.insert_chart('L3', chart)
+
+    chart2 = workbook.add_chart({'type':'line'})
+    chart2.add_series({'categories':f"='{sheet_name}'!$A$2:$A$13",'name': f"='{sheet_name}'!$C$1",'values':f"='{sheet_name}'!$C$2:$C$13",'line':{'color':'#0070C0','width':1.5},'smooth':True})
+    chart2.add_series({'name': f"='{sheet_name}'!$E$1",'values':f"='{sheet_name}'!$E$2:$E$13",'line':{'color':'#C0504D','width':1.5}})
+    chart2.add_series({'name': f"='{sheet_name}'!$G$1",'values':f"='{sheet_name}'!$G$2:$G$13",'line':{'color':'#00B050','width':1.5}})
+    chart2.add_series({'name': f"='{sheet_name}'!$I$1",'values':f"='{sheet_name}'!$I$2:$I$13",'line':{'color':'#FF0000','width':1.5,'dash_type': 'long_dash'}})
+
+    chart2.set_y_axis({'name': 'Demanda - kW'}) 
+    chart2.set_title({'name': 'Demanda Contratada X Demanda Recomendada (P)'})
+    chart2.set_size({'width': 1071.496063, 'height': 348.8503937}) 
+    chart2.set_legend({'position': 'bottom'})
+    chart2.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
+    worksheet.insert_chart('L23', chart2)

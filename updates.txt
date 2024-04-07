@@ -13,7 +13,5 @@ Erros:
 
 Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
--Implementar uma linha mostrando o fator de potência da unidade ao longo do dia na aba de consumo -> Talvez seja interessante uma série de fp indutivo e uma de fp capacitivo;
 -Desenvolver a análise de fatura para a modalidade tarifária azul;
--Conversar com o professor sobre a possibilidade de fazer o dimensionamento do banco de capacitores para correção do fator de potência com base nos valores medidos;
--Tentar implementar a questão do fim de semana -> usar a planilha do b+p como referência
+-Conversar com o professor sobre a possibilidade de fazer o dimensionamento do banco de capacitores para correção do fator de potência com base nos valores medidos; 

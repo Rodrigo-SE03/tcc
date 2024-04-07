@@ -126,9 +126,24 @@ def tab_recomendado(fatura_dict,writer):
             dem_rec_list.append(dem_rec)
             lim.append(dem_rec*1.05)
         categoria = 'Verde'
-    else:                                                                                   #Fazer o tratamento do azul
+    else:                                                                             
         dem_c_fp = fatura_dict['Demanda']['Demanda Contratada FP Atual']
         dem_c_p = fatura_dict['Demanda']['Demanda Contratada P Atual']
+        dem_rec_fp = fatura_dict['Demanda']['Demanda Contratada FP Indicada']
+        dem_rec_p = fatura_dict['Demanda']['Demanda Contratada P Indicada']
+        dem_rec_fp_list = []
+        dem_rec_p_list = []
+        dem_c_fp_list = []
+        dem_c_p_list = []
+        lim_fp = []
+        lim_p = []
+        for m in fatura_dict['Mês']:
+            dem_c_fp_list.append(dem_c_fp)
+            dem_c_p_list.append(dem_c_p)
+            dem_rec_fp_list.append(dem_rec_fp)
+            dem_rec_p_list.append(dem_rec_p)
+            lim_fp.append(dem_rec_fp*1.05)
+            lim_p.append(dem_rec_p*1.05)
         categoria = 'Azul'
     
     if categoria == 'Verde':
@@ -140,3 +155,16 @@ def tab_recomendado(fatura_dict,writer):
             f"Proposta + Tolerância de 5%": list(reversed(lim)),
         }
         estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,categoria=categoria,writer=writer,dem_c=dem_c,dem_rec=dem_rec)
+    else:
+        dados_dict = {
+            'Mês': list(reversed(fatura_dict['Mês'])),
+            'Utilizada FP': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
+            'Utilizada P': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
+            f'Contratada FP - {dem_c_fp} kW': list(reversed(dem_c_fp_list)),
+            f'Contratada P - {dem_c_p} kW': list(reversed(dem_c_p_list)),
+            f"Proposta FP - {dem_rec_fp} kW": list(reversed(dem_rec_fp_list)),
+            f"Proposta P - {dem_rec_p} kW": list(reversed(dem_rec_p_list)),
+            f"Proposta + Tolerância de 5% (FP)": list(reversed(lim_fp)),
+            f"Proposta + Tolerância de 5% (P)": list(reversed(lim_p)),
+        }
+        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,categoria=categoria,writer=writer,dem_c=[dem_c_fp,dem_c_p],dem_rec=[dem_rec_fp,dem_rec_p])

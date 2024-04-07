@@ -51,7 +51,7 @@ class FormTarifasA(FlaskForm):
 
 class FormFatura(FlaskForm):
     dem_c_fp = IntegerField('Demanda Contratada Fora de Ponta ou Única (kW)', validators= [DataRequired(),NumberRange(min=30,max=15000,message="Valor inválido")])
-    dem_c_p = IntegerField('Demanda Contratada na Ponta (kW) - Manter 0 Para Modalidade Verde ',validators=[NumberRange(min=30,max=15000,message="Valor inválido")],default=0)
+    dem_c_p = IntegerField('Demanda Contratada na Ponta (kW) - Manter 0 Para Modalidade Verde ',validators=[NumberRange(min=0,max=15000,message="Valor inválido")],default=0)
 
     reg = SubmitField('Registrar', validators= [DataRequired()])
 

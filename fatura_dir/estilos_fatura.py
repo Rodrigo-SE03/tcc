@@ -218,3 +218,5 @@ def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
 
         worksheet.set_column(0, last_col+max_col+2, 0.1)
         graficos.graf_demanda_verde(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet,dem_c=dem_c,dem_rec=dem_rec,custo_dict=custo_dict)
+    else:
+        graficos.graf_demanda_azul(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet)

@@ -90,7 +90,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
     t_fp = tarifas['verde'][2]
     t_p = tarifas['azul'][3]
     categoria = 'Verde'
-    if isinstance(dem_c,float):
+    if isinstance(dem_c,list) == False:
         ult_atual = []
         custos_ult_atual = []
         custos_dem_atual = []
