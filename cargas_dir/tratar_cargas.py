@@ -64,7 +64,7 @@ def verificar_save(cargas_dict,tarifas_dict,h_p,dias):
     if len(cargas_dict['Carga']) == 0:
         return 'Insira pelo menos uma carga'
     
-    if not isinstance(h_p,int) or h_p == 0:
+    if not isinstance(h_p,float) or h_p == 0:
         return 'Preencha corretamente os dados de horário de ponta e dias úteis'
     if not isinstance(dias,int) or dias == 0:
         return 'Preencha corretamente os dados de horário de ponta e dias úteis'

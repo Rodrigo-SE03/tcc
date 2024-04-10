@@ -13,5 +13,5 @@ Erros:
 
 Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
--Desenvolver a análise de fatura para a modalidade tarifária azul;
+-Desenvolver a análise de fatura para a m odalidade tarifária azul;
 -Conversar com o professor sobre a possibilidade de fazer o dimensionamento do banco de capacitores para correção do fator de potência com base nos valores medidos; 

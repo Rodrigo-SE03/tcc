@@ -10,7 +10,7 @@ from fatura_dir import planilha_fatura,tratar_fatura
 UPLOAD_FOLDER = 'arquivos'
 
 download_flag = ''
-h_p = 18
+h_p = 18.0
 dias = 22
 nome_arquivo = ''
 tarifas_dict = {
@@ -289,7 +289,7 @@ def reset():
     limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
 
     download_flag = ''
-    h_p = 18
+    h_p = 18.0
     dias = 22
     nome_arquivo = ''
     tarifas_dict = {

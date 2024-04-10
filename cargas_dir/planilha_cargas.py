@@ -40,13 +40,14 @@ def tab_cargas(cargas_dict,writer):
 #--------------------------------------------------------------------------------------------------------
 
 #Função para calcular horas no horário de ponta e fora de ponta
-def calc_intervalo(inicio,fim,h_p,grupo):
-    ponta = [*range(h_p*60,(h_p+3)*60)]
-    inter = [*range((h_p-1)*60,h_p*60),*range((h_p+3)*60,(h_p+4)*60)]
+def calc_intervalo(inicio,fim,h_p,grupo,postos=False):
+    ponta = [*range(int(h_p*60),int((h_p+3)*60))]
+    inter = [*range(int((h_p-1)*60),int(h_p*60)),*range(int((h_p+3)*60),int((h_p+4)*60))]
+
     if grupo == 'Grupo A':
-        fora = [*range(0,h_p*60),*range((h_p+3)*60,24*60)]
+        fora = [*range(0,int(h_p*60)),*range(int((h_p+3)*60),24*60)]
     else:
-        fora = [*range(0,(h_p-1)*60),*range((h_p+4)*60,24*60)]
+        fora = [*range(0,int((h_p-1)*60)),*range(int((h_p+4)*60),24*60)]
 
     hr_i = int(inicio.split(":")[0])*60 + int(inicio.split(":")[1])
     hr_f = int(fim.split(":")[0])*60 + int(fim.split(":")[1])
@@ -68,7 +69,9 @@ def calc_intervalo(inicio,fim,h_p,grupo):
     i = i/60
     fp = fp/60
 
-    if grupo == 'Grupo A':
+    if postos:
+        return[fora,inter,ponta]
+    elif grupo == 'Grupo A':
         return [fp,p]
     else:
         return [fp,i,p]
@@ -142,7 +145,11 @@ def get_hora(tempo):
 
 #Função para criar a tabela de consumo de cada modalidade tarifária
 def select_consumo(itens,categoria,h_p):  
-    h_ponta = int(h_p)
+    h_ponta = h_p
+    grupo = 'Grupo B' if categoria == 'Convencional' or categoria == 'Branca' else 'Grupo A'
+
+    postos = calc_intervalo(inicio="00:00",fim="01:00",grupo=grupo,h_p=h_p,postos=True)
+
     if categoria == 'Convencional':
         consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência - kW':[]}
         for h in range(0,24):
@@ -168,9 +175,9 @@ def select_consumo(itens,categoria,h_p):
                 pot_i = 0
                 while i < len(itens['Carga']):
                     if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):  
-                        if h==(h_ponta-1) or h==(h_ponta+3):
+                        if (h*60+m) in postos[1]:
                             pot_i += itens['Potência'][i]
-                        elif h<(h_ponta-1) or h>=(h_ponta+4):
+                        elif (h*60+m) in postos[0]:
                             pot_fp += itens['Potência'][i]
                         else:
                             pot_p += itens['Potência'][i]
@@ -194,7 +201,7 @@ def select_consumo(itens,categoria,h_p):
                 potr_p = 0
                 while i < len(itens['Carga']):
                     if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):
-                        if h<h_ponta or h>=(h_ponta+3):
+                        if (h*60+m) in postos[0]:
                             pot_fp += itens['Potência'][i]*itens['Quantidade'][i]
                             potr_fp += itens['Potência'][i]*math.sqrt((1/math.pow(itens['FP'][i],2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
                         else:
@@ -248,7 +255,6 @@ def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict):
         i = 0
         d = 0 
         while i<len(consumo_dict['Potência FP - kW']):
-            print(i,d)
             if (i % 15) == 0:
                 demanda_fp.append(d/15)
                 d = 0
@@ -538,7 +544,7 @@ def comparativo_gpb(m_results_C,m_results_B,grupo,writer):
         'Consumo': [custo_final_C,custo_final_B,abs(custo_final_B-custo_final_C)],
         'Total': [custo_final_C,custo_final_B,abs(custo_final_B-custo_final_C)]
     }
-    estilos_cargas.comparativo_style(grupo=grupo,comp_dict=comp_dict,writer=writer)
+    estilos_cargas.comparativo_style(grupo=grupo,comp_dict=comp_dict,writer=writer,pct_dict={})
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da aba de comparativo dos valores calculados para modalidades do grupo A
