@@ -1,3 +1,17 @@
+def graf_reativos(worksheet,workbook,sheet_name,categoria):
+    chart = workbook.add_chart({'type':'column'})
+    if categoria == 'Verde':
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "UFER",'values':f"={sheet_name}!$L$2:$L$13",'fill':{'color':'#31859C'},'overlap':-20})
+        chart.add_series({'name': "DMCR",'values':f"={sheet_name}!$N$2:$N$13",'fill':{'color':'#E46C0A'}})
+    else:
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "UFER",'values':f"={sheet_name}!$O$2:$O$13",'fill':{'color':'#31859C'},'overlap':-20})
+        chart.add_series({'name': "DMCR",'values':f"={sheet_name}!$Q$2:$Q$13",'fill':{'color':'#E46C0A'}})
+    chart.set_size({'width': 1071.496063, 'height': 348.8503937})
+    chart.set_y_axis({'num_format': "R$ #,##0.00"})
+    chart.set_title({'name':'Custos com Reativos'})
+    chart.set_legend({'position': 'right'})
+    worksheet.insert_chart('E16', chart)
+    pass
 
 def graf_compara_custos(worksheet,workbook,sheet_name):
     chart = workbook.add_chart({'type':'line'})

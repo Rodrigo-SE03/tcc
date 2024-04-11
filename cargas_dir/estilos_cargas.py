@@ -241,6 +241,7 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
         chart.add_series({'name': "Diferença",'values':f"=Comparativo!$E$7:$G$7",'fill':{'color':'#ED5D5D'}})
         chart.set_size({'width': 860, 'height': 450})
 
+    chart.set_y_axis({'num_format': "R$ #,##0.00"})
     chart.set_title({'name':'Comparação de Custos'})
     chart.set_legend({'position': 'right'})
     worksheet.insert_chart('C11', chart)

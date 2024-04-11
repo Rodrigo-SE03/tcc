@@ -1,5 +1,6 @@
 import pandas as pd
 from fatura_dir import graficos
+import math
 
 #Definição do estilo visual da tabela de consumo por carga
 def comparar_geral_style(worksheet,workbook,verde_dict,azul_dict,fatura_dict,categoria,total):
@@ -188,10 +189,12 @@ def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
             'Custos Anuais': fatura_dict['Demanda']['Lista de custos anuais por demanda contratada']
         }
 
+        print(custo_dict['Demandas Contratadas'])
 
-        dem_min = min([dem_c,dem_rec])-100
+
+        dem_min = math.ceil((min([dem_c,dem_rec])-100)/5)*5
         if dem_min < 0: dem_min = 0
-        dem_max = max([dem_rec,dem_c])+100
+        dem_max = math.ceil((max([dem_rec,dem_c])+100)/5)*5
 
         idx_min = custo_dict['Demandas Contratadas'].index(dem_min)
         idx_max = custo_dict['Demandas Contratadas'].index(dem_max)
@@ -208,12 +211,12 @@ def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
         last_col = max_col
         custo_df.to_excel(writer,sheet_name='Recomendação',startrow=1,startcol=max_col+1,header=False,index=False)
         (max_row, max_col) = custo_df.shape
-        column_settings = [{"header": column} for column in custo_df.columns]
+        column_settings = [{"header": column} for column in custo_df.columns]                                               #POSSO CORRIGIR ISSO
         worksheet.write(0,last_col+max_col,'Custo')
         worksheet.write(0,last_col+max_col+1,'Demanda Contratada Atual')
         worksheet.write(0,last_col+max_col+2,'Demanda Contratada Recomendada')
         worksheet.write(custo_dict['Demandas Contratadas'].index(dem_rec)+1,last_col+max_col+2,custo_dict['Custos Anuais'][custo_dict['Demandas Contratadas'].index(dem_rec)])
-        worksheet.write(custo_dict['Demandas Contratadas'].index(dem_c)+1,last_col+max_col+1,custo_dict['Custos Anuais'][custo_dict['Demandas Contratadas'].index(dem_c)])
+        worksheet.write(custo_dict['Demandas Contratadas'].index(math.ceil(dem_c/5)*5)+1,last_col+max_col+1,custo_dict['Custos Anuais'][custo_dict['Demandas Contratadas'].index(math.ceil(dem_c/5)*5)])
         worksheet.add_table(0, last_col+1, max_row, last_col+max_col+2, {"columns": column_settings})
 
         worksheet.set_column(0, last_col+max_col+2, 0.1)
