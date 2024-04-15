@@ -100,7 +100,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             demandas.append(dem_fp[i] if dem_fp[i] > dem_p[i] else dem_p[i])
             ult_atual.append((demandas[i] - dem_c) if demandas[i]>dem_c*1.05 else 0)
             custos_ult_atual.append(ult_atual[i]*2*t_fp)
-            custos_dem_atual.append(demandas[i]*t_fp)
+            custos_dem_atual.append(dem_c*t_fp)
             i+=1
         
     else:
@@ -115,7 +115,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         for dem in dem_fp:
             ult_atual_fp.append((dem-dem_c_fp) if dem>dem_c_fp*1.05 else 0)
             custos_ult_fp_atual.append(ult_atual_fp[i]*2*t_fp)
-            custos_dem_fp_atual.append(dem*t_fp)
+            custos_dem_fp_atual.append(dem_c_fp*t_fp)
             i+=1
         
         ult_atual_p = []
@@ -125,7 +125,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         for dem in dem_p:
             ult_atual_p.append((dem-dem_c_p) if dem>dem_c_p*1.05 else 0)
             custos_ult_p_atual.append(ult_atual_p[i]*2*t_p)
-            custos_dem_p_atual.append(dem*t_p)
+            custos_dem_p_atual.append(dem_c_p*t_p)
             i+=1
     
 

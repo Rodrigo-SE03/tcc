@@ -11,6 +11,7 @@ Erros:
 -Corrigir o erro do arquivo em uso -> conferir se funcionou
 -Corrigir o erro de mandar um arquivo fora da formatação adequada
 -Corrigir o erro de mandar azul no lugar de verde e vice versa na hora de carregar o arquivo
+-Corrigir o cálculo do custo de demanda atual na análise por fatura
 
 Melhorias:
 -Melhorar o aspecto visual, especialmente da análise de fatura;
