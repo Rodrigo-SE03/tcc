@@ -289,7 +289,6 @@ def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict):
         elif categoria == 'Verde':
             custo[0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['verde'][0]
             custo[1] += equip_dict['C - Ponta'][i]*tarifas_dict['verde'][1]
-            
         else:
             custo[0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['azul'][0]
             custo[1] += equip_dict['C - Ponta'][i]*tarifas_dict['azul'][1]
