@@ -52,6 +52,7 @@ def allowed_file(filename,extension):
            filename.rsplit('.', 1)[1].lower() in extension
 
 
+#Página da Análise por Cargas
 @app.route("/cargas",methods = ['GET','POST'])
 def cargas():
     global cargas_dict
@@ -126,8 +127,10 @@ def cargas():
     #--------------------------------------------------------------------------------------------------------
 
     return render_template('cargas.html',form_add_carga = form_add_carga,cargas_dict=cargas_dict,length=length,form_salvar_cargas=form_salvar_cargas,form_info=form_info)
+#--------------------------------------------------------------------------------------------------------
 
 
+#Página de Tarifas Praticadas
 @app.route("/tarifas",methods = ['GET','POST'])
 def tarifas():
     global grupo
@@ -197,8 +200,10 @@ def tarifas():
     #--------------------------------------------------------------------------------------------------------
 
     return render_template('tarifas.html',form_selecionar_grupo = form_selecionar_grupo,grupo = grupo,form_tarifas_b=form_tarifas_b,form_tarifas_a=form_tarifas_a)
+#--------------------------------------------------------------------------------------------------------
 
 
+#Página de Análise por Fatura
 @app.route("/faturas",methods = ['GET','POST'])
 def faturas():
     global grupo
@@ -256,7 +261,9 @@ def faturas():
         return app.redirect(url_for('faturas'))
     #--------------------------------------------------------------------------------------------------------
     return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,grupo=grupo)
+#--------------------------------------------------------------------------------------------------------
 
+#Função para download dos resultados
 @app.route('/download')
 def download():
     global nome_arquivo
@@ -269,12 +276,16 @@ def download():
         planilha_fatura.criar_planilha(fatura_dict=fatura_dict,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER))
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=nome)
+#--------------------------------------------------------------------------------------------------------
 
+#Página inicial
 @app.route("/")
 def home():
     global dem_c
     return render_template('home.html')
+#--------------------------------------------------------------------------------------------------------
 
+#Função para resetar os valores
 @app.route("/reset")
 def reset():
     global download_flag
@@ -315,6 +326,8 @@ def reset():
     dem_c = 0
     flash('Valores resetados',category='alert-success')
     return app.redirect(url_for('home'))
+#--------------------------------------------------------------------------------------------------------
+
 
 if __name__ == '__main__':
     app.run(debug=True)

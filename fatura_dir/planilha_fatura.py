@@ -21,51 +21,48 @@ def tab_geral(fatura_dict,writer,categoria):
     if categoria == 'Verde':
         dados_dict = {
             'Mês': list(reversed(fatura_dict['Mês'])),
-            'Demanda Registrada HP': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
-            'Demanda Registrada HFP': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
-            'Custo Demanda': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda Verde (atual)'])),
+            'Demanda Registrada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
+            'Demanda Registrada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
+            'Custo da Demanda': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda Verde (atual)'])),
             'Ultrapassagem Registrada': list(reversed(fatura_dict['Demanda']['Demanda Verde Ultrapassada (atual)'])),
-            'Custo Ultrapassagem': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda Verde (atual)'])),
-            'Consumo HP': list(reversed(fatura_dict['Consumo']['Consumo P'])),
-            'Custo Consumo HP': list(reversed(fatura_dict['Consumo']['Custo Consumo - P Verde'])),
-            'Consumo HFP': list(reversed(fatura_dict['Consumo']['Consumo FP'])),
-            'Custo Consumo HFP': list(reversed(fatura_dict['Consumo']['Custo Consumo - FP Verde'])),
-            'Energia Reativa': list(reversed(fatura_dict['Reativo']['Consumo Reativo Medido'])),
-            'Custo Energia Reativa': list(reversed(fatura_dict['Reativo']['Custo do Consumo Reativo'])),
-            'Demanda Reativa': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
-            'Custo Demanda Reativa': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
+            'Custo da Ultrapassagem': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda Verde (atual)'])),
+            'Consumo na Ponta': list(reversed(fatura_dict['Consumo']['Consumo P'])),
+            'Custo do Consumo na Ponta': list(reversed(fatura_dict['Consumo']['Custo Consumo - P Verde'])),
+            'Consumo Fora Ponta': list(reversed(fatura_dict['Consumo']['Consumo FP'])),
+            'Custo do Consumo Fora Ponta': list(reversed(fatura_dict['Consumo']['Custo Consumo - FP Verde'])),
+            'UFER': list(reversed(fatura_dict['Reativo']['Consumo Reativo Medido'])),
+            'Custo da UFER': list(reversed(fatura_dict['Reativo']['Custo do Consumo Reativo'])),
+            'DMCR': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
+            'Custo da DMCR': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
         }
     else:
         dados_dict = {
             'Mês': list(reversed(fatura_dict['Mês'])),
-            'Demanda Registrada HP': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
-            'Custo Demanda HP': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda P (atual)'])),
-            'Demanda Registrada HFP': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
-            'Custo Demanda HFP': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda FP (atual)'])),
-            'Ultrapassagem Registrada HP': list(reversed(fatura_dict['Demanda']['Demanda P Ultrapassada (atual)'])),
-            'Custo Ultrapassagem HP': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P (atual)'])),
-            'Ultrapassagem Registrada HFP': list(reversed(fatura_dict['Demanda']['Demanda FP Ultrapassada (atual)'])),
-            'Custo Ultrapassagem HFP': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda FP (atual)'])),
-            'Consumo HP': list(reversed(fatura_dict['Consumo']['Consumo P'])),
-            'Custo Consumo HP': list(reversed(fatura_dict['Consumo']['Custo Consumo - P Azul'])),
-            'Consumo HFP': list(reversed(fatura_dict['Consumo']['Consumo FP'])),
-            'Custo Consumo HFP': list(reversed(fatura_dict['Consumo']['Custo Consumo - FP Azul'])),
-            'Energia Reativa': list(reversed(fatura_dict['Reativo']['Consumo Reativo Medido'])),
-            'Custo Energia Reativa': list(reversed(fatura_dict['Reativo']['Custo do Consumo Reativo'])),
-            'Demanda Reativa': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
-            'Custo Demanda Reativa': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
+            'Demanda Registrada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
+            'Custo da Demanda na Ponta': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda P (atual)'])),
+            'Demanda Registrada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
+            'Custo da Demanda Fora Ponta': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda FP (atual)'])),
+            'Ultrapassagem Registrada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Ultrapassada (atual)'])),
+            'Custo da Ultrapassagem na Ponta': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P (atual)'])),
+            'Ultrapassagem Registrada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Ultrapassada (atual)'])),
+            'Custo da Ultrapassagem Fora Ponta': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda FP (atual)'])),
+            'Consumo na Ponta': list(reversed(fatura_dict['Consumo']['Consumo P'])),
+            'Custo do Consumo na Ponta': list(reversed(fatura_dict['Consumo']['Custo Consumo - P Azul'])),
+            'Consumo Fora Ponta': list(reversed(fatura_dict['Consumo']['Consumo FP'])),
+            'Custo do Consumo Fora Ponta': list(reversed(fatura_dict['Consumo']['Custo Consumo - FP Azul'])),
+            'UFER': list(reversed(fatura_dict['Reativo']['Consumo Reativo Medido'])),
+            'Custo da UFER': list(reversed(fatura_dict['Reativo']['Custo do Consumo Reativo'])),
+            'DMCR': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
+            'Custo da DMCR': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
         }
-    df_dados = pd.DataFrame(dados_dict)
-    df_dados.to_excel(writer, sheet_name="Geral", startrow=1, header=False, index=False)
 
     workbook = writer.book
-    worksheet = writer.sheets["Geral"]
-    (max_row, max_col) = df_dados.shape
-    column_settings = [{"header": column} for column in df_dados.columns]
-    worksheet.add_table(0, 0, max_row, max_col - 1, {"columns": column_settings})
-    worksheet.set_column(0, max_col - 1, 12)
-    worksheet.autofit()
+    worksheet = workbook.add_worksheet('Geral')
+
+    estilos_fatura.geral(workbook=workbook,worksheet=worksheet,categoria=categoria,dados_dict=dados_dict)
     graficos.graf_reativos(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
+    graficos.graf_consumo(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
+    graficos.graf_ultrapassagem(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da aba com a comparação entre as modalidades azul e verde para a unidade consumidora, considerando as demandas contratadas ideais calculadas
@@ -95,10 +92,10 @@ def tab_analise(fatura_dict,writer,categoria):
         'Mês': list(reversed(fatura_dict['Mês'])),
         'Demanda HP': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
         'Demanda HP - Faturado': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda P'])),
-        'Ultrapassagem HP': list(reversed(fatura_dict['Demanda']['Demanda P Ultrapassada'])),
-        'Ultrapassagem HP - Faturado': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P'])),
         'Demanda HFP': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
         'Demanda HFP - Faturado': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda FP'])),
+        'Ultrapassagem HP': list(reversed(fatura_dict['Demanda']['Demanda P Ultrapassada'])),
+        'Ultrapassagem HP - Faturado': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P'])),
         'Ultrapassagem HFP': list(reversed(fatura_dict['Demanda']['Demanda FP Ultrapassada'])),
         'Ultrapassagem HFP - Faturado': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda FP'])),
         'Consumo HP': list(reversed(fatura_dict['Consumo']['Consumo P'])),

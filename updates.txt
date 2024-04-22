@@ -10,8 +10,8 @@ Erros:
 -Corrigir o erro do arquivo em uso -> conferir se funcionou;
 -Corrigir o erro de mandar um arquivo fora da formatação adequada;
 -Corrigir o erro de mandar azul no lugar de verde e vice versa na hora de carregar o arquivo;
+-Corrigir a planilha de recomendação para o caso de ser verde e recomendar azul e vice versa;
 
 Melhorias:
--Melhorar o aspecto visual, especialmente da análise de fatura;
--Desenvolver a análise de fatura para a m odalidade tarifária azul;
 -Depois vê se dá pra mudar na planilha de "Cargas" pra mostrar no título da coluna "Potência (kW)";
+-Colocar uma linha com o total na analise por fatura;

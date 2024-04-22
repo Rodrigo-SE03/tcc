@@ -100,7 +100,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             demandas.append(dem_fp[i] if dem_fp[i] > dem_p[i] else dem_p[i])
             ult_atual.append((demandas[i] - dem_c) if demandas[i]>dem_c*1.05 else 0)
             custos_ult_atual.append(ult_atual[i]*2*t_fp)
-            custos_dem_atual.append(dem_c*t_fp)
+            custos_dem_atual.append(t_fp*(dem_c if dem_c>dem_fp[i] else dem_fp[i]))
             i+=1
         
     else:
@@ -115,7 +115,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         for dem in dem_fp:
             ult_atual_fp.append((dem-dem_c_fp) if dem>dem_c_fp*1.05 else 0)
             custos_ult_fp_atual.append(ult_atual_fp[i]*2*t_fp)
-            custos_dem_fp_atual.append(dem_c_fp*t_fp)
+            custos_dem_fp_atual.append(t_fp*(dem_c_fp if dem_c_fp>dem_fp[i] else dem_fp[i]))
             i+=1
         
         ult_atual_p = []
@@ -125,15 +125,15 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         for dem in dem_p:
             ult_atual_p.append((dem-dem_c_p) if dem>dem_c_p*1.05 else 0)
             custos_ult_p_atual.append(ult_atual_p[i]*2*t_p)
-            custos_dem_p_atual.append(dem_c_p*t_p)
+            custos_dem_p_atual.append(t_p*(dem_c_p if dem_c_p>dem_p[i] else dem_p[i]))
             i+=1
     
 
-    min_dem_fp = 0
+    min_dem_fp = 30
     max_dem_fp = int(max(dem_fp)/5)*5+500
 
-    min_dem_p = int(min(dem_p)/5)*5
-    max_dem_p = int(max(dem_p)/5)*5+300
+    min_dem_p = 30
+    max_dem_p = int(max(dem_p)/5)*5+500
 
     demandas = dem_fp
 
@@ -333,7 +333,7 @@ def calc_consumos(con_fp,con_p,hr_con,tarifas,mes):
     t_p_v = tarifas['verde'][1]
     t_fp_a = tarifas['azul'][0]
     t_p_a = tarifas['azul'][1]
-    print(hr_con)
+    # print(hr_con)
     consumo_fp = []
     custo_fp_v = []
     custo_p_v = []
@@ -361,7 +361,7 @@ def calc_consumos(con_fp,con_p,hr_con,tarifas,mes):
     return consumos_dict
 #--------------------------------------------------------------------------------------------------------
 
-
+#Função para cálculo dos custos com energia reativa
 def calc_reativos(dem_r,con_r,hr_r,tarifas,mes):
     t_r = tarifas['te']
     t_d = tarifas['verde'][2]
@@ -384,7 +384,7 @@ def calc_reativos(dem_r,con_r,hr_r,tarifas,mes):
 
     # print(reativos_dict)
     return reativos_dict
-
+#--------------------------------------------------------------------------------------------------------
 
 #Função para verificar se os dados foram inseridos corretamente
 def verificar_save(fatura_dict):
