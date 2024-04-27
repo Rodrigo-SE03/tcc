@@ -7,11 +7,8 @@ Formulários:
 
 Erros:
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil;
--Corrigir o erro de mandar um arquivo fora da formatação adequada;
--Corrigir o erro de mandar azul no lugar de verde e vice versa na hora de carregar o arquivo;
 -Corrigir o nome das colunas da planilha de recomendação;
 
 Melhorias:
--Depois vê se dá pra mudar na planilha de "Cargas" pra mostrar no título da coluna "Potência (kW)";
--Colocar um gráfico com os níveis de reativo por hora na aba de reativos da análise por carga;
 -Muda a cara da análise por fatura pra não ficar igual à planilha de referência;
+-Colocar um gráfico com os níveis de energia reativa por hora necessárias para corrigir o fator de potência;

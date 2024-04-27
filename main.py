@@ -23,7 +23,7 @@ tarifas_dict = {
 grupo = '-selecionar-'
 cargas_dict = {
         'Carga':[],
-        'Potência':[],
+        'Potência (kW)':[],
         'FP':[],
         'FP - Tipo':[],
         'Quantidade':[],
@@ -92,7 +92,20 @@ def cargas():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             cargas_dict = tratar_cargas.carregar_cargas(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER))
-            flash('Arquivo carregado',category='alert-success')
+            if cargas_dict == 'Arquivo inválido':
+                flash(cargas_dict,category='alert-danger')
+                cargas_dict = {
+                    'Carga':[],
+                    'Potência (kW)':[],
+                    'FP':[],
+                    'FP - Tipo':[],
+                    'Quantidade':[],
+                    'Início':[],
+                    'Fim':[],
+                    'Remover': []
+                }
+            else:
+                flash('Arquivo carregado',category='alert-success')
             return app.redirect(url_for('cargas'))
         else:
             flash('Formato de arquivo inválio. Deve ser um arquivo .xlsx',category='alert-danger')
@@ -192,7 +205,18 @@ def tarifas():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             tarifas_dict = tratar_tarifas.carregar_tarifas(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),grupo=grupo)
-            flash('Tarifas carregadas',category='alert-success')
+            if tarifas_dict == 'Arquivo inválido':
+                flash(tarifas_dict,category='alert-danger')
+                tarifas_dict = {
+                    'convencional': 0.0,
+                    'branca': [0.0,0.0,0.0],
+                    'verde':[0.0,0.0,0.0],
+                    'azul':[0.0,0.0,0.0,0.0],
+                    'te': 0.0
+                }
+                grupo = '-selecionar-'
+            else:
+                flash('Tarifas carregadas',category='alert-success')
 
             return app.redirect(url_for('tarifas'))
         else:
@@ -241,7 +265,11 @@ def faturas():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
             fatura_dict = tratar_fatura.ler_fatura(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),tarifas=tarifas_dict,dem_c=dem_c)
-            flash('Fatura carregada',category='alert-success')
+            if fatura_dict == 'Arquivo inválido':
+                flash(fatura_dict,category='alert-danger')
+                fatura_dict = {}
+            else:
+                flash('Fatura carregada',category='alert-success')
             return app.redirect(url_for('faturas'))
         else:
             flash('Formato de arquivo inválio. Deve ser um arquivo .pdf',category='alert-danger')
@@ -313,7 +341,7 @@ def reset():
     grupo = '-selecionar-'
     cargas_dict = {
             'Carga':[],
-            'Potência':[],
+            'Potência (kW)':[],
             'FP':[],
             'FP - Tipo':[],
             'Quantidade':[],

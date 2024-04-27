@@ -15,6 +15,13 @@ def registrar_tarifas(tarifas,form,grupo):
 
 def carregar_tarifas(file,folder,grupo): 
     df = pd.read_excel(f'{folder}/{file}')
+    try:
+        if df.iloc[2,4] == 'Validar':
+            pass
+        else:
+            return 'Arquivo inválido'
+    except:
+        return 'Arquivo inválido'
     if grupo == 'Grupo B':
         tarifas = {'convencional':df.iloc[2,3],
                    'branca': [df.iloc[6,3],df.iloc[7,3],df.iloc[8,3]]}

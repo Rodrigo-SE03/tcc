@@ -103,7 +103,7 @@ def tab_consumo_por_carga(cargas,writer,grupo,h_p):
     i=0
     for carga in cargas['Carga']:
         equip_dict['Carga'].append(carga)
-        equip_dict['Potência (kW)'].append(cargas['Potência'][i])
+        equip_dict['Potência (kW)'].append(cargas['Potência (kW)'][i])
         if grupo == 'Grupo A':
             equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[1])
             equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[0])
@@ -158,7 +158,7 @@ def select_consumo(itens,categoria,h_p):
                 pot=0
                 while i < len(itens['Carga']):
                     if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):
-                        pot += itens['Potência'][i]
+                        pot += itens['Potência (kW)'][i]
                     i+=1
                 consumo_dict['Potência - kW'].append(pot)
                 consumo_dict['Horas'].append(h)
@@ -176,11 +176,11 @@ def select_consumo(itens,categoria,h_p):
                 while i < len(itens['Carga']):
                     if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):  
                         if (h*60+m) in postos[1]:
-                            pot_i += itens['Potência'][i]
+                            pot_i += itens['Potência (kW)'][i]
                         elif (h*60+m) in postos[0]:
-                            pot_fp += itens['Potência'][i]
+                            pot_fp += itens['Potência (kW)'][i]
                         else:
-                            pot_p += itens['Potência'][i]
+                            pot_p += itens['Potência (kW)'][i]
                     i+=1
                 consumo_dict['Potência FP - kW'].append(pot_fp)
                 consumo_dict['Potência P - kW'].append(pot_p)
@@ -202,11 +202,11 @@ def select_consumo(itens,categoria,h_p):
                 while i < len(itens['Carga']):
                     if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):
                         if (h*60+m) in postos[0]:
-                            pot_fp += itens['Potência'][i]*itens['Quantidade'][i]
-                            potr_fp += itens['Potência'][i]*math.sqrt((1/math.pow(itens['FP'][i],2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
+                            pot_fp += itens['Potência (kW)'][i]*itens['Quantidade'][i]
+                            potr_fp += itens['Potência (kW)'][i]*math.sqrt((1/math.pow(itens['FP'][i],2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
                         else:
-                            pot_p += itens['Potência'][i]*itens['Quantidade'][i]
-                            potr_p += itens['Potência'][i]*math.sqrt((1/math.pow((itens['FP'][i]),2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
+                            pot_p += itens['Potência (kW)'][i]*itens['Quantidade'][i]
+                            potr_p += itens['Potência (kW)'][i]*math.sqrt((1/math.pow((itens['FP'][i]),2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
                     i+=1
                 consumo_dict['Potência FP - kW'].append(pot_fp)
                 consumo_dict['Potência P - kW'].append(pot_p)

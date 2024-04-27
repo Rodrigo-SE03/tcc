@@ -7,7 +7,7 @@ def nova_carga(cargas,form):
         id = cargas['Carga'].index(form.nome_equip.data)
 
         cargas['Carga'][id]=form.nome_equip.data
-        cargas['Potência'][id]=form.potencia.data
+        cargas['Potência (kW)'][id]=form.potencia.data
         cargas['FP'][id]=form.fp.data
         cargas['FP - Tipo'][id]=form.fp_tipo.data
         cargas['Quantidade'][id]=form.qtd.data
@@ -16,7 +16,7 @@ def nova_carga(cargas,form):
         cargas['Remover'][id]='Remover'
     else:
         cargas['Carga'].append(form.nome_equip.data)
-        cargas['Potência'].append(form.potencia.data)
+        cargas['Potência (kW)'].append(form.potencia.data)
         cargas['FP'].append(form.fp.data)
         cargas['FP - Tipo'].append(form.fp_tipo.data)
         cargas['Quantidade'].append(form.qtd.data)
@@ -39,7 +39,7 @@ def remover_carga(cargas,i):
 def carregar_cargas(file,folder): 
     cargas = {
         'Carga':[],
-        'Potência':[],
+        'Potência (kW)':[],
         'FP':[],
         'FP - Tipo':[],
         'Quantidade':[],
@@ -49,9 +49,18 @@ def carregar_cargas(file,folder):
     }
     df = pd.read_excel(f'{folder}/{file}')
     os.remove(f'{folder}/{file}')
+    print(df)
+    try:
+        if df.iloc[0,7] == 'Validar':
+            pass
+        else:
+            return 'Arquivo inválido'
+    except:
+        return 'Arquivo inválido'
     for col in df.columns:
         for item in df[col]:
-            cargas[col].append(item)
+            if col in cargas.keys():
+                cargas[col].append(item)
     i=0
     while i < len(cargas['Carga']):
         cargas['Remover'].append('Remover')
