@@ -321,7 +321,9 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             'Custos com Demanda - Demanda P': custos_dem_p,
             'Custos com Demanda - Demanda P (atual)': custos_dem_p_atual,
             'Custos com Ultrapassagem - Demanda P': custos_ult_p,
-            'Custos com Ultrapassagem - Demanda P (atual)': custos_ult_p_atual
+            'Custos com Ultrapassagem - Demanda P (atual)': custos_ult_p_atual,
+            'Lista de demandas contratadas': dem_c_v_list,
+            'Lista de custos anuais por demanda contratada': custo_v
         }
     # print(demandas_dict)
     return demandas_dict

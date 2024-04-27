@@ -9,9 +9,11 @@ def criar_planilha(fatura_dict,nome,folder):
     categoria = 'Verde' if 'Demanda Verde Ultrapassada (atual)' in fatura_dict['Demanda'].keys() else 'Azul'
     fatura_dict = copy.deepcopy(fatura_dict)
     writer = pd.ExcelWriter(f'{folder}/{nome}',engine="xlsxwriter")
-    tab_geral(fatura_dict=fatura_dict,writer=writer,categoria=categoria)
-    tab_analise(fatura_dict=fatura_dict,writer=writer,categoria=categoria)
-    tab_recomendado(fatura_dict=fatura_dict,writer=writer)
+    total_modalidade = tab_geral(fatura_dict=fatura_dict,writer=writer,categoria=categoria)
+    results = tab_analise(fatura_dict=fatura_dict,writer=writer,categoria=categoria,total_modalidade=total_modalidade)
+    ideal = results[0]
+    economia = results[1]
+    tab_recomendado(fatura_dict=fatura_dict,writer=writer,ideal=ideal,economia=economia)
     writer.close()
 #--------------------------------------------------------------------------------------------------------
     
@@ -35,6 +37,11 @@ def tab_geral(fatura_dict,writer,categoria):
             'DMCR': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
             'Custo da DMCR': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
         }
+        total_row = ['Total',sum(dados_dict['Demanda Registrada na Ponta']),sum(dados_dict['Demanda Registrada Fora Ponta']),sum(dados_dict['Custo da Demanda']),
+                     sum(dados_dict['Ultrapassagem Registrada']),sum(dados_dict['Custo da Ultrapassagem']),sum(dados_dict['Consumo na Ponta']),sum(dados_dict['Custo do Consumo na Ponta']),
+                     sum(dados_dict['Consumo Fora Ponta']),sum(dados_dict['Custo do Consumo Fora Ponta']),sum(dados_dict['UFER']),sum(dados_dict['Custo da UFER']),
+                     sum(dados_dict['DMCR']),sum(dados_dict['Custo da DMCR'])]
+        total_modalidade = total_row[3]+total_row[5]+total_row[7]+total_row[9]
     else:
         dados_dict = {
             'Mês': list(reversed(fatura_dict['Mês'])),
@@ -55,18 +62,24 @@ def tab_geral(fatura_dict,writer,categoria):
             'DMCR': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
             'Custo da DMCR': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
         }
+        total_row = ['Total',sum(dados_dict['Demanda Registrada na Ponta']),sum(dados_dict['Custo da Demanda na Ponta']),sum(dados_dict['Demanda Registrada Fora Ponta']),sum(dados_dict['Custo da Demanda Fora Ponta']),
+                     sum(dados_dict['Ultrapassagem Registrada na Ponta']),sum(dados_dict['Custo da Ultrapassagem na Ponta']),sum(dados_dict['Ultrapassagem Registrada Fora Ponta']),sum(dados_dict['Custo da Ultrapassagem Fora Ponta']),
+                     sum(dados_dict['Consumo na Ponta']),sum(dados_dict['Custo do Consumo na Ponta']),sum(dados_dict['Consumo Fora Ponta']),sum(dados_dict['Custo do Consumo Fora Ponta']),
+                     sum(dados_dict['UFER']),sum(dados_dict['Custo da UFER']),sum(dados_dict['DMCR']),sum(dados_dict['Custo da DMCR'])]
+        total_modalidade = total_row[2]+total_row[4]+total_row[6]+total_row[8]+total_row[10]+total_row[12]
 
     workbook = writer.book
     worksheet = workbook.add_worksheet('Geral')
 
-    estilos_fatura.geral(workbook=workbook,worksheet=worksheet,categoria=categoria,dados_dict=dados_dict)
+    estilos_fatura.geral(workbook=workbook,worksheet=worksheet,categoria=categoria,dados_dict=dados_dict,total_row=total_row)
     graficos.graf_reativos(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
     graficos.graf_consumo(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
     graficos.graf_ultrapassagem(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
+    return total_modalidade
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da aba com a comparação entre as modalidades azul e verde para a unidade consumidora, considerando as demandas contratadas ideais calculadas
-def tab_analise(fatura_dict,writer,categoria):
+def tab_analise(fatura_dict,writer,categoria,total_modalidade):
     total_v = []
     total_a = []
     i=0
@@ -108,13 +121,26 @@ def tab_analise(fatura_dict,writer,categoria):
     workbook = writer.book
     worksheet = workbook.add_worksheet('Comparativo')
     estilos_fatura.comparar_geral_style(workbook=workbook,worksheet=worksheet,verde_dict=verde_dict,azul_dict=azul_dict,fatura_dict=fatura_dict,categoria=categoria,total=total)
+    ideal = 'Verde' if total[0]<total[1] else 'Azul'
+    economia = total_modalidade - (total[0] if ideal == 'Verde' else total[1])
+    results = [ideal,economia]
+    return results
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da aba com informações da estimativa de gastos e economia da unidade de acordo com a modalidade e demanda contratada indicada
-def tab_recomendado(fatura_dict,writer):
+def tab_recomendado(fatura_dict,writer,ideal,economia):
     categoria = 0
+    print(ideal)
     if 'Demanda Verde Ultrapassada (atual)' in fatura_dict['Demanda'].keys():
-        dem_c = fatura_dict['Demanda']['Demanda Contratada Atual']
+        categoria = 'Verde'
+    else:                                                                             
+        categoria = 'Azul'
+    
+    if ideal == 'Verde':
+        if categoria == 'Azul':
+            dem_c = fatura_dict['Demanda']['Demanda Contratada FP Atual']
+        else:
+            dem_c = fatura_dict['Demanda']['Demanda Contratada Atual']
         dem_rec = fatura_dict['Demanda']['Demanda Contratada FP Indicada']
         dem_rec_list = []
         dem_c_list = []
@@ -123,10 +149,23 @@ def tab_recomendado(fatura_dict,writer):
             dem_c_list.append(dem_c)
             dem_rec_list.append(dem_rec)
             lim.append(dem_rec*1.05)
-        categoria = 'Verde'
-    else:                                                                             
-        dem_c_fp = fatura_dict['Demanda']['Demanda Contratada FP Atual']
-        dem_c_p = fatura_dict['Demanda']['Demanda Contratada P Atual']
+
+        dados_dict = {
+            'Mês': list(reversed(fatura_dict['Mês'])),
+            'Utilizada': list(reversed(fatura_dict['Demanda']['Demanda Verde Medida'])),
+            f'Contratada - {dem_c} kW': list(reversed(dem_c_list)),
+            f"Proposta - {dem_rec} kW": list(reversed(dem_rec_list)),
+            f"Proposta + Tolerância de 5%": list(reversed(lim)),
+        }
+        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,ideal=ideal,writer=writer,dem_c=dem_c,dem_rec=dem_rec,economia=economia)
+
+    else:
+        if categoria == 'Verde':
+            dem_c_fp = fatura_dict['Demanda']['Demanda Contratada Atual']
+            dem_c_p = fatura_dict['Demanda']['Demanda Contratada Atual']
+        else:
+            dem_c_fp = fatura_dict['Demanda']['Demanda Contratada FP Atual']
+            dem_c_p = fatura_dict['Demanda']['Demanda Contratada P Atual']
         dem_rec_fp = fatura_dict['Demanda']['Demanda Contratada FP Indicada']
         dem_rec_p = fatura_dict['Demanda']['Demanda Contratada P Indicada']
         dem_rec_fp_list = []
@@ -142,18 +181,7 @@ def tab_recomendado(fatura_dict,writer):
             dem_rec_p_list.append(dem_rec_p)
             lim_fp.append(dem_rec_fp*1.05)
             lim_p.append(dem_rec_p*1.05)
-        categoria = 'Azul'
-    
-    if categoria == 'Verde':
-        dados_dict = {
-            'Mês': list(reversed(fatura_dict['Mês'])),
-            'Utilizada': list(reversed(fatura_dict['Demanda']['Demanda Verde Medida'])),
-            f'Contratada - {dem_c} kW': list(reversed(dem_c_list)),
-            f"Proposta - {dem_rec} kW": list(reversed(dem_rec_list)),
-            f"Proposta + Tolerância de 5%": list(reversed(lim)),
-        }
-        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,categoria=categoria,writer=writer,dem_c=dem_c,dem_rec=dem_rec)
-    else:
+
         dados_dict = {
             'Mês': list(reversed(fatura_dict['Mês'])),
             'Utilizada FP': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
@@ -165,4 +193,4 @@ def tab_recomendado(fatura_dict,writer):
             f"Proposta + Tolerância de 5% (FP)": list(reversed(lim_fp)),
             f"Proposta + Tolerância de 5% (P)": list(reversed(lim_p)),
         }
-        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,categoria=categoria,writer=writer,dem_c=[dem_c_fp,dem_c_p],dem_rec=[dem_rec_fp,dem_rec_p])
+        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,ideal=ideal,writer=writer,dem_c=[dem_c_fp,dem_c_p],dem_rec=[dem_rec_fp,dem_rec_p],economia=economia)

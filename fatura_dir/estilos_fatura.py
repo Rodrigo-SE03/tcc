@@ -12,7 +12,46 @@ merge_style = {
     "border_color": "black",
     "text_wrap":True
 }
-
+total_pot_style = {
+    "bold": 1,
+    "border": 1,
+    "align": "right",
+    "valign": "vcenter",
+    "fg_color": "#A6A6A6",
+    "font_color": "black",
+    "border_color": "black",
+    'num_format':'#,##0.00 "kW"'
+}
+total_energia_style = {
+    "bold": 1,
+    "border": 1,
+    "align": "right",
+    "valign": "vcenter",
+    "fg_color": "#A6A6A6",
+    "font_color": "black",
+    "border_color": "black",
+    'num_format':'#,##0.00 "kWh"'
+}
+total_custo_style = {
+    "bold": 1,
+    "border": 1,
+    "align": "right",
+    "valign": "vcenter",
+    "fg_color": "#A6A6A6",
+    "font_color": "black",
+    "border_color": "black",
+    'num_format':'R$ #,##0.00'
+}
+total_ufer_style = {
+    "bold": 1,
+    "border": 1,
+    "align": "right",
+    "valign": "vcenter",
+    "fg_color": "#A6A6A6",
+    "font_color": "black",
+    "border_color": "black",
+    'num_format':'#,##0.00 "kVarh"'
+}
 mes_style = {
     "bold": 1,
     "border": 1,
@@ -91,7 +130,7 @@ ufer_style_a = {"border": 1,
     "border_color": "black",
     'num_format':'#,##0.00 "kVarh"'}
 
-def geral(worksheet,workbook,dados_dict,categoria):
+def geral(worksheet,workbook,dados_dict,categoria,total_row):
     global merge_style
     global mes_style
     global pot_style_v
@@ -102,9 +141,17 @@ def geral(worksheet,workbook,dados_dict,categoria):
     global energia_style_a
     global custo_style_a
     global ufer_style_a
+    global total_energia_style
+    global total_custo_style
+    global total_pot_style
+    global total_ufer_style
 
     header_format = workbook.add_format(merge_style)
     mes_format = workbook.add_format(mes_style)
+    total_pot_format = workbook.add_format(total_pot_style)
+    total_energia_format = workbook.add_format(total_energia_style)
+    total_custo_format = workbook.add_format(total_custo_style)
+    total_ufer_format = workbook.add_format(total_ufer_style)
     if categoria == "Verde":
         pot_format = workbook.add_format(pot_style_v)
         energia_format = workbook.add_format(energia_style_v)
@@ -121,14 +168,19 @@ def geral(worksheet,workbook,dados_dict,categoria):
         worksheet.write(0,i,key,header_format)
         if "Custo" in key:
             worksheet.write_column(1,i,dados_dict[key],custo_format)
+            worksheet.write(13,i,total_row[i],total_custo_format)
         elif "Demanda" in key or "DMCR" in key or 'Ultrapassagem' in key:
             worksheet.write_column(1,i,dados_dict[key],pot_format)
+            worksheet.write(13,i,total_row[i],total_pot_format)
         elif "Consumo" in key:
             worksheet.write_column(1,i,dados_dict[key],energia_format)
+            worksheet.write(13,i,total_row[i],total_energia_format)
         elif "UFER" in key:
             worksheet.write_column(1,i,dados_dict[key],ufer_format)
+            worksheet.write(13,i,total_row[i],total_ufer_format)
         else:
             worksheet.write_column(1,i,dados_dict[key],mes_format)
+            worksheet.write(13,i,total_row[i],header_format)
         i+=1
 
     worksheet.set_column('B:Q',14)
@@ -256,7 +308,7 @@ def comparar_geral_style(worksheet,workbook,verde_dict,azul_dict,fatura_dict,cat
     graficos.graf_compara_custos(worksheet=worksheet,workbook=workbook,sheet_name='Comparativo')
 #--------------------------------------------------------------------------------------------------------
     
-def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
+def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia):
     global merge_style
     global mes_style
     workbook = writer.book
@@ -271,7 +323,7 @@ def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
     column_settings = [{"header": column} for column in dados_df.columns]
     worksheet.add_table(0, 0, max_row, max_col-1, {"columns": column_settings})
     worksheet.set_column(0, max_col - 1, 0.1)
-    if categoria == 'Verde':
+    if ideal == 'Verde':
 
         custo_dict = {
             'Demandas Contratadas': fatura_dict['Demanda']['Lista de demandas contratadas'],
@@ -315,7 +367,7 @@ def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
         worksheet.merge_range(4,29,4,30,dem_rec,pot_format)
 
         worksheet.merge_range(6,29,6,30,"Economia Estimada",merge_format)
-        worksheet.merge_range(7,29,7,30,custo_dict['Custos Anuais'][custo_dict["Demandas Contratadas"].index(math.ceil(dem_c/5)*5)]-custo_dict['Custos Anuais'][custo_dict["Demandas Contratadas"].index(dem_rec)],rs_format)     
+        worksheet.merge_range(7,29,7,30,economia,rs_format)     
         worksheet.set_column('AD:AE',15.43)
     else:
         worksheet.merge_range(3,29,3,30,"Demanda Contratada Recomendada",merge_format)
@@ -325,9 +377,7 @@ def recomendado_style(dados_dict,fatura_dict,categoria,writer,dem_c,dem_rec):
         worksheet.write("AE6",fatura_dict['Demanda']['Demanda Contratada FP Indicada'],pot_format)
 
         worksheet.merge_range(7,29,7,30,"Economia Estimada",merge_format)
-        custo_atual = sum(fatura_dict['Demanda']['Custos com Demanda - Demanda FP (atual)'])+sum(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda FP (atual)'])+sum(fatura_dict['Demanda']['Custos com Demanda - Demanda P (atual)'])+sum(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P (atual)'])
-        custo_novo = sum(fatura_dict['Demanda']['Custos com Demanda - Demanda FP'])+sum(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda FP'])+sum(fatura_dict['Demanda']['Custos com Demanda - Demanda P'])+sum(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P'])
-        worksheet.merge_range(8,29,8,30,custo_atual - custo_novo,rs_format)     
+        worksheet.merge_range(8,29,8,30,economia,rs_format)     
         worksheet.set_column('AD:AE',15.43)
 
         graficos.graf_demanda_azul(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet)
