@@ -11,4 +11,4 @@ Erros:
 
 Melhorias:
 -Muda a cara da análise por fatura pra não ficar igual à planilha de referência;
--Colocar um gráfico com os níveis de energia reativa por hora necessárias para corrigir o fator de potência;
+-Coloca mais gráficos na análise por fatura;

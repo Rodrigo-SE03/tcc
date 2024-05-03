@@ -157,11 +157,29 @@ def geral(worksheet,workbook,dados_dict,categoria,total_row):
         energia_format = workbook.add_format(energia_style_v)
         custo_format = workbook.add_format(custo_style_v)
         ufer_format = workbook.add_format(ufer_style_v)
+        worksheet.write('P3','Demanda',header_format)
+        worksheet.write('Q3',total_row[3],total_custo_format)
+        worksheet.write('P4','Ultrapassagem',header_format)
+        worksheet.write('Q4',total_row[5],total_custo_format)
+        worksheet.write('P5','Consumo',header_format)
+        worksheet.write('Q5',total_row[7]+total_row[9],total_custo_format)
+        worksheet.write('P6','Reativos',header_format)
+        worksheet.write('Q6',total_row[11]+total_row[13],total_custo_format)
+        worksheet.set_column('P:Q',14)
     else:
         pot_format = workbook.add_format(pot_style_a)
         energia_format = workbook.add_format(energia_style_a)
         custo_format = workbook.add_format(custo_style_a)
         ufer_format = workbook.add_format(ufer_style_a)
+        worksheet.write('S3','Demanda',header_format)
+        worksheet.write('T3',total_row[2]+total_row[4],total_custo_format)
+        worksheet.write('S4','Ultrapassagem',header_format)
+        worksheet.write('T4',total_row[6]+total_row[8],total_custo_format)
+        worksheet.write('S5','Consumo',header_format)
+        worksheet.write('T5',total_row[10]+total_row[12],total_custo_format)
+        worksheet.write('S6','Reativos',header_format)
+        worksheet.write('T6',total_row[14]+total_row[16],total_custo_format)
+        worksheet.set_column('S:T',14)
 
     i=0
     for key in dados_dict.keys():
@@ -334,7 +352,7 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
 
 
         dem_min = math.ceil((min([dem_c,dem_rec])-100)/5)*5
-        if dem_min < 0: dem_min = 0
+        if dem_min < 30: dem_min = 30
         dem_max = math.ceil((max([dem_rec,dem_c])+100)/5)*5
 
         idx_min = custo_dict['Demandas Contratadas'].index(dem_min)
