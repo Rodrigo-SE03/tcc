@@ -44,7 +44,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #Exclusão de arquivos
 def limpar_pasta(folder):
     for file in os.listdir(folder):
-        os.remove(f'{folder}/{file}')
+        if 'modelo' not in file:
+            os.remove(f'{folder}/{file}')
 #--------------------------------------------------------------------------------------------------------
 
 def allowed_file(filename,extension):
@@ -300,8 +301,10 @@ def download():
     nome = f'{nome_arquivo}.xlsx'
     if download_flag == 'Cargas':
         planilha_cargas.criar_planilha(cargas=cargas_dict,tarifas_dict=tarifas_dict,grupo=grupo,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER),h_p=h_p,dias=dias)
-    else:
+    elif download_flag == 'Fatura':
         planilha_fatura.criar_planilha(fatura_dict=fatura_dict,nome=nome,folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+    else:
+        nome = nome = f'{nome_arquivo}.zip'
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads, path=nome)
 #--------------------------------------------------------------------------------------------------------
@@ -356,6 +359,16 @@ def reset():
     return app.redirect(url_for('home'))
 #--------------------------------------------------------------------------------------------------------
 
+#Função para baixar os modelos
+@app.route("/modelos")
+def modelos():
+    global nome_arquivo
+    global download_flag
+    download_flag = 'Modelos'
+    nome_arquivo = 'modelos'
+    limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
+    return app.redirect(url_for("download"))
+#--------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run(debug=True)

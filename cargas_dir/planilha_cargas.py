@@ -351,11 +351,12 @@ def criar_grafico(worksheet,workbook,categoria):
     chart.set_x_axis(
     {
         "interval_unit": 60,
-        "num_format": "h"
+        "num_format": "h",
+        'name':'Tempo - horas'
     })
     chart.set_y_axis({'name':'Potência - kW'})
     chart.set_size({'width': 860, 'height': 300})
-    chart.set_legend({'position': 'bottom'})
+    chart.set_legend({'none': True})
     chart.set_title({'name':'Perfil de Consumo'})
     if categoria == "Branca":
         worksheet.insert_chart('H9', chart)
