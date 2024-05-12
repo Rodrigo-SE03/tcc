@@ -47,7 +47,7 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
     global merge_style2
     merge_format = workbook.add_format(merge_style2)
     
-    col = 7
+    col = 8
     row = 2
     
     if categoria == 'Convencional':
@@ -223,11 +223,11 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
         "align": "center",
         "valign": "vcenter",
     })
-    pct_format = workbook.add_format({'num_format':'0%','border':1,"align": "center"})
+    pct_format = workbook.add_format({'num_format':'0.00%','border':1,"align": "center"})
 
     chart = workbook.add_chart({'type':'column'})
     if grupo == 'Grupo B':
-        worksheet.merge_range("C3:E3","Comparação de Custos",merge_format2)
+        worksheet.merge_range("C3:D3","Comparação de Custos",merge_format2)
         chart.add_series({'categories':f"=Comparativo!$D$4",'name': "Convencional",'values':f"=Comparativo!$D$5",'fill':{'color':'#F2EA50'},'overlap':-20})
         chart.add_series({'name': "Branca",'values':f"=Comparativo!$D$6",'fill':{'color':'#D9D9D9'}})
         chart.add_series({'name': "Diferença",'values':f"=Comparativo!$D$7",'fill':{'color':'#ED5D5D'}})
@@ -257,6 +257,8 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
             worksheet.write(3,i+4,key,header_format)
             worksheet.write_column(4,i+4,pct_dict[key],pct_format)
             i+=1
+    else:
+        worksheet.write(7,3,comp_dict['Total'][3],pct_format)
     worksheet.autofit()
     worksheet.set_column('F:F',14)
     worksheet.set_column('L:Q',14)

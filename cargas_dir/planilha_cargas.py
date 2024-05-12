@@ -190,7 +190,7 @@ def select_consumo(itens,categoria,h_p):
                 consumo_dict['Instante'].append(0)
     
     else:
-        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP - Capacitivo':[],'FP - Indutivo':[]}
+        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP':[],'Limite - Indutivo':[],'Limite - Capacitivo':[]}
         j=0
         for h in range(0,24):
             for m in range(0,60):
@@ -213,14 +213,14 @@ def select_consumo(itens,categoria,h_p):
                 consumo_dict['Potência Reativa FP - kVAr'].append(potr_fp)
                 consumo_dict['Potência Reativa P - kVAr'].append(potr_p)
                 if h<h_ponta or h>=(h_ponta+3):
-                    consumo_dict['FP - Capacitivo'].append((consumo_dict['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência FP - kW'][j],2)+math.pow(consumo_dict['Potência Reativa FP - kVAr'][j],2))) if consumo_dict['Potência Reativa FP - kVAr'][j] < 0 else 1)
-                    consumo_dict['FP - Indutivo'].append((consumo_dict['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência FP - kW'][j],2)+math.pow(consumo_dict['Potência Reativa FP - kVAr'][j],2))) if consumo_dict['Potência Reativa FP - kVAr'][j] > 0 else 1)
+                    consumo_dict['FP'].append((consumo_dict['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência FP - kW'][j],2)+math.pow(consumo_dict['Potência Reativa FP - kVAr'][j],2))) * (-1 if consumo_dict['Potência Reativa FP - kVAr'][j] < 0 else 1))
                 else:
-                    consumo_dict['FP - Capacitivo'].append((consumo_dict['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência P - kW'][j],2)+math.pow(consumo_dict['Potência Reativa P - kVAr'][j],2))) if consumo_dict['Potência Reativa P - kVAr'][j] < 0 else 1)
-                    consumo_dict['FP - Indutivo'].append((consumo_dict['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência P - kW'][j],2)+math.pow(consumo_dict['Potência Reativa P - kVAr'][j],2))) if consumo_dict['Potência Reativa P - kVAr'][j] > 0 else 1)
+                    consumo_dict['FP'].append((consumo_dict['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência P - kW'][j],2)+math.pow(consumo_dict['Potência Reativa P - kVAr'][j],2))) * (-1 if consumo_dict['Potência Reativa P - kVAr'][j] < 0 else 1))
                 consumo_dict['Horas'].append(h)
                 consumo_dict['Minutos'].append(m) 
                 consumo_dict['Instante'].append(0) 
+                consumo_dict['Limite - Capacitivo'].append(-0.92)
+                consumo_dict['Limite - Indutivo'].append(0.92)
                 j+=1
     
     return consumo_dict
@@ -343,8 +343,9 @@ def criar_grafico(worksheet,workbook,categoria):
         chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
         chart.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
         line_chart = workbook.add_chart({'type':'line'})
-        line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP - Capacitivo",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'green','width':1.5}})
-        line_chart.add_series({'name':"FP - Indutivo",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
+        line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
+        line_chart.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+        line_chart.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$2:$J$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
         line_chart.set_y2_axis({'name':'Fator de Potência'})
         chart.combine(line_chart)
     
@@ -354,16 +355,17 @@ def criar_grafico(worksheet,workbook,categoria):
         "num_format": "h",
         'name':'Tempo - horas'
     })
+    chart.set_legend({'position':'bottom','delete_series':[4]})
     chart.set_y_axis({'name':'Potência - kW'})
-    chart.set_size({'width': 860, 'height': 300})
-    chart.set_legend({'none': True})
+    chart.set_size({'width': 860, 'height': 450})
     chart.set_title({'name':'Perfil de Consumo'})
     if categoria == "Branca":
-        worksheet.insert_chart('H9', chart)
+        worksheet.insert_chart('J9', chart)
     elif categoria == 'Verde' or categoria == 'Azul':
-        worksheet.insert_chart('K9', chart)
+        worksheet.insert_chart('L9', chart)
     else:
-        worksheet.insert_chart('G9', chart)
+        chart.set_legend({'none': True})
+        worksheet.insert_chart('I9', chart)
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da aba com os elementos reativos identificados na instalação   
@@ -540,9 +542,9 @@ def comparativo_gpb(m_results_C,m_results_B,grupo,writer):
     custo_final_B = m_results_B['Total'][1]
 
     comp_dict = {
-        'Modalidade': ['Convencional','Branca','Diferença'],
-        'Consumo': [custo_final_C,custo_final_B,abs(custo_final_B-custo_final_C)],
-        'Total': [custo_final_C,custo_final_B,abs(custo_final_B-custo_final_C)]
+        'Modalidade': ['Convencional','Branca','Diferença','Diferença Percentual'],
+        # 'Consumo': [custo_final_C,custo_final_B,abs(custo_final_B-custo_final_C)],
+        'Total': [custo_final_C,custo_final_B,abs(custo_final_B-custo_final_C),1-min([custo_final_B,custo_final_C])/max([custo_final_B,custo_final_C])]
     }
     estilos_cargas.comparativo_style(grupo=grupo,comp_dict=comp_dict,writer=writer,pct_dict={})
 #--------------------------------------------------------------------------------------------------------
