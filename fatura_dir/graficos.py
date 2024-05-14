@@ -107,7 +107,7 @@ def graf_demanda_verde(workbook,worksheet,sheet_name,dem_c,dem_rec,custo_dict):
     chart2.set_x_axis({'name': 'Demanda','num_font':{'rotation':90}})
     chart2.set_legend({'position': 'bottom'})
     chart2.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
-    worksheet.insert_chart('L22', chart2)
+    worksheet.insert_chart('L24', chart2)
 #--------------------------------------------------------------------------------------------------------
 
 #Gráficos da aba de recomendação para o caso de a modalidade ideal ser a azul - RECOMENDAÇÃO
@@ -137,5 +137,5 @@ def graf_demanda_azul(workbook,worksheet,sheet_name):
     chart2.set_size({'width': 1071.496063, 'height': 348.8503937}) 
     chart2.set_legend({'position': 'bottom'})
     chart2.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
-    worksheet.insert_chart('L23', chart2)
+    worksheet.insert_chart('L25', chart2)
 #--------------------------------------------------------------------------------------------------------

@@ -235,7 +235,7 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
     else:
         
         worksheet.merge_range("C3:I3","Comparação de Custos",merge_format2)
-        worksheet.merge_range("L3:Q3","Representação Percentual",merge_format2)
+        worksheet.merge_range("C9:H9","Representação Percentual",merge_format2)
         chart.add_series({'categories':f"=Comparativo!$E$4:$G$4",'name': "Verde",'values':f"=Comparativo!$E$5:$G$5",'fill':{'color':'#00B050'},'overlap':-20})
         chart.add_series({'name': "Azul",'values':f"=Comparativo!$E$6:$G$6",'fill':{'color':'#0070C0'}})
         chart.add_series({'name': "Diferença",'values':f"=Comparativo!$E$7:$G$7",'fill':{'color':'#ED5D5D'}})
@@ -244,7 +244,6 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
     chart.set_y_axis({'num_format': "R$ #,##0.00"})
     chart.set_title({'name':'Comparação de Custos'})
     chart.set_legend({'position': 'right'})
-    worksheet.insert_chart('C11', chart)
 
     i=0
     for key in comp_dict.keys():
@@ -252,12 +251,15 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
         worksheet.write_column(4,i+2,comp_dict[key],rs_format)
         i+=1
     
+    i=0
     if grupo == 'Grupo A':
+        worksheet.insert_chart('C14', chart)
         for key in pct_dict.keys():
-            worksheet.write(3,i+4,key,header_format)
-            worksheet.write_column(4,i+4,pct_dict[key],pct_format)
+            worksheet.write(9,i+2,key,header_format)
+            worksheet.write_column(10,i+2,pct_dict[key],pct_format)
             i+=1
     else:
+        worksheet.insert_chart('C11', chart)
         worksheet.write(7,3,comp_dict['Total'][3],pct_format)
     worksheet.autofit()
     worksheet.set_column('F:F',14)

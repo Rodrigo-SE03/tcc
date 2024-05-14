@@ -381,21 +381,19 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
         worksheet.set_column(0, last_col+max_col+2, 0.1)
         graficos.graf_demanda_verde(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet,dem_c=dem_c,dem_rec=dem_rec,custo_dict=custo_dict)
 
-        worksheet.merge_range(3,29,3,30,"Demanda Contratada Recomendada",merge_format)
-        worksheet.merge_range(4,29,4,30,dem_rec,pot_format)
+        worksheet.merge_range(20,12,20,18,"Demanda Contratada Recomendada",merge_format)
+        worksheet.merge_range(21,12,21,18,dem_rec,pot_format)
 
-        worksheet.merge_range(6,29,6,30,"Economia Estimada",merge_format)
-        worksheet.merge_range(7,29,7,30,economia,rs_format)     
-        worksheet.set_column('AD:AE',15.43)
+        worksheet.merge_range(20,20,20,26,"Economia Estimada",merge_format)
+        worksheet.merge_range(21,20,21,26,economia,rs_format)     
     else:
-        worksheet.merge_range(3,29,3,30,"Demanda Contratada Recomendada",merge_format)
-        worksheet.write("AD5","Ponta",mes_format)
-        worksheet.write("AE5",fatura_dict['Demanda']['Demanda Contratada P Indicada'],pot_format)
-        worksheet.write("AD6","Fora Ponta",mes_format)
-        worksheet.write("AE6",fatura_dict['Demanda']['Demanda Contratada FP Indicada'],pot_format)
+        worksheet.merge_range(20,12,20,18,"Demanda Contratada Recomendada",merge_format)
+        worksheet.merge_range(21,12,21,15,"Ponta",pot_format)
+        worksheet.merge_range(21,16,21,18,fatura_dict['Demanda']['Demanda Contratada P Indicada'],pot_format)
+        worksheet.merge_range(22,12,22,15,"Fora Ponta",pot_format)
+        worksheet.merge_range(22,16,22,18,fatura_dict['Demanda']['Demanda Contratada FP Indicada'],pot_format)
 
-        worksheet.merge_range(7,29,7,30,"Economia Estimada",merge_format)
-        worksheet.merge_range(8,29,8,30,economia,rs_format)     
-        worksheet.set_column('AD:AE',15.43)
+        worksheet.merge_range(20,20,20,26,"Economia Estimada",merge_format)
+        worksheet.merge_range(21,20,22,26,economia,rs_format)    
 
         graficos.graf_demanda_azul(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet)
