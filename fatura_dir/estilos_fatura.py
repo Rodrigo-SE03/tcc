@@ -335,8 +335,9 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
     pot_format = workbook.add_format({"border": 1,"align": "right","valign": "vcenter","align": "center",'num_format':'#,##0.00 "kW"','border':1})
     rs_format = workbook.add_format({'num_format':'R$ #,##0.00','border':1,"align": "center","valign": "vcenter"})
     dados_df = pd.DataFrame(dados_dict)
-    dados_df.to_excel(writer,sheet_name='Recomendação',startrow=1,header=False,index=False)
-    worksheet = writer.sheets["Recomendação"]
+    sheet_name = 'Resultados'
+    dados_df.to_excel(writer,sheet_name=sheet_name,startrow=1,header=False,index=False)
+    worksheet = writer.sheets[sheet_name]
     (max_row, max_col) = dados_df.shape
     column_settings = [{"header": column} for column in dados_df.columns]
     worksheet.add_table(0, 0, max_row, max_col-1, {"columns": column_settings})
@@ -368,18 +369,17 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
         
         custo_df = pd.DataFrame(custo_dict)
         last_col = max_col
-        custo_df.to_excel(writer,sheet_name='Recomendação',startrow=1,startcol=max_col+1,header=False,index=False)
+        custo_df.to_excel(writer,sheet_name=sheet_name,startrow=1,startcol=max_col+1,header=False,index=False)
         (max_row, max_col) = custo_df.shape
-        column_settings = [{"header": column} for column in custo_df.columns]                                               #POSSO CORRIGIR ISSO
         worksheet.write(0,last_col+max_col,'Custo')
         worksheet.write(0,last_col+max_col+1,'Demanda Contratada Atual')
         worksheet.write(0,last_col+max_col+2,'Demanda Contratada Recomendada')
         worksheet.write(custo_dict['Demandas Contratadas'].index(dem_rec)+1,last_col+max_col+2,custo_dict['Custos Anuais'][custo_dict['Demandas Contratadas'].index(dem_rec)])
         worksheet.write(custo_dict['Demandas Contratadas'].index(math.ceil(dem_c/5)*5)+1,last_col+max_col+1,custo_dict['Custos Anuais'][custo_dict['Demandas Contratadas'].index(math.ceil(dem_c/5)*5)])
-        worksheet.add_table(0, last_col+1, max_row, last_col+max_col+2, {"columns": column_settings})
+        worksheet.add_table(0, last_col+1, max_row, last_col+max_col+2, {"columns": [{'header':'Demandas Contratadas'},{'header':'Custos Anuais'},{'header':'Demanda Contratada Atual'},{'header':'Demanda Contratada Recomendada'}]})
 
         worksheet.set_column(0, last_col+max_col+2, 0.1)
-        graficos.graf_demanda_verde(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet,dem_c=dem_c,dem_rec=dem_rec,custo_dict=custo_dict)
+        graficos.graf_demanda_verde(sheet_name=sheet_name,workbook=workbook,worksheet=worksheet,dem_c=dem_c,dem_rec=dem_rec,custo_dict=custo_dict)
 
         worksheet.merge_range(20,12,20,18,"Demanda Contratada Recomendada",merge_format)
         worksheet.merge_range(21,12,21,18,dem_rec,pot_format)
@@ -396,4 +396,4 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
         worksheet.merge_range(20,20,20,26,"Economia Estimada",merge_format)
         worksheet.merge_range(21,20,22,26,economia,rs_format)    
 
-        graficos.graf_demanda_azul(sheet_name='Recomendação',workbook=workbook,worksheet=worksheet)
+        graficos.graf_demanda_azul(sheet_name=sheet_name,workbook=workbook,worksheet=worksheet)

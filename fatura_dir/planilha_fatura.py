@@ -9,16 +9,16 @@ def criar_planilha(fatura_dict,nome,folder):
     categoria = 'Verde' if 'Demanda Verde Ultrapassada (atual)' in fatura_dict['Demanda'].keys() else 'Azul'
     fatura_dict = copy.deepcopy(fatura_dict)
     writer = pd.ExcelWriter(f'{folder}/{nome}',engine="xlsxwriter")
-    total_modalidade = tab_geral(fatura_dict=fatura_dict,writer=writer,categoria=categoria)
+    total_modalidade = tab_atual(fatura_dict=fatura_dict,writer=writer,categoria=categoria)
     results = tab_analise(fatura_dict=fatura_dict,writer=writer,categoria=categoria,total_modalidade=total_modalidade)
     ideal = results[0]
     economia = results[1]
-    tab_recomendado(fatura_dict=fatura_dict,writer=writer,ideal=ideal,economia=economia)
+    tab_resultados(fatura_dict=fatura_dict,writer=writer,ideal=ideal,economia=economia)
     writer.close()
 #--------------------------------------------------------------------------------------------------------
     
 #Criação da aba com as informações atuais de demanda e consumo da unidade consumidora
-def tab_geral(fatura_dict,writer,categoria):
+def tab_atual(fatura_dict,writer,categoria):
 
     if categoria == 'Verde':
         dados_dict = {
@@ -69,13 +69,14 @@ def tab_geral(fatura_dict,writer,categoria):
         total_modalidade = total_row[2]+total_row[4]+total_row[6]+total_row[8]+total_row[10]+total_row[12]
 
     workbook = writer.book
-    worksheet = workbook.add_worksheet('Geral')
+    sheet_name = 'Dados Atuais'
+    worksheet = workbook.add_worksheet(sheet_name)
 
     estilos_fatura.geral(workbook=workbook,worksheet=worksheet,categoria=categoria,dados_dict=dados_dict,total_row=total_row)
-    graficos.graf_reativos(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
-    graficos.graf_consumo(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
-    graficos.graf_ultrapassagem(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
-    graficos.graf_composicao(categoria=categoria,sheet_name="Geral",workbook=workbook,worksheet=worksheet)
+    graficos.graf_reativos(categoria=categoria,sheet_name=sheet_name,workbook=workbook,worksheet=worksheet)
+    graficos.graf_consumo(categoria=categoria,sheet_name=sheet_name,workbook=workbook,worksheet=worksheet)
+    graficos.graf_ultrapassagem(categoria=categoria,sheet_name=sheet_name,workbook=workbook,worksheet=worksheet)
+    graficos.graf_composicao(categoria=categoria,sheet_name=sheet_name,workbook=workbook,worksheet=worksheet)
     return total_modalidade
 #--------------------------------------------------------------------------------------------------------
 
@@ -129,7 +130,7 @@ def tab_analise(fatura_dict,writer,categoria,total_modalidade):
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da aba com informações da estimativa de gastos e economia da unidade de acordo com a modalidade e demanda contratada indicada
-def tab_recomendado(fatura_dict,writer,ideal,economia):
+def tab_resultados(fatura_dict,writer,ideal,economia):
     categoria = 0
     print(ideal)
     if 'Demanda Verde Ultrapassada (atual)' in fatura_dict['Demanda'].keys():

@@ -89,7 +89,7 @@ def graf_demanda_verde(workbook,worksheet,sheet_name,dem_c,dem_rec,custo_dict):
     chart.add_series({'name': f"='{sheet_name}'!$E$1",'values':f"='{sheet_name}'!$E$2:$E$13",'line':{'color':'#FF0000','width':1.5,'dash_type': 'long_dash'}})
 
     chart.set_y_axis({'name': 'Demanda - kW'}) 
-    chart.set_title({'name': 'Demanda Contratada X Demanda Recomendada'})
+    chart.set_title({'name': 'Perfil de Demanda'})
     chart.set_size({'width': 1071.496063, 'height': 348.8503937}) 
     chart.set_legend({'position': 'bottom'})
     chart.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
@@ -120,7 +120,7 @@ def graf_demanda_azul(workbook,worksheet,sheet_name):
     chart.add_series({'name': f"='{sheet_name}'!$H$1",'values':f"='{sheet_name}'!$H$2:$H$13",'line':{'color':'#FF0000','width':1.5,'dash_type': 'long_dash'}})
 
     chart.set_y_axis({'name': 'Demanda - kW'}) 
-    chart.set_title({'name': 'Demanda Contratada X Demanda Recomendada (FP)'})
+    chart.set_title({'name': 'Perfil de Demanda - FP'})
     chart.set_size({'width': 1071.496063, 'height': 348.8503937}) 
     chart.set_legend({'position': 'bottom'})
     chart.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
@@ -133,7 +133,7 @@ def graf_demanda_azul(workbook,worksheet,sheet_name):
     chart2.add_series({'name': f"='{sheet_name}'!$I$1",'values':f"='{sheet_name}'!$I$2:$I$13",'line':{'color':'#FF0000','width':1.5,'dash_type': 'long_dash'}})
 
     chart2.set_y_axis({'name': 'Demanda - kW'}) 
-    chart2.set_title({'name': 'Demanda Contratada X Demanda Recomendada (P)'})
+    chart2.set_title({'name': 'Perfil de Demanda - P'})
     chart2.set_size({'width': 1071.496063, 'height': 348.8503937}) 
     chart2.set_legend({'position': 'bottom'})
     chart2.set_chartarea({'border':{'color': '#4472C4','width':1.25}})
