@@ -121,7 +121,6 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
     i=0
     n_col = col+5
     n_row = row
-    print(n_col,n_row)
     for key in m_results.keys():
         worksheet.write(n_row,n_col,key,border)
         while i < len(m_results[key]):

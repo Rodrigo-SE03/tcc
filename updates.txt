@@ -12,3 +12,6 @@ Erros:
 Melhorias:
 -Muda a cara da análise por fatura pra não ficar igual à planilha de referência;
 -Coloca mais gráficos na análise por fatura;
+-Criar a opção de preenchimento manual dos dados de fatura;
+-Colocar nos resultados a coluna de demanda não utilizada e o valor relativo a ela
+-Fazer a análise de cargas para finais de semana;

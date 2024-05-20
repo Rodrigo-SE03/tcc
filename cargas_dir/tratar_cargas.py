@@ -49,7 +49,6 @@ def carregar_cargas(file,folder):
     }
     df = pd.read_excel(f'{folder}/{file}')
     os.remove(f'{folder}/{file}')
-    print(df)
     try:
         if df.iloc[0,7] == 'Validar':
             pass

@@ -72,7 +72,6 @@ def cargas():
     #Procedimento para adicionar a carga ao dicionário principal
     if form_add_carga.validate_on_submit() and 'add_button' in request.form:    
         tratar_cargas.nova_carga(cargas_dict,form_add_carga)  
-        print(cargas_dict)
         flash(f'Carga adicionada - {form_add_carga.nome_equip.data}',category='alert-success')  #Mensagem de alerta
         return app.redirect(url_for("cargas"))  #Precisa de dar redirect pra não ativar o submit ao recarregar a página
     #--------------------------------------------------------------------------------------------------------
@@ -247,7 +246,6 @@ def faturas():
     
     if form_fatura.validate_on_submit() and 'reg' in request.form:   
         dem_c = tratar_fatura.demanda_contratada(form_fatura=form_fatura)
-        print(dem_c)
         flash('Demandas registradas',category='alert-success')
 
     #Procedimento para carregar arquivo com valores pré definidos de tarifas
@@ -286,7 +284,6 @@ def faturas():
             nome_arquivo = form_salvar_fatura.nome.data
             download_flag = 'Fatura'
             return app.redirect(url_for("download"))
-        print('here')
         return app.redirect(url_for('faturas'))
     #--------------------------------------------------------------------------------------------------------
     return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,grupo=grupo)
