@@ -11,16 +11,16 @@ def criar_planilha(cargas,tarifas_dict,grupo,nome,folder,h_p,dias):
     writer = pd.ExcelWriter(f'{folder}/{nome}',engine="xlsxwriter")
     tab_cargas(cargas_dict=cargas_dict,writer=writer)
     equip_dict = tab_consumo_por_carga(cargas=cargas_dict,writer=writer,grupo=grupo,h_p=h_p)
-    if grupo == 'Grupo B':
-        valores_C = tab_consumo(categoria='Convencional',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-        valores_B = tab_consumo(categoria='Branca',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-        comparativo_gpb(m_results_C=valores_C[1],m_results_B=valores_B[1],grupo=grupo,writer=writer)
-    else:    
-        valores_V = tab_consumo(categoria='Verde',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-        valores_A = tab_consumo(categoria='Azul',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-        reativos_V = tab_reativos(categoria='Verde',consumo_dict=valores_V[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
-        reativos_A = tab_reativos(categoria='Azul',consumo_dict=valores_A[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
-        comparativo_gpa(m_results_A=valores_A[1],m_results_V=valores_V[1],r_results_A=reativos_A,r_results_V=reativos_V,grupo=grupo,writer=writer)
+    # if grupo == 'Grupo B':
+    #     valores_C = tab_consumo(categoria='Convencional',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+    #     valores_B = tab_consumo(categoria='Branca',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+    #     comparativo_gpb(m_results_C=valores_C[1],m_results_B=valores_B[1],grupo=grupo,writer=writer)
+    # else:    
+    #     valores_V = tab_consumo(categoria='Verde',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+    #     valores_A = tab_consumo(categoria='Azul',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+    #     reativos_V = tab_reativos(categoria='Verde',consumo_dict=valores_V[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
+    #     reativos_A = tab_reativos(categoria='Azul',consumo_dict=valores_A[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
+    #     comparativo_gpa(m_results_A=valores_A[1],m_results_V=valores_V[1],r_results_A=reativos_A,r_results_V=reativos_V,grupo=grupo,writer=writer)
     
     writer.close()
 #--------------------------------------------------------------------------------------------------------
@@ -36,11 +36,13 @@ def tab_cargas(cargas_dict,writer):
     column_settings = [{"header": column} for column in df_cargas.columns]
     worksheet.add_table(0, 0, max_row, max_col - 1, {"columns": column_settings})
     worksheet.set_column(0, max_col - 1, 12)
+    hidden_format = workbook.add_format({"font_color": "white"})
+    worksheet.write('I2','Validar',hidden_format)
     worksheet.autofit()
 #--------------------------------------------------------------------------------------------------------
 
 #Função para calcular horas no horário de ponta e fora de ponta
-def calc_intervalo(inicio,fim,h_p,grupo,postos=False):
+def calc_intervalo(inicio,fim,h_p,grupo,postos=False,fds=False):
     ponta = [*range(int(h_p*60),int((h_p+3)*60))]
     inter = [*range(int((h_p-1)*60),int(h_p*60)),*range(int((h_p+3)*60),int((h_p+4)*60))]
 
@@ -56,14 +58,17 @@ def calc_intervalo(inicio,fim,h_p,grupo,postos=False):
     p=0
     i=0
     fp=0
-
-    for h in hrs:
-        if h in ponta:
-            p += 1
-        if h in inter:
-            i += 1
-        if h in fora:
-            fp += 1
+    if fds:
+        for h in hrs:
+            fp+=1
+    else:
+        for h in hrs:   
+            if h in ponta:
+                p += 1
+            if h in inter:
+                i += 1
+            if h in fora:
+                fp += 1
     
     p = p/60
     i = i/60
@@ -102,19 +107,20 @@ def tab_consumo_por_carga(cargas,writer,grupo,h_p):
     
     i=0
     for carga in cargas['Carga']:
+        fds = True if cargas['Dias de Uso'][i] != 'Dias Úteis' else False
         equip_dict['Carga'].append(carga)
         equip_dict['Potência (kW)'].append(cargas['Potência (kW)'][i])
         if grupo == 'Grupo A':
-            equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[1])
-            equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[0])
+            equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[1])
+            equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[0])
             equip_dict['Total - H'].append(equip_dict['H - Ponta'][i]+equip_dict['H - Fora Ponta'][i])
             equip_dict['C - Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Ponta'][i])
             equip_dict['C - Fora Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Fora Ponta'][i])
             equip_dict['Total - C'].append(equip_dict['Potência (kW)'][i]*equip_dict['Total - H'][i])
         else:
-            equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[2])
-            equip_dict['H - Intermediário'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[1])
-            equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo)[0])
+            equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[2])
+            equip_dict['H - Intermediário'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[1])
+            equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[0])
             equip_dict['Total - H'].append(equip_dict['H - Ponta'][i]+equip_dict['H - Fora Ponta'][i]+equip_dict['H - Intermediário'][i])
             equip_dict['C - Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Ponta'][i])
             equip_dict['C - Fora Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Fora Ponta'][i])

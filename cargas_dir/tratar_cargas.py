@@ -13,6 +13,7 @@ def nova_carga(cargas,form):
         cargas['Quantidade'][id]=form.qtd.data
         cargas['Início'][id]=form.hr_inicio.data
         cargas['Fim'][id]=form.hr_fim.data
+        cargas['Dias de Uso'][id]=form.dia_sem.data
         cargas['Remover'][id]='Remover'
     else:
         cargas['Carga'].append(form.nome_equip.data)
@@ -22,6 +23,7 @@ def nova_carga(cargas,form):
         cargas['Quantidade'].append(form.qtd.data)
         cargas['Início'].append(form.hr_inicio.data)
         cargas['Fim'].append(form.hr_fim.data)
+        cargas['Dias de Uso'].append(form.dia_sem.data)
         cargas['Remover'].append('Remover')
 #--------------------------------------------------------------------------------------------------------
 
@@ -45,12 +47,13 @@ def carregar_cargas(file,folder):
         'Quantidade':[],
         'Início':[],
         'Fim':[],
+        'Dias de Uso': [],
         'Remover': []
     }
     df = pd.read_excel(f'{folder}/{file}')
     os.remove(f'{folder}/{file}')
     try:
-        if df.iloc[0,7] == 'Validar':
+        if df.iloc[0,8] == 'Validar':
             pass
         else:
             return 'Arquivo inválido'
@@ -74,7 +77,7 @@ def verificar_save(cargas_dict,tarifas_dict,h_p,dias):
     
     if not isinstance(h_p,float) or h_p == 0:
         return 'Preencha corretamente os dados de horário de ponta e dias úteis'
-    if not isinstance(dias,int) or dias == 0:
+    if not isinstance(dias['dias_u'],int) or dias['dias_u'] == 0:
         return 'Preencha corretamente os dados de horário de ponta e dias úteis'
 
     for cat in tarifas_dict.keys():

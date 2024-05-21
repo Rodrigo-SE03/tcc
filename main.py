@@ -11,7 +11,11 @@ UPLOAD_FOLDER = 'arquivos'
 
 download_flag = ''
 h_p = 18.0
-dias = 22
+dias = {
+    'dias_u': 22,
+    'dias_s': 4,
+    'dias_d': 4
+}
 nome_arquivo = ''
 tarifas_dict = {
     'convencional': 0.0,
@@ -29,6 +33,7 @@ cargas_dict = {
         'Quantidade':[],
         'Início':[],
         'Fim':[],
+        'Dias de Uso': [],
         'Remover': []
     }
 
@@ -122,7 +127,12 @@ def cargas():
 
     if 'registrar_info' in request.form:
         h_p = form_info.ponta.data
-        dias = form_info.dias.data
+        dias = {
+            'dias_u': form_info.dias_u.data,
+            'dias_s': form_info.dias_s.data,
+            'dias_d': form_info.dias_d.data
+        }
+        
         flash('Informações registradas com sucesso',category='alert-success')
         return app.redirect(url_for("cargas"))
 
@@ -329,7 +339,11 @@ def reset():
 
     download_flag = ''
     h_p = 18.0
-    dias = 22
+    dias = {
+        'dias_u': 22,
+        'dias_s': 4,
+        'dias_d': 4
+    }
     nome_arquivo = ''
     tarifas_dict = {
         'convencional': 0.0,
@@ -347,6 +361,7 @@ def reset():
             'Quantidade':[],
             'Início':[],
             'Fim':[],
+            'Dias de Uso': [],
             'Remover': []
         }
 

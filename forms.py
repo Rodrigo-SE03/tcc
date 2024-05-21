@@ -10,11 +10,14 @@ class FormAddCarga(FlaskForm):
     qtd = IntegerField('Quantidade', validators= [DataRequired()],default=1)
     hr_inicio = StringField('Início', validators= [DataRequired(),Regexp(r"^[0-9][0-9][:][0-9][0-9]",message="O formato deve ser hh:mm")],default="00:00")
     hr_fim = StringField('Fim', validators= [DataRequired(),Regexp(r"^[0-9][0-9][:][0-9][0-9]",message="O formato deve ser hh:mm")],default="00:00")
+    dia_sem = SelectField('Dias de Uso', validators= [DataRequired()],choices=['Dias Úteis','Sábados','Domingos'])
 
     add_button = SubmitField('Adicionar', validators= [DataRequired()])
 
 class FormInfo(FlaskForm):
-    dias = IntegerField('Nº de dias de funcionamento', validators= [DataRequired(),NumberRange(min=1,max=31,message="Valor inválido")],default=22)
+    dias_u = IntegerField('Nº de dias úteis', validators= [DataRequired(),NumberRange(min=1,max=23,message="Valor inválido")],default=22)
+    dias_s = IntegerField('Nº de sábados', validators= [DataRequired(),NumberRange(min=0,max=5,message="Valor inválido")],default=4)
+    dias_d = IntegerField('Nº de domingos', validators= [DataRequired(),NumberRange(min=0,max=5,message="Valor inválido")],default=4)
     ponta = FloatField('Início do horário de ponta', validators= [DataRequired(),NumberRange(min=0,max=21,message="Valor inválido")],default=18)
 
     registrar_info = SubmitField('Registrar', validators= [DataRequired()])

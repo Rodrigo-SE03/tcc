@@ -67,9 +67,20 @@
 
                 <div class = "row mt-4">
                     <div class = "col">
+                        <div class = "row mt-4">
+                            <div class="form-group">
+                                {{ form_add_carga.qtd.label(class = 'form-control-label') }}
+                                {{ form_add_carga.qtd(class = 'form-control') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class = "col">
                         <div class="form-group">
-                            {{ form_add_carga.qtd.label(class = 'form-control-label') }}
-                            {{ form_add_carga.qtd(class = 'form-control') }}
+                            <div class = "row mt-4">
+                                {{ form_add_carga.dia_sem.label(class = 'form-control-label') }}
+                                {{ form_add_carga.dia_sem(class = 'form-control') }}
+                            </div>
                         </div>
                     </div>
 
@@ -134,27 +145,75 @@
 
                     <div class = "col">
                         <div class="form-group">
-                            {{ form_info.dias.label(class = 'form-control-label') }}
+                            {{ form_info.dias_u.label(class = 'form-control-label') }}
 
-                            {% if form_info.dias.errors %}
-                                {{ form_info.dias(class = 'form-control is-invalid') }}
+                            {% if form_info.dias_u.errors %}
+                                {{ form_info.dias_u(class = 'form-control is-invalid') }}
                                 <div class = 'invalid-feedback'>
-                                    {% for erro in form_info.dias.errors %}
+                                    {% for erro in form_info.dias_u.errors %}
                                         {{ erro }}
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form_info.dias(class = 'form-control') }}
+                                {{ form_info.dias_u(class = 'form-control') }}
                             {% endif %}
                         </div>
+                    </div>
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_info.dias_s.label(class = 'form-control-label') }}
+
+                            {% if form_info.dias_s.errors %}
+                                {{ form_info.dias_s(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_info.dias_s.errors %}
+                                        {{ erro }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_info.dias_s(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class = "col">
+                        <div class="form-group">
+                            {{ form_info.dias_d.label(class = 'form-control-label') }}
+
+                            {% if form_info.dias_d.errors %}
+                                {{ form_info.dias_d(class = 'form-control is-invalid') }}
+                                <div class = 'invalid-feedback'>
+                                    {% for erro in form_info.dias_d.errors %}
+                                        {{ erro }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form_info.dias_d(class = 'form-control') }}
+                            {% endif %}
+                        </div>
+                    </div>
                     </div>
                 </div>
             </fieldset>
             {{ form_info.registrar_info(class = 'btn btn-primary mt-5') }}
         </form>
-    </div>
+    
+    <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="du-tab" data-bs-toggle="tab" data-bs-target="#du" type="button" role="tab" aria-controls="du" aria-selected="true">Dias Úteis</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="sab-tab" data-bs-toggle="tab" data-bs-target="#sab" type="button" role="tab" aria-controls="sab" aria-selected="false">Sábados</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="dom-tab" data-bs-toggle="tab" data-bs-target="#dom" type="button" role="tab" aria-controls="dom" aria-selected="false">Domingos</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="du" role="tabpanel" aria-labelledby="du-tab">{% include 'Elements/table_du.html' %}</div>
+        <div class="tab-pane fade" id="sab" role="tabpanel" aria-labelledby="sab-tab">{% include 'Elements/table_sab.html' %}</div>
+        <div class="tab-pane fade" id="dom" role="tabpanel" aria-labelledby="dom-tab">{% include 'Elements/table_dom.html' %}</div>
+      </div>
 
-    {% include 'Elements/table.html' %}
 
     <div class = 'pt-2 pb-5'>
         <legend>Carregar Cargas (.xlsx)</legend>
