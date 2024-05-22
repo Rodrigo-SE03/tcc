@@ -51,21 +51,53 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
     row = 2
     
     if categoria == 'Convencional':
-        d_results = {'Consumo': [custo/tarifas_dict['convencional'],custo]}
-        m_results = {'Consumo': [custo*dias/tarifas_dict['convencional'],custo*dias]}
+        du_results = {'Consumo': [custo['Dias Úteis']/tarifas_dict['convencional'],custo['Dias Úteis']]}
+        s_results = {'Consumo': [custo['Sábados']/tarifas_dict['convencional'],custo['Sábados']]}
+        d_results = {'Consumo': [custo['Domingos']/tarifas_dict['convencional'],custo['Domingos']]}
+        mdu_results = {'Consumo': [custo['Dias Úteis']*dias['dias_u']/tarifas_dict['convencional'],custo['Dias Úteis']*dias['dias_u']]}
+        ms_results = {'Consumo': [custo['Sábados']*dias['dias_s']/tarifas_dict['convencional'],custo['Sábados']*dias['dias_s']]}
+        md_results = {'Consumo': [custo['Domingos']*dias['dias_d']/tarifas_dict['convencional'],custo['Domingos']*dias['dias_d']]}
+
+        dia_results = [du_results,s_results,d_results]
+        mes_results = [mdu_results,ms_results,md_results]
     elif categoria == 'Branca':
         col += 1
+        du_results = {
+            'Consumo FP': [custo['Dias Úteis'][0]/tarifas_dict['branca'][0],custo['Dias Úteis'][0]],
+            'Consumo I': [custo['Dias Úteis'][1]/tarifas_dict['branca'][1],custo['Dias Úteis'][1]],
+            'Consumo P': [custo['Dias Úteis'][2]/tarifas_dict['branca'][2],custo['Dias Úteis'][2]]
+        }
+        s_results = {
+            'Consumo FP': [custo['Sábados'][0]/tarifas_dict['branca'][0],custo['Sábados'][0]],
+            'Consumo I': [custo['Sábados'][1]/tarifas_dict['branca'][1],custo['Sábados'][1]],
+            'Consumo P': [custo['Sábados'][2]/tarifas_dict['branca'][2],custo['Sábados'][2]]
+        }
         d_results = {
-            'Consumo FP': [custo[0]/tarifas_dict['branca'][0],custo[0]],
-            'Consumo I': [custo[1]/tarifas_dict['branca'][1],custo[1]],
-            'Consumo P': [custo[2]/tarifas_dict['branca'][2],custo[2]]
+            'Consumo FP': [custo['Domingos'][0]/tarifas_dict['branca'][0],custo['Domingos'][0]],
+            'Consumo I': [custo['Domingos'][1]/tarifas_dict['branca'][1],custo['Domingos'][1]],
+            'Consumo P': [custo['Domingos'][2]/tarifas_dict['branca'][2],custo['Domingos'][2]]
         }
-        m_results = {
-            'Consumo FP': [custo[0]*dias/tarifas_dict['branca'][0],custo[0]*dias],
-            'Consumo I': [custo[1]*dias/tarifas_dict['branca'][1],custo[1]*dias],
-            'Consumo P': [custo[2]*dias/tarifas_dict['branca'][2],custo[2]*dias],
-            'Total': [custo[0]*dias/tarifas_dict['branca'][0]+custo[1]*dias/tarifas_dict['branca'][1]+custo[2]*dias/tarifas_dict['branca'][2],(custo[0]+custo[1]+custo[2])*dias]
+        mdu_results = {
+            'Consumo FP': [custo['Dias Úteis'][0]*dias['dias_u']/tarifas_dict['branca'][0],custo['Dias Úteis'][0]*dias['dias_u']],
+            'Consumo I': [custo['Dias Úteis'][1]*dias['dias_u']/tarifas_dict['branca'][1],custo['Dias Úteis'][1]*dias['dias_u']],
+            'Consumo P': [custo['Dias Úteis'][2]*dias['dias_u']/tarifas_dict['branca'][2],custo['Dias Úteis'][2]*dias['dias_u']],
+            'Total': [custo['Dias Úteis'][0]*dias['dias_u']/tarifas_dict['branca'][0]+custo['Dias Úteis'][1]*dias['dias_u']/tarifas_dict['branca'][1]+custo['Dias Úteis'][2]*dias['dias_u']/tarifas_dict['branca'][2],(custo['Dias Úteis'][0]+custo['Dias Úteis'][1]+custo['Dias Úteis'][2])*dias['dias_u']]
         }
+        ms_results = {
+            'Consumo FP': [custo['Sábados'][0]*dias['dias_s']/tarifas_dict['branca'][0],custo['Sábados'][0]*dias['dias_s']],
+            'Consumo I': [custo['Sábados'][1]*dias['dias_s']/tarifas_dict['branca'][1],custo['Sábados'][1]*dias['dias_s']],
+            'Consumo P': [custo['Sábados'][2]*dias['dias_s']/tarifas_dict['branca'][2],custo['Sábados'][2]*dias['dias_s']],
+            'Total': [custo['Sábados'][0]*dias['dias_s']/tarifas_dict['branca'][0]+custo['Sábados'][1]*dias['dias_s']/tarifas_dict['branca'][1]+custo['Sábados'][2]*dias['dias_s']/tarifas_dict['branca'][2],(custo['Sábados'][0]+custo['Sábados'][1]+custo['Sábados'][2])*dias['dias_s']]
+        }
+        md_results = {
+            'Consumo FP': [custo['Domingos'][0]*dias['dias_d']/tarifas_dict['branca'][0],custo['Domingos'][0]*dias['dias_d']],
+            'Consumo I': [custo['Domingos'][1]*dias['dias_d']/tarifas_dict['branca'][1],custo['Domingos'][1]*dias['dias_d']],
+            'Consumo P': [custo['Domingos'][2]*dias['dias_d']/tarifas_dict['branca'][2],custo['Domingos'][2]*dias['dias_d']],
+            'Total': [custo['Domingos'][0]*dias['dias_d']/tarifas_dict['branca'][0]+custo['Domingos'][1]*dias['dias_d']/tarifas_dict['branca'][1]+custo['Domingos'][2]*dias['dias_d']/tarifas_dict['branca'][2],(custo['Domingos'][0]+custo['Domingos'][1]+custo['Domingos'][2])*dias['dias_d']]
+        }
+
+        dia_results = [du_results,s_results,d_results]
+        mes_results = [mdu_results,ms_results,md_results]
     elif categoria == 'Verde':
         col += 3
         d_results = {
@@ -99,45 +131,66 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
     rs_format = workbook.add_format({'num_format':'R$ #,##0.00','border':1})
     pot_format = workbook.add_format({'num_format':'#,##0.00 "kW"','border':1})
     nrg_format = workbook.add_format({'num_format':'#,##0.00 "kWh"','border':1})
+    dias_format = workbook.add_format({'border':1,'bold':1,'fg_color':'#D9D9D9',"align": "center","valign": "vcenter"})
 
     n_col = col
     n_row = row
     i=0
-    for key in d_results.keys():
-        worksheet.write(n_row,n_col,key,border)
-        while i < len(m_results[key]):
-            if i == 0 and n_row<row+2: format = nrg_format
-            elif i == 1: format = rs_format
-            elif i == 0 and n_row>=row+2 and categoria != "Branca" and d_results[key][i]!='-': format = pot_format
-            elif i == 0 and n_row>=row+2 and categoria != "Branca" and d_results[key][i]=='-': format = border
-            else: format=nrg_format
-            worksheet.write(n_row,n_col+1,d_results[key][i],format)
-            i+=1
-            n_col+=1
-        i=0
-        n_col = col
-        n_row+=1
+    j=0
+    for result in dia_results:
+        for key in result.keys():
+            worksheet.write(n_row,n_col,key,border)
+            while i < len(result[key]):
+                if i == 0 and n_row<row+2: format = nrg_format
+                elif i == 1: format = rs_format
+                elif i == 0 and n_row>=row+2 and categoria != "Branca" and result[key][i]!='-': format = pot_format
+                elif i == 0 and n_row>=row+2 and categoria != "Branca" and result[key][i]=='-': format = border
+                else: format=nrg_format
+                worksheet.write(n_row,n_col+1,result[key][i],format)
+                i+=1
+                n_col+=1
+            i=0
+            n_col = col+3*j
+            n_row+=1
+        j+=1
+        n_col = col+3*j
+        n_row = row
+        
 
     i=0
-    n_col = col+5
-    n_row = row
-    for key in m_results.keys():
-        worksheet.write(n_row,n_col,key,border)
-        while i < len(m_results[key]):
-            if i == 0 and n_row<row+2: format = nrg_format
-            elif i == 1: format = rs_format
-            elif i == 0 and n_row>=row+2 and categoria != "Branca" and m_results[key][i]!='-': format = pot_format
-            elif i == 0 and n_row>=row+2 and categoria != "Branca" and m_results[key][i]=='-': format = border
-            else: format=nrg_format
-            worksheet.write(n_row,n_col+1,m_results[key][i],format)
-            i+=1
-            n_col+=1
-        i=0
-        n_col = col+5
-        n_row+=1
+    j=0
+    row_m = 4 + len(mes_results[0])
+    n_col = col
+    n_row = row_m
+    for result in mes_results:
+        for key in result.keys():
+            worksheet.write(n_row,n_col,key,border)
+            while i < len(result[key]):
+                if i == 0 and n_row<row_m+2: format = nrg_format
+                elif i == 1: format = rs_format
+                elif i == 0 and n_row>=row_m+2 and categoria != "Branca" and result[key][i]!='-': format = pot_format
+                elif i == 0 and n_row>=row_m+2 and categoria != "Branca" and result[key][i]=='-': format = border
+                else: format=nrg_format
+                worksheet.write(n_row,n_col+1,result[key][i],format)
+                i+=1
+                n_col+=1
+            i=0
+            n_col = col+3*j
+            n_row+=1
+        j+=1
+        n_col = col+3*j
+        n_row = row_m
 
-    worksheet.merge_range(row-1,col,row-1,col+2,"Valores Diários",merge_format)
-    worksheet.merge_range(row-1,col+5,row-1,col+5+2,"Valores Mensais",merge_format)
+    worksheet.merge_range(row-2,col,row-2,col+8,"Valores Diários",merge_format)
+    worksheet.merge_range(row-1,col,row-1,col+2,"Dias Úteis",dias_format)
+    worksheet.merge_range(row-1,col+3,row-1,col+5,"Sábados",dias_format)
+    worksheet.merge_range(row-1,col+6,row-1,col+8,"Domingos",dias_format)
+
+    worksheet.merge_range(row_m-2,col,row_m-2,col+8,"Valores Mensais",merge_format)
+    worksheet.merge_range(row_m-1,col,row_m-1,col+2,"Dias Úteis",dias_format)
+    worksheet.merge_range(row_m-1,col+3,row_m-1,col+5,"Sábados",dias_format)
+    worksheet.merge_range(row_m-1,col+6,row_m-1,col+8,"Domingos",dias_format)
+    m_results=0
     return m_results
 #--------------------------------------------------------------------------------------------------------
 

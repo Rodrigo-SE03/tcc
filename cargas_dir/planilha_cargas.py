@@ -11,16 +11,16 @@ def criar_planilha(cargas,tarifas_dict,grupo,nome,folder,h_p,dias):
     writer = pd.ExcelWriter(f'{folder}/{nome}',engine="xlsxwriter")
     tab_cargas(cargas_dict=cargas_dict,writer=writer)
     equip_dict = tab_consumo_por_carga(cargas=cargas_dict,writer=writer,grupo=grupo,h_p=h_p)
-    # if grupo == 'Grupo B':
-    #     valores_C = tab_consumo(categoria='Convencional',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-    #     valores_B = tab_consumo(categoria='Branca',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-    #     comparativo_gpb(m_results_C=valores_C[1],m_results_B=valores_B[1],grupo=grupo,writer=writer)
-    # else:    
-    #     valores_V = tab_consumo(categoria='Verde',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-    #     valores_A = tab_consumo(categoria='Azul',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-    #     reativos_V = tab_reativos(categoria='Verde',consumo_dict=valores_V[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
-    #     reativos_A = tab_reativos(categoria='Azul',consumo_dict=valores_A[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
-    #     comparativo_gpa(m_results_A=valores_A[1],m_results_V=valores_V[1],r_results_A=reativos_A,r_results_V=reativos_V,grupo=grupo,writer=writer)
+    if grupo == 'Grupo B':
+        valores_C = tab_consumo(categoria='Convencional',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+        valores_B = tab_consumo(categoria='Branca',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+        # comparativo_gpb(m_results_C=valores_C[1],m_results_B=valores_B[1],grupo=grupo,writer=writer)
+    else:    
+        valores_V = tab_consumo(categoria='Verde',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+        valores_A = tab_consumo(categoria='Azul',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
+        reativos_V = tab_reativos(categoria='Verde',consumo_dict=valores_V[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
+        reativos_A = tab_reativos(categoria='Azul',consumo_dict=valores_A[0],h_p=h_p,tarifas_dict=tarifas_dict,writer=writer,dias=dias)
+        comparativo_gpa(m_results_A=valores_A[1],m_results_V=valores_V[1],r_results_A=reativos_A,r_results_V=reativos_V,grupo=grupo,writer=writer)
     
     writer.close()
 #--------------------------------------------------------------------------------------------------------
@@ -157,43 +157,56 @@ def select_consumo(itens,categoria,h_p):
     postos = calc_intervalo(inicio="00:00",fim="01:00",grupo=grupo,h_p=h_p,postos=True)
 
     if categoria == 'Convencional':
-        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência - kW':[]}
+        consumo_dict = {
+            'Dias Úteis': {'Horas':[],'Minutos':[],'Instante':[],'Potência - kW':[]},
+            'Sábados': {'Horas':[],'Minutos':[],'Instante':[],'Potência - kW':[]},
+            'Domingos': {'Horas':[],'Minutos':[],'Instante':[],'Potência - kW':[]}
+        }
         for h in range(0,24):
             for m in range(0,60):
-                i=0
-                pot=0
-                while i < len(itens['Carga']):
-                    if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):
-                        pot += itens['Potência (kW)'][i]
-                    i+=1
-                consumo_dict['Potência - kW'].append(pot)
-                consumo_dict['Horas'].append(h)
-                consumo_dict['Minutos'].append(m)
-                consumo_dict['Instante'].append(0) 
+                for dia in consumo_dict.keys():
+                    i=0
+                    pot=0
+                    while i < len(itens['Carga']):
+                        if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]) and dia == itens['Dias de Uso'][i]:
+                            pot += itens['Potência (kW)'][i]
+                        i+=1
+                    consumo_dict[dia]['Potência - kW'].append(pot)
+                    consumo_dict[dia]['Horas'].append(h)
+                    consumo_dict[dia]['Minutos'].append(m)
+                    consumo_dict[dia]['Instante'].append(0) 
     
     elif categoria == 'Branca':
-        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência I - kW':[]}
+        consumo_dict = {
+            'Dias Úteis': {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência I - kW':[]},
+            'Sábados': {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência I - kW':[]},
+            'Domingos': {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência I - kW':[]}
+        }
         for h in range(0,24):
             for m in range(0,60):
-                i=0
-                pot_fp = 0
-                pot_p = 0
-                pot_i = 0
-                while i < len(itens['Carga']):
-                    if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):  
-                        if (h*60+m) in postos[1]:
-                            pot_i += itens['Potência (kW)'][i]
-                        elif (h*60+m) in postos[0]:
-                            pot_fp += itens['Potência (kW)'][i]
-                        else:
-                            pot_p += itens['Potência (kW)'][i]
-                    i+=1
-                consumo_dict['Potência FP - kW'].append(pot_fp)
-                consumo_dict['Potência P - kW'].append(pot_p)
-                consumo_dict['Potência I - kW'].append(pot_i)
-                consumo_dict['Horas'].append(h)
-                consumo_dict['Minutos'].append(m)
-                consumo_dict['Instante'].append(0)
+                for dia in consumo_dict.keys():
+                    i=0
+                    pot_fp = 0
+                    pot_p = 0
+                    pot_i = 0
+                    while i < len(itens['Carga']):
+                        if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]) and dia == itens['Dias de Uso'][i]:  
+                            if dia == 'Sábados' or dia == 'Domingos':
+                                pot_fp += itens['Potência (kW)'][i]
+                            else:
+                                if (h*60+m) in postos[1]:
+                                    pot_i += itens['Potência (kW)'][i]
+                                elif (h*60+m) in postos[0]:
+                                    pot_fp += itens['Potência (kW)'][i]
+                                else:
+                                    pot_p += itens['Potência (kW)'][i]
+                        i+=1
+                    consumo_dict[dia]['Potência FP - kW'].append(pot_fp)
+                    consumo_dict[dia]['Potência P - kW'].append(pot_p)
+                    consumo_dict[dia]['Potência I - kW'].append(pot_i)
+                    consumo_dict[dia]['Horas'].append(h)
+                    consumo_dict[dia]['Minutos'].append(m)
+                    consumo_dict[dia]['Instante'].append(0)
     
     else:
         consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP':[],'Limite - Indutivo':[],'Limite - Capacitivo':[]}
@@ -228,76 +241,87 @@ def select_consumo(itens,categoria,h_p):
                 consumo_dict['Limite - Capacitivo'].append(-0.92)
                 consumo_dict['Limite - Indutivo'].append(0.92)
                 j+=1
-    
+                
     return consumo_dict
 #--------------------------------------------------------------------------------------------------------
 
 #Função para calcular o custo da energia
-def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict):
-    if categoria == 'Convencional': custo = 0
-    elif categoria == 'Branca': custo = [0,0,0]
+def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict,itens):
+    if categoria == 'Convencional': custo = {'Dias Úteis':0,'Sábados':0,'Domingos':0}
+    elif categoria == 'Branca': custo = {'Dias Úteis':[0,0,0],'Sábados':[0,0,0],'Domingos':[0,0,0]}
     elif categoria == 'Verde':
-        custo = [0,0,0]
+        custo = {'Dias Úteis':[0,0,0],'Sábados':[0,0],'Domingos':[0,0]}
 
         #Cálculo da demanda (valor máximo da média das potências medidas em 15 minutos)
         demanda = []
-        i = 0
-        d = 0 
-        while i<len(consumo_dict['Potência FP - kW']):
-            if (i % 15) == 0:
-                demanda.append(d/15)
-                d = 0
-            d += consumo_dict['Potência FP - kW'][i] + consumo_dict['Potência P - kW'][i]
-            i+=1
+        for key in consumo_dict.keys():
+            i = 0
+            d = 0 
+            while i<len(consumo_dict[key]['Potência FP - kW']):
+                if (i % 15) == 0:
+                    demanda.append(d/15)
+                    d = 0
+                d += consumo_dict[key]['Potência FP - kW'][i] + consumo_dict[key]['Potência P - kW'][i]
+                i+=1
         demanda = max(demanda)
         #--------------------------------------------------------------------------------------------------------
 
-        custo[2] = demanda*tarifas_dict['verde'][2]
+        custo['Dias Úteis'][2] = demanda*tarifas_dict['verde'][2]
     else: 
-        custo = [0,0,0,0]
+        {'Dias Úteis':[0,0,0,0],'Sábados':[0,0],'Domingos':[0,0]}
 
         #Cálculo da demanda fp (valor máximo da média das potências medidas em 15 minutos)
         demanda_fp = []
-        i = 0
-        d = 0 
-        while i<len(consumo_dict['Potência FP - kW']):
-            if (i % 15) == 0:
-                demanda_fp.append(d/15)
-                d = 0
-            d += consumo_dict['Potência FP - kW'][i]
-            i+=1
+        for key in consumo_dict.keys():
+            i = 0
+            d = 0
+            while i<len(consumo_dict[key]['Potência FP - kW']):
+                if (i % 15) == 0:
+                    demanda_fp.append(d/15)
+                    d = 0
+                d += consumo_dict[key]['Potência FP - kW'][i]
+                i+=1
         demanda_fp = max(demanda_fp)
         #--------------------------------------------------------------------------------------------------------
         
         #Cálculo da demanda p (valor máximo da média das potências medidas em 15 minutos)
         demanda_p = []
-        i = 0
-        d = 0 
-        while i<len(consumo_dict['Potência P - kW']):
-            if (i % 15) == 0:
-                demanda_p.append(d/15)
-                d = 0
-            d += consumo_dict['Potência P - kW'][i]
-            i+=1
+        for key in consumo_dict.keys():
+            i = 0
+            d = 0 
+            while i<len(consumo_dict[key]['Potência P - kW']):
+                if (i % 15) == 0:
+                    demanda_p.append(d/15)
+                    d = 0
+                d += consumo_dict[key]['Potência P - kW'][i]
+                i+=1
         demanda_p = max(demanda_p)
         #--------------------------------------------------------------------------------------------------------
         
-        custo[2] = demanda_fp*tarifas_dict['azul'][2]
-        custo[3] = demanda_p*tarifas_dict['azul'][3]
+        custo['Dias Úteis'][2] = demanda_fp*tarifas_dict['azul'][2]
+        custo['Dias Úteis'][3] = demanda_p*tarifas_dict['azul'][3]
     i=0
-    while i < len(equip_dict['Carga']):
+    while i < len(itens['Carga']):
         if categoria=='Convencional':
-            custo += equip_dict['Total - C'][i]*tarifas_dict['convencional']
+            for key in custo.keys():
+                if key == itens['Dias de Uso'][i]:
+                    custo[key] += equip_dict['Total - C'][i]*tarifas_dict['convencional']
         elif categoria=='Branca':
-            custo[0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['branca'][0]
-            custo[1] += equip_dict['C - Intermediário'][i]*tarifas_dict['branca'][1]
-            custo[2] += equip_dict['C - Ponta'][i]*tarifas_dict['branca'][2]
+            for key in custo.keys():
+                if key == itens['Dias de Uso'][i]:
+                    custo[key][0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['branca'][0]
+                    custo[key][1] += equip_dict['C - Intermediário'][i]*tarifas_dict['branca'][1]
+                    custo[key][2] += equip_dict['C - Ponta'][i]*tarifas_dict['branca'][2]
         elif categoria == 'Verde':
-            custo[0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['verde'][0]
-            custo[1] += equip_dict['C - Ponta'][i]*tarifas_dict['verde'][1]
+            for key in custo.keys():
+                if key == itens['Dias de Uso'][i]:
+                    custo[key][0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['verde'][0]
+                    custo[key][1] += equip_dict['C - Ponta'][i]*tarifas_dict['verde'][1]
         else:
-            custo[0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['azul'][0]
-            custo[1] += equip_dict['C - Ponta'][i]*tarifas_dict['azul'][1]
+            for key in custo.keys():
+                if key == itens['Dias de Uso'][i]:
+                    custo[key][0] += equip_dict['C - Fora Ponta'][i]*tarifas_dict['azul'][0]
+                    custo[key][1] += equip_dict['C - Ponta'][i]*tarifas_dict['azul'][1]
         i+=1
 
     return custo
@@ -308,32 +332,42 @@ def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict):
 def tab_consumo(itens,writer,categoria,h_p,equip_dict,tarifas_dict,dias):  
     consumo_dict = select_consumo(itens,categoria,h_p)
 
-    custo = calc_custo(consumo_dict=consumo_dict,categoria=categoria,equip_dict=equip_dict,tarifas_dict=tarifas_dict)
+    custo = calc_custo(consumo_dict=consumo_dict,categoria=categoria,equip_dict=equip_dict,tarifas_dict=tarifas_dict,itens=itens)
 
-    df_consumo = pd.DataFrame(consumo_dict)
-    df_consumo.to_excel(writer, sheet_name=f"Consumo - {categoria}", startrow=1, header=False, index=False)
-    workbook = writer.book
-    worksheet = writer.sheets[f"Consumo - {categoria}"]
-    (max_row, max_col) = df_consumo.shape
-    column_settings = [{"header": column} for column in df_consumo.columns]
-    worksheet.add_table(0, 0, max_row, max_col - 1, {"columns": column_settings})
-    worksheet.set_column(0, max_col - 1, 12)
+
+    i=0
+    for dias_de_uso in consumo_dict.keys():
+        df_consumo = pd.DataFrame(consumo_dict[dias_de_uso])
+        df_consumo.to_excel(writer, sheet_name=f"Consumo - {categoria}", startrow=1+1442*i, header=False, index=False)
+        workbook = writer.book
+        worksheet = writer.sheets[f"Consumo - {categoria}"]
+        (max_row, max_col) = df_consumo.shape
+        column_settings = [{"header": column} for column in df_consumo.columns]
+        worksheet.add_table(i*(1442), 0, max_row+(1442)*i, max_col - 1, {"columns": column_settings})
+        worksheet.set_column(0, max_col - 1, 12)
+        i+=1
+
+
     custos_mensais = estilos_cargas.custos(custo=custo,writer=writer,categoria=categoria,workbook=workbook,worksheet=worksheet,dias=dias,tarifas_dict=tarifas_dict)
 
     hora_format = workbook.add_format({'num_format': 'hh:mm:ss'})
     i=1
-    while i <= len(consumo_dict['Horas']):
+    while i <= len(consumo_dict['Dias Úteis']['Horas']):
         worksheet.write_formula(f'C{i+1}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1}, B{i+1}, 0)',hora_format)
+        worksheet.write_formula(f'C{i+1443}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1443}, B{i+1443}, 0)',hora_format)
+        worksheet.write_formula(f'C{i+1443*2}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1443*2}, B{i+1443*2}, 0)',hora_format)
         i+=1
     
     worksheet.set_column("A:B",None, None,{"hidden":True})
     worksheet.autofit()
-    if categoria != 'Convencional':
-        worksheet.set_column('J:K',16)
+    if categoria == 'Convencional':
+        worksheet.set_column('I:Q',12)
+    elif categoria == 'Branca':
+        worksheet.set_column('J:R',12)
     if categoria == 'Verde' or 'Azul':
         worksheet.set_column('Q:Q',16)
     criar_grafico(worksheet,workbook,categoria)
-    return [consumo_dict,custos_mensais]
+    return [consumo_dict['Dias Úteis'],custos_mensais]
 #--------------------------------------------------------------------------------------------------------
 
 #Criação da curva de consumo diária
