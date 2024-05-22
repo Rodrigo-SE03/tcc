@@ -60,6 +60,7 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
 
         dia_results = [du_results,s_results,d_results]
         mes_results = [mdu_results,ms_results,md_results]
+        total_results = [{'Consumo': [mdu_results['Consumo'][0]+ms_results['Consumo'][0]+md_results['Consumo'][0],mdu_results['Consumo'][1]+ms_results['Consumo'][1]+md_results['Consumo'][1]]}]
     elif categoria == 'Branca':
         col += 1
         du_results = {
@@ -98,6 +99,12 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
 
         dia_results = [du_results,s_results,d_results]
         mes_results = [mdu_results,ms_results,md_results]
+        total_results = [{
+            'Consumo FP': [mdu_results['Consumo FP'][0]+ms_results['Consumo FP'][0]+md_results['Consumo FP'][0],mdu_results['Consumo FP'][1]+ms_results['Consumo FP'][1]+md_results['Consumo FP'][1]],
+            'Consumo I': [mdu_results['Consumo I'][0]+ms_results['Consumo I'][0]+md_results['Consumo I'][0],mdu_results['Consumo I'][1]+ms_results['Consumo I'][1]+md_results['Consumo I'][1]],
+            'Consumo P': [mdu_results['Consumo P'][0]+ms_results['Consumo P'][0]+md_results['Consumo P'][0],mdu_results['Consumo P'][1]+ms_results['Consumo P'][1]+md_results['Consumo P'][1]],
+            'Total': [mdu_results['Total'][0]+ms_results['Total'][0]+md_results['Total'][0],mdu_results['Total'][1]+ms_results['Total'][1]+md_results['Total'][1]]
+        }]
     elif categoria == 'Verde':
         col += 3
         d_results = {
@@ -180,6 +187,31 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
         j+=1
         n_col = col+3*j
         n_row = row_m
+    
+
+    i=0
+    j=0
+    row_t = row-1
+    n_col = col+12
+    n_row = row_t
+    for result in total_results:
+        for key in result.keys():
+            worksheet.write(n_row,n_col,key,border)
+            while i < len(result[key]):
+                if i == 0 and n_row<row_t+2: format = nrg_format
+                elif i == 1: format = rs_format
+                elif i == 0 and n_row>=row_t+2 and categoria != "Branca" and result[key][i]!='-': format = pot_format
+                elif i == 0 and n_row>=row_t+2 and categoria != "Branca" and result[key][i]=='-': format = border
+                else: format=nrg_format
+                worksheet.write(n_row,n_col+1,result[key][i],format)
+                i+=1
+                n_col+=1
+            i=0
+            n_col = col+12+3*j
+            n_row+=1
+        j+=1
+        n_col = col+3*j
+        n_row = row_t
 
     worksheet.merge_range(row-2,col,row-2,col+8,"Valores Diários",merge_format)
     worksheet.merge_range(row-1,col,row-1,col+2,"Dias Úteis",dias_format)
@@ -190,8 +222,103 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
     worksheet.merge_range(row_m-1,col,row_m-1,col+2,"Dias Úteis",dias_format)
     worksheet.merge_range(row_m-1,col+3,row_m-1,col+5,"Sábados",dias_format)
     worksheet.merge_range(row_m-1,col+6,row_m-1,col+8,"Domingos",dias_format)
-    m_results=0
+
+    worksheet.merge_range(row_t-1,col+12,row_t-1,col+14,"Total Mensal",merge_format)
+
+    m_results=total_results[0]
     return m_results
+#--------------------------------------------------------------------------------------------------------
+
+#Criação da curva de consumo diária
+def criar_grafico(worksheet,workbook,categoria,dias): 
+    chart_du = workbook.add_chart({'type':'column'})
+    if dias['dias_s'] != 0:
+        chart_s = workbook.add_chart({'type':'column'})
+    if dias['dias_d'] != 0:
+        chart_d = workbook.add_chart({'type':'column'})
+
+    if categoria == 'Convencional':
+        chart_du.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
+        if dias['dias_s'] != 0:
+            chart_s.add_series({'categories':f"='Consumo - {categoria}'!$C$1444:$C$2883",'name': "Potência",'values':f"='Consumo - {categoria}'!$D$1444:$D$2883"})
+        if dias['dias_d'] != 0:
+            chart_d.add_series({'categories':f"='Consumo - {categoria}'!$C$2886:$C$4324",'name': "Potência",'values':f"='Consumo - {categoria}'!$D$2886:$D$4324"})
+    elif categoria == 'Branca':
+        chart_du.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
+        chart_du.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
+        chart_du.add_series({'name':"Potência - Intermediário",'values':f"='Consumo - {categoria}'!$F$2:$F$1441"})
+        if dias['dias_s'] != 0:
+            chart_s.add_series({'categories':f"='Consumo - {categoria}'!$C$1444:$C$2883",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$1444:$D$2883"})
+            chart_s.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$1444:$E$2883"})
+            chart_s.add_series({'name':"Potência - Intermediário",'values':f"='Consumo - {categoria}'!$F$1444:$F$2883"})
+        if dias['dias_d'] != 0:
+            chart_d.add_series({'categories':f"='Consumo - {categoria}'!$C$2886:$C$4324",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2886:$D$4324"})
+            chart_d.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2886:$E$4324"})
+            chart_d.add_series({'name':"Potência - Intermediário",'values':f"='Consumo - {categoria}'!$F$2886:$F$4324"})
+    else:
+        chart_du.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
+        chart_du.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
+        line_chart = workbook.add_chart({'type':'line'})
+        line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
+        line_chart.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+        line_chart.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$2:$J$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+        line_chart.set_y2_axis({'name':'Fator de Potência'})
+        chart_du.combine(line_chart)
+    
+    chart_du.set_x_axis(
+    {
+        "interval_unit": 60,
+        "num_format": "h",
+        'name':'Tempo - horas'
+    })
+    chart_du.set_legend({'position':'bottom','delete_series':[4]})
+    chart_du.set_y_axis({'name':'Potência - kW'})
+    chart_du.set_size({'width': 860, 'height': 450})
+    chart_du.set_title({'name':'Perfil de Consumo - Dias Úteis'})
+
+    if dias['dias_s'] != 0:
+        chart_s.set_x_axis(
+        {
+            "interval_unit": 60,
+            "num_format": "h",
+            'name':'Tempo - horas'
+        })
+        chart_s.set_legend({'position':'bottom','delete_series':[4]})
+        chart_s.set_y_axis({'name':'Potência - kW'})
+        chart_s.set_size({'width': 860, 'height': 450})
+        chart_s.set_title({'name':'Perfil de Consumo - Sábados'})
+
+    if dias['dias_d'] != 0:
+        chart_d.set_x_axis(
+        {
+            "interval_unit": 60,
+            "num_format": "h",
+            'name':'Tempo - horas'
+        })
+        chart_d.set_legend({'position':'bottom','delete_series':[4]})
+        chart_d.set_y_axis({'name':'Potência - kW'})
+        chart_d.set_size({'width': 860, 'height': 450})
+        chart_d.set_title({'name':'Perfil de Consumo - Domingos'})
+
+    if categoria == "Branca":
+        worksheet.insert_chart('H14', chart_du)
+        if dias['dias_s'] != 0:
+            worksheet.insert_chart('S14', chart_s)
+        if dias['dias_d'] != 0:
+            worksheet.insert_chart('AE14', chart_d)
+    elif categoria == 'Verde' or categoria == 'Azul':
+        worksheet.insert_chart('L9', chart_du)
+        if dias['dias_s'] != 0:
+            worksheet.insert_chart('Q9', chart_s)
+        if dias['dias_d'] != 0:
+            worksheet.insert_chart('AD9', chart_d)
+    else:
+        chart_du.set_legend({'none': True})
+        worksheet.insert_chart('F9', chart_du)
+        if dias['dias_s'] != 0:
+            worksheet.insert_chart('Q9', chart_s)
+        if dias['dias_d'] != 0:
+            worksheet.insert_chart('AB9', chart_d)
 #--------------------------------------------------------------------------------------------------------
 
 #Definição do estilo visual das tabelas de elementos reativos

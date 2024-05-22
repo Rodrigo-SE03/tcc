@@ -14,7 +14,7 @@ def criar_planilha(cargas,tarifas_dict,grupo,nome,folder,h_p,dias):
     if grupo == 'Grupo B':
         valores_C = tab_consumo(categoria='Convencional',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
         valores_B = tab_consumo(categoria='Branca',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
-        # comparativo_gpb(m_results_C=valores_C[1],m_results_B=valores_B[1],grupo=grupo,writer=writer)
+        comparativo_gpb(m_results_C=valores_C[1],m_results_B=valores_B[1],grupo=grupo,writer=writer)
     else:    
         valores_V = tab_consumo(categoria='Verde',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
         valores_A = tab_consumo(categoria='Azul',itens=cargas_dict,writer=writer,h_p=h_p,equip_dict=equip_dict,tarifas_dict=tarifas_dict,dias=dias)
@@ -355,58 +355,23 @@ def tab_consumo(itens,writer,categoria,h_p,equip_dict,tarifas_dict,dias):
     while i <= len(consumo_dict['Dias Úteis']['Horas']):
         worksheet.write_formula(f'C{i+1}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1}, B{i+1}, 0)',hora_format)
         worksheet.write_formula(f'C{i+1443}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1443}, B{i+1443}, 0)',hora_format)
-        worksheet.write_formula(f'C{i+1443*2}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1443*2}, B{i+1443*2}, 0)',hora_format)
+        worksheet.write_formula(f'C{i+1443*2-1}', f'=DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY())) + TIME(A{i+1443*2}, B{i+1443*2}, 0)',hora_format)
         i+=1
     
     worksheet.set_column("A:B",None, None,{"hidden":True})
     worksheet.autofit()
     if categoria == 'Convencional':
         worksheet.set_column('I:Q',12)
+        worksheet.set_column('V:W',16)
     elif categoria == 'Branca':
         worksheet.set_column('J:R',12)
     if categoria == 'Verde' or 'Azul':
         worksheet.set_column('Q:Q',16)
-    criar_grafico(worksheet,workbook,categoria)
+    estilos_cargas.criar_grafico(worksheet,workbook,categoria,dias=dias)
     return [consumo_dict['Dias Úteis'],custos_mensais]
 #--------------------------------------------------------------------------------------------------------
 
-#Criação da curva de consumo diária
-def criar_grafico(worksheet,workbook,categoria): 
-    chart = workbook.add_chart({'type':'column'})
-    if categoria == 'Convencional':
-        chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
-    elif categoria == 'Branca':
-        chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
-        chart.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
-        chart.add_series({'name':"Potência - Intermediário",'values':f"='Consumo - {categoria}'!$F$2:$F$1441"})
-    else:
-        chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
-        chart.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
-        line_chart = workbook.add_chart({'type':'line'})
-        line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
-        line_chart.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
-        line_chart.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$2:$J$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
-        line_chart.set_y2_axis({'name':'Fator de Potência'})
-        chart.combine(line_chart)
-    
-    chart.set_x_axis(
-    {
-        "interval_unit": 60,
-        "num_format": "h",
-        'name':'Tempo - horas'
-    })
-    chart.set_legend({'position':'bottom','delete_series':[4]})
-    chart.set_y_axis({'name':'Potência - kW'})
-    chart.set_size({'width': 860, 'height': 450})
-    chart.set_title({'name':'Perfil de Consumo'})
-    if categoria == "Branca":
-        worksheet.insert_chart('J9', chart)
-    elif categoria == 'Verde' or categoria == 'Azul':
-        worksheet.insert_chart('L9', chart)
-    else:
-        chart.set_legend({'none': True})
-        worksheet.insert_chart('I9', chart)
-#--------------------------------------------------------------------------------------------------------
+
 
 #Criação da aba com os elementos reativos identificados na instalação   
 def tab_reativos(categoria,consumo_dict,h_p,tarifas_dict,writer,dias):
