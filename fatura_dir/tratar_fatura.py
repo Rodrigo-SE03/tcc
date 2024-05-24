@@ -1,5 +1,7 @@
 from PyPDF2 import PdfReader
 import os
+from datetime import date, timedelta
+import pandas as pd
 
 def demanda_contratada(form_fatura):
     dem_c = 0
@@ -14,6 +16,155 @@ def converter(valor):
     valor = valor.replace('.','')
     valor = valor.replace(',','.')
     return float(valor)
+#--------------------------------------------------------------------------------------------------------
+
+def get_mes_num(mes):
+    if mes == 'JAN': mes = 1
+    elif mes == 'FEV': mes = 2
+    elif mes == 'MAR': mes = 3
+    elif mes == 'ABR': mes = 4
+    elif mes == 'MAI': mes = 5
+    elif mes == 'JUN': mes = 6
+    elif mes == 'JUL': mes = 7
+    elif mes == 'AGO': mes = 8
+    elif mes == 'SET': mes = 9
+    elif mes == 'OUT': mes = 10
+    elif mes == 'NOV': mes = 11
+    elif mes == 'DEZ': mes = 12
+    return mes
+
+def get_mes_nom(mes):
+    if mes == 1: mes = 'JAN'
+    elif mes == 2: mes = 'FEV'
+    elif mes == 3: mes = 'MAR'
+    elif mes == 4: mes = 'ABR'
+    elif mes == 5: mes = 'MAI'
+    elif mes == 6: mes = 'JUN'
+    elif mes == 7: mes = 'JUL'
+    elif mes == 8: mes = 'AGO'
+    elif mes == 9: mes = 'SET'
+    elif mes == 10: mes = 'OUT'
+    elif mes == 11: mes = 'NOV'
+    elif mes == 12: mes = 'DEZ'
+    return mes
+
+#Função para definir os meses da análise
+def definir_meses(data):
+    meses = []
+    anos = []
+    new_m = date(data[1],get_mes_num(data[0]),1)
+    meses.append(get_mes_nom(new_m.month))
+    anos.append(new_m.year)
+    for i in range(0,11):
+        new_m = (new_m - timedelta(days=1)).replace(day=1)
+        meses.append(get_mes_nom(new_m.month))
+        anos.append(new_m.year)
+    
+    return [meses,anos]
+#--------------------------------------------------------------------------------------------------------
+
+#Função para salvar os dados no modelo manual
+def dados_manual(form_manual,dem_c,tarifas,meses,anos):
+
+    dem_p = form_manual.demanda_p.data
+    dem_fp = form_manual.demanda_fp.data
+    dem_r = form_manual.dmcr.data
+    con_p = form_manual.consumo_p.data
+    con_fp = form_manual.consumo_fp.data
+    con_r = form_manual.ufer.data
+    hr_con = form_manual.consumo_hr.data
+    hr_r = form_manual.ufer_hr.data
+
+    historico_dict={
+        'mes':meses,
+        'ano': anos,
+        'demanda_p':dem_p,
+        'demanda_fp':dem_fp,
+        'dmcr':dem_r,
+        'consumo_p': con_p,
+        'consumo_fp': con_fp,
+        'consumo_hr': hr_con,
+        'ufer': con_r,
+        'ufer_hr': hr_r
+    }
+
+    meses_formatado = []
+    for i in range(0,12):
+        meses_formatado.append(f'{meses[i]}/{anos[i][-2:]}')
+
+    demandas_dict = calc_demanda(dem_p=dem_p,dem_fp=dem_fp,dem_c=dem_c,mes=meses_formatado,tarifas=tarifas)
+    consumos_dict = calc_consumos(con_fp=con_fp,con_p=con_p,hr_con=hr_con,mes=meses_formatado,tarifas=tarifas)
+    reativos_dict = calc_reativos(con_r=con_r,dem_r=dem_r,hr_r=hr_r,mes=meses_formatado,tarifas=tarifas)
+
+    fatura_dict = {
+        'Mês': meses_formatado,
+        'Demanda': demandas_dict,
+        'Consumo': consumos_dict,
+        'Reativo': reativos_dict
+    }
+    return [fatura_dict,historico_dict]
+
+#--------------------------------------------------------------------------------------------------------
+
+#Função para leitura dos dados de histórico das faturas no modelo em excel
+def ler_excel(file,folder,tarifas,dem_c):
+
+    df = pd.read_excel(f'{folder}/{file}')
+    os.remove(f'{folder}/{file}')
+    try:
+        if df.iloc[0,9] == 'Validar':
+            pass
+        else:
+            print('else')
+            return 'Arquivo inválido'
+    except:
+        print('except')
+        return 'Arquivo inválido'
+    
+    m0 = df['Mês'].tolist()[0]
+    data = [0,0]
+    data[0] = m0.split('/')[0]
+    data[1] = int(f'20{m0.split('/')[1]}')
+    meses,anos = definir_meses(data)
+    dem_p = df['Demanda Registrada na Ponta'].tolist()
+    dem_fp = df['Demanda Registrada Fora Ponta'].tolist()
+    dem_r = df['DMCR'].tolist()
+    con_p = df['Consumo na Ponta'].tolist()
+    con_fp = df['Consumo Fora Ponta'].tolist()
+    con_r = df['UFER'].tolist()
+    hr_con = df['Consumo no Horário Reservado'].tolist()
+    hr_r = df['UFER Horário Reservado'].tolist()
+
+    meses_formatado = []
+    for i in range(0,12):
+        meses_formatado.append(f'{meses[i]}/{str(anos[i])[-2:]}')
+
+    demandas_dict = calc_demanda(dem_p=dem_p,dem_fp=dem_fp,dem_c=dem_c,mes=meses_formatado,tarifas=tarifas)
+    consumos_dict = calc_consumos(con_fp=con_fp,con_p=con_p,hr_con=hr_con,mes=meses_formatado,tarifas=tarifas)
+    reativos_dict = calc_reativos(con_r=con_r,dem_r=dem_r,hr_r=hr_r,mes=meses_formatado,tarifas=tarifas)
+
+    fatura_dict = {
+        'Mês': meses_formatado,
+        'Demanda': demandas_dict,
+        'Consumo': consumos_dict,
+        'Reativo': reativos_dict
+    }
+
+    historico_dict={
+        'mes':meses,
+        'ano': anos,
+        'demanda_p':dem_p,
+        'demanda_fp':dem_fp,
+        'dmcr':dem_r,
+        'consumo_p': con_p,
+        'consumo_fp': con_fp,
+        'consumo_hr': hr_con,
+        'ufer': con_r,
+        'ufer_hr': hr_r
+    }
+
+    return [fatura_dict,historico_dict]
+            
 #--------------------------------------------------------------------------------------------------------
 
 #Função para leitura dos dados da fatura

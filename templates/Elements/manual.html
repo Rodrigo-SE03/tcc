@@ -1,37 +1,48 @@
 {% block body %}
+
 <div class = 'border p-5 mt-5 mb-4'>
     <form method="POST">
-        <legend>Modelo Manual</legend>
+        <legend>Preenchimento Manual</legend>
         <fieldset>
             <div class = 'row'>
                 <div class="col">
                         <div class="form-group">
-                                {{ form_manual.mes.label(class = 'form-control-label') }}
-                                {{ form_manual.mes(class = 'form-control') }}
+                                {{ form_data.mes.label(class = 'form-control-label') }}
+                                {{ form_data.mes(class = 'form-control') }}
                         </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
-                            {{ form_manual.ano.label(class = 'form-control-label') }}
-                            {{ form_manual.ano(class = 'form-control') }}
+                            {{ form_data.ano.label(class = 'form-control-label') }}
+                            {{ form_data.ano(class = 'form-control') }}
                     </div>
                 </div>
+                <div class="col">
+                    <div class="form-group">
+                            <div><br></div>
+                            {{ form_data.registrar(class = 'btn btn-primary') }}
+                    </div>
             </div>
+            </div>
+        </fieldset>
+    </form>
+    <form method="POST">
+        <fieldset>
                 <div class="row mt-4">
 
                     <div class = 'col-sm-1'>
-                        <h6>Mês</h6>
+                        <h6 class="text-center">Mês<br>-</h6>
                         {% for i in range(0,12) %}
                         <div class="row mt-2">
                             <div class="form-group">
-                                    <label for="colFormLabel" class="col-form-label">JAN/24</label>
+                                    <label for="colFormLabel" class="col-form-label">{{ meses[i] }}/{{ anos[i] }}</label>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
 
                     <div class = 'col'>
-                        <h6>Demanda P</h6>
+                        <h6 class="text-center">Demanda P (kW)</h6>
                         {% for field in form_manual.demanda_p %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -42,7 +53,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>Demanda FP</h6>
+                        <h6 class="text-center">Demanda FP (kW)</h6>
                         {% for field in form_manual.demanda_fp %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -53,7 +64,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>Consumo P</h6>
+                        <h6 class="text-center">Consumo P (kWh)</h6>
                         {% for field in form_manual.consumo_p %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -64,7 +75,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>Consumo FP</h6>
+                        <h6 class="text-center">Consumo FP (kWh)</h6>
                         {% for field in form_manual.consumo_fp %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -75,7 +86,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>Consumo HR</h6>
+                        <h6 class="text-center">Consumo HR (kWh)</h6>
                         {% for field in form_manual.consumo_hr %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -86,7 +97,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>UFER</h6>
+                        <h6 class="text-center">UFER<br>(kVarh)</h6>
                         {% for field in form_manual.ufer %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -97,7 +108,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>UFER HR</h6>
+                        <h6 class="text-center">UFER HR (kVarh)</h6>
                         {% for field in form_manual.ufer_hr %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -108,7 +119,7 @@
                     </div>
 
                     <div class = 'col'>
-                        <h6>DMCR</h6>
+                        <h6 class="text-center">DMCR<br>(kW)</h6>
                         {% for field in form_manual.dmcr %}
                         <div class="row mt-2">
                             <div class="form-group">
@@ -118,7 +129,43 @@
                         {% endfor %}
                     </div>
                 </div>
+                <div class="row mt-3">
+                    <div class="form-group">
+                        <div><br></div>
+                        {{ form_manual.registrar_dados(class = 'btn btn-primary') }}
+                </div>
+            </div>
         </fieldset>
     </form>
+    <div class = 'mt-4'>
+        <legend>Carregar Histórico (.xlsx)</legend>
+        <form method="POST" enctype = "multipart/form-data" >
+            <div class="input-group mb-3">
+                <input class="form-control" id="inputGroupFile02" style="visibility: visible;" type=file name=file>
+                <input class="btn btn-warning" for="inputGroupFile02" type="submit" value="Carregar" name="load">
+            </div>
+        </form>
+    </div>
+    {% if fatura_dict != {} %}
+        <form method="POST" class="mb-5 mt-4">
+            <legend>Salvar Análise</legend>
+            <fieldset>
+                    <div class = 'row'>
+                            <div class="col">
+                                    <div class="form-group">
+                                            {{ form_salvar_fatura.nome.label(class = 'form-control-label') }}
+                                            {{ form_salvar_fatura.nome(class = 'form-control') }}
+                                    </div>
+                            </div>
+                            <div class="col">
+                                    <div class="form-group">
+                                            <div><br></div>
+                                            {{ form_salvar_fatura.salvar_btn(class = 'btn btn-success') }}
+                                    </div>
+                            </div>
+                    </div>
+            </fieldset>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}

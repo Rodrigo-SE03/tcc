@@ -1,10 +1,11 @@
 from flask import Flask, render_template, url_for, request, flash, send_from_directory
-from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura,FormInfo,SelecionarAnalise,FormManual
+from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura,FormInfo,SelecionarAnalise,FormManual,FormData
 from werkzeug.utils import secure_filename
 import os
 from cargas_dir import planilha_cargas,tratar_cargas
 from tarifas_dir import tratar_tarifas
 from fatura_dir import planilha_fatura,tratar_fatura
+from datetime import datetime
 
 
 UPLOAD_FOLDER = 'arquivos'
@@ -16,6 +17,7 @@ dias = {
     'dias_s': 4,
     'dias_d': 4
 }
+data = ['JAN',datetime.today().year]
 nome_arquivo = ''
 tarifas_dict = {
     'convencional': 0.0,
@@ -39,8 +41,21 @@ cargas_dict = {
     }
 
 fatura_dict = {}
+historico_dict={
+        'mes':[],
+        'ano':[],
+        'demanda_p':[],
+        'demanda_fp':[],
+        'dmcr':[],
+        'consumo_p': [],
+        'consumo_fp':[],
+        'consumo_hr':[],
+        'ufer': [],
+        'ufer_hr': []
+    }
 dem_c = 0
-
+meses = ['DEZ','NOV','OUT','SET','AGO','JUL','JUN','MAI','ABR','MAR','FEV','JAN']
+anos = [datetime.today().year]*12
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '358823e5046ab23c149ff9a047b30ae8'
@@ -248,15 +263,41 @@ def faturas():
     global dem_c
     global nome_arquivo
     global tipo_analise
-    form_manual = FormManual()
+    global data
+    global meses
+    global anos
+    global historico_dict
+    if len(historico_dict['mes']) == 0:
+        form_manual = FormManual()
+    else:
+        form_manual = FormManual(demanda_p = historico_dict['demanda_p'],demanda_fp = historico_dict['demanda_fp'],consumo_p = historico_dict['consumo_p'],consumo_fp = historico_dict['consumo_fp'],consumo_hr = historico_dict['consumo_hr'],
+                                 ufer = historico_dict['ufer'],ufer_hr = historico_dict['ufer_hr'],dmcr = historico_dict['dmcr'])
     form_salvar_fatura = FormSalvarFatura()
+    form_data = FormData(mes = data[0],ano=data[1])
     form_selecionar_analise = SelecionarAnalise(data={'tipo_analise':tipo_analise})
 
-    #Procedimento para reiniciar valor das tarifas caso haja mudança
+    #Procedimento para definir o tipo de análise (manual ou automática)
     if request.method == 'POST' and 'selecionar' in request.form:   
         tipo_analise = form_selecionar_analise.tipo.data
         return app.redirect(url_for('faturas'))
     #--------------------------------------------------------------------------------------------------------
+
+    #Procedimento para definir a data da fatura mais recente
+    if  request.method == 'POST' and 'registrar' in request.form:   
+        data = [form_data.mes.data,form_data.ano.data]
+        meses,anos = tratar_fatura.definir_meses(data=data)
+        flash(f'Fatura mais recente - {data[0]}/{data[1]}',category='alert-success')
+        
+        return app.redirect(url_for('faturas'))
+    #--------------------------------------------------------------------------------------------------------
+
+    #Procedimento para registrar os dados das faturas anteriores
+    if  request.method == 'POST' and 'registrar_dados' in request.form:   
+        fatura_dict,historico_dict = tratar_fatura.dados_manual(dem_c=dem_c,form_manual=form_manual,tarifas=tarifas_dict,meses=meses,anos=anos)
+        flash('Dados Registrados',category='alert-success')
+        return app.redirect(url_for('faturas'))
+    #--------------------------------------------------------------------------------------------------------
+
     if isinstance(dem_c,int) or isinstance(dem_c,float):
         form_fatura = FormFatura(data = {'dem_c_fp':dem_c,'dem_c_p':0})
     else:
@@ -266,6 +307,7 @@ def faturas():
     
     if form_fatura.validate_on_submit() and 'reg' in request.form:   
         dem_c = tratar_fatura.demanda_contratada(form_fatura=form_fatura)
+        tipo_analise = '-selecionar-'
         flash('Demandas registradas',category='alert-success')
 
     #Procedimento para carregar arquivo com valores pré definidos de tarifas
@@ -293,6 +335,32 @@ def faturas():
         else:
             flash('Formato de arquivo inválio. Deve ser um arquivo .pdf',category='alert-danger')
     #--------------------------------------------------------------------------------------------------------
+
+    #Procedimento para carregar arquivo excel com o histórico das faturas
+    if request.method == 'POST' and 'load' in request.form:      
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('Nenhum arquivo selecionado',category='alert-danger')
+            return app.redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('Nenhum arquivo selecionado',category='alert-danger')
+            return app.redirect(request.url)
+        if file and allowed_file(file.filename,'xlsx'):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
+            fatura_dict,historico_dict = tratar_fatura.ler_excel(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),tarifas=tarifas_dict,dem_c=dem_c)
+            if fatura_dict == 'Arquivo inválido':
+                flash(fatura_dict,category='alert-danger')
+                fatura_dict = {}
+            else:
+                flash('Fatura carregada',category='alert-success')
+            return app.redirect(url_for('faturas'))
+        else:
+            flash('Formato de arquivo inválio. Deve ser um arquivo .pdf',category='alert-danger')
+    #--------------------------------------------------------------------------------------------------------
         
     #Procedimento para salvar a planilha com as análises
     if 'salvar_btn' in request.form: 
@@ -306,7 +374,8 @@ def faturas():
             return app.redirect(url_for("download"))
         return app.redirect(url_for('faturas'))
     #--------------------------------------------------------------------------------------------------------
-    return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,grupo=grupo,form_selecionar_analise=form_selecionar_analise,tipo_analise=tipo_analise,form_manual=form_manual)
+    return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,
+                           grupo=grupo,form_selecionar_analise=form_selecionar_analise,tipo_analise=tipo_analise,form_manual=form_manual,form_data=form_data,meses=meses,anos=anos)
 #--------------------------------------------------------------------------------------------------------
 
 #Função para download dos resultados
@@ -346,15 +415,35 @@ def reset():
     global nome_arquivo
     global grupo 
     global tipo_analise
+    global data
+    global historico_dict
+    global meses
+    global anos
     limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
 
+
+    historico_dict={
+        'mes':[],
+        'ano':[],
+        'demanda_p':[],
+        'demanda_fp':[],
+        'dmcr':[],
+        'consumo_p': [],
+        'consumo_fp':[],
+        'consumo_hr':[],
+        'ufer': [],
+        'ufer_hr': []
+    }
     download_flag = ''
     h_p = 18.0
+    data = ['JAN',datetime.today().year]
     dias = {
         'dias_u': 22,
         'dias_s': 4,
         'dias_d': 4
     }
+    meses = ['DEZ','NOV','OUT','SET','AGO','JUL','JUN','MAI','ABR','MAR','FEV','JAN']
+    anos = [datetime.today().year]*12
     nome_arquivo = ''
     tarifas_dict = {
         'convencional': 0.0,

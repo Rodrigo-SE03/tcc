@@ -32,7 +32,7 @@ class SelecionarGrupo(FlaskForm):
     selecionar = SubmitField('Selecionar', validators= [DataRequired()])
 
 class SelecionarAnalise(FlaskForm):
-    tipo = SelectField('Modelo de análise desejada', validators= [DataRequired()],choices=['-selecionar-','Automático','Manual'])
+    tipo = SelectField('Modelo de preenchimento de dados desejado', validators= [DataRequired()],choices=['-selecionar-','Automático','Manual'])
     selecionar = SubmitField('Selecionar', validators= [DataRequired()])
 
 class FormTarifasB(FlaskForm):
@@ -63,17 +63,21 @@ class FormFatura(FlaskForm):
 
     reg = SubmitField('Registrar', validators= [DataRequired()])
 
-class FormManual(FlaskForm):
+class FormData(FlaskForm):
     mes = SelectField('Mês da fatura mais recente', validators= [DataRequired()],choices=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'])
-    ano = IntegerField('Ano da fatura mais recente',validators=[NumberRange(min=2000,max=2100,message="Valor inválido")],default=datetime.today().year)
-    demanda_p = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    demanda_fp = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    consumo_p = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    consumo_fp = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    consumo_hr = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    ufer = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    ufer_hr = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
-    dmcr = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    ano = IntegerField('Ano da fatura mais recente',validators=[NumberRange(min=2000,max=2100,message="Valor inválido"),DataRequired()])
+    registrar = SubmitField('Registrar', validators= [DataRequired()])
+
+class FormManual(FlaskForm):
+    demanda_p = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    demanda_fp = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    consumo_p = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    consumo_fp = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    consumo_hr = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    ufer = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    ufer_hr = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    dmcr = FieldList(FloatField(validators= [DataRequired(),NumberRange(min=1,message="Valor inválido")]),min_entries=12,max_entries=12)
+    registrar_dados = SubmitField('Registrar', validators= [DataRequired()])
 
 class FormSalvarFatura(FlaskForm):
     nome = StringField('Nome do arquivo', validators= [DataRequired()])
