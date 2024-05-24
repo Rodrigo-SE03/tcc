@@ -1,0 +1,124 @@
+{% block body %}
+<div class = 'border p-5 mt-5 mb-4'>
+    <form method="POST">
+        <legend>Modelo Manual</legend>
+        <fieldset>
+            <div class = 'row'>
+                <div class="col">
+                        <div class="form-group">
+                                {{ form_manual.mes.label(class = 'form-control-label') }}
+                                {{ form_manual.mes(class = 'form-control') }}
+                        </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                            {{ form_manual.ano.label(class = 'form-control-label') }}
+                            {{ form_manual.ano(class = 'form-control') }}
+                    </div>
+                </div>
+            </div>
+                <div class="row mt-4">
+
+                    <div class = 'col-sm-1'>
+                        <h6>Mês</h6>
+                        {% for i in range(0,12) %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    <label for="colFormLabel" class="col-form-label">JAN/24</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>Demanda P</h6>
+                        {% for field in form_manual.demanda_p %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>Demanda FP</h6>
+                        {% for field in form_manual.demanda_fp %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>Consumo P</h6>
+                        {% for field in form_manual.consumo_p %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>Consumo FP</h6>
+                        {% for field in form_manual.consumo_fp %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>Consumo HR</h6>
+                        {% for field in form_manual.consumo_hr %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>UFER</h6>
+                        {% for field in form_manual.ufer %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>UFER HR</h6>
+                        {% for field in form_manual.ufer_hr %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class = 'col'>
+                        <h6>DMCR</h6>
+                        {% for field in form_manual.dmcr %}
+                        <div class="row mt-2">
+                            <div class="form-group">
+                                    {{ field(class = 'form-control') }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

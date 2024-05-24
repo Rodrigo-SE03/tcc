@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, flash, send_from_directory
-from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura,FormInfo
+from forms import FormAddCarga,SelecionarGrupo,FormTarifasB,FormTarifasA,FormSalvarCargas,FormFatura,FormSalvarFatura,FormInfo,SelecionarAnalise,FormManual
 from werkzeug.utils import secure_filename
 import os
 from cargas_dir import planilha_cargas,tratar_cargas
@@ -25,6 +25,7 @@ tarifas_dict = {
     'te': 0.0
 }
 grupo = '-selecionar-'
+tipo_analise = '-selecionar-'
 cargas_dict = {
         'Carga':[],
         'Potência (kW)':[],
@@ -246,7 +247,16 @@ def faturas():
     global fatura_dict
     global dem_c
     global nome_arquivo
+    global tipo_analise
+    form_manual = FormManual()
     form_salvar_fatura = FormSalvarFatura()
+    form_selecionar_analise = SelecionarAnalise(data={'tipo_analise':tipo_analise})
+
+    #Procedimento para reiniciar valor das tarifas caso haja mudança
+    if request.method == 'POST' and 'selecionar' in request.form:   
+        tipo_analise = form_selecionar_analise.tipo.data
+        return app.redirect(url_for('faturas'))
+    #--------------------------------------------------------------------------------------------------------
     if isinstance(dem_c,int) or isinstance(dem_c,float):
         form_fatura = FormFatura(data = {'dem_c_fp':dem_c,'dem_c_p':0})
     else:
@@ -296,7 +306,7 @@ def faturas():
             return app.redirect(url_for("download"))
         return app.redirect(url_for('faturas'))
     #--------------------------------------------------------------------------------------------------------
-    return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,grupo=grupo)
+    return render_template('faturas.html',tarifas_dict = tarifas_dict,form_fatura=form_fatura,form_salvar_fatura=form_salvar_fatura,dem_c=dem_c,fatura_dict=fatura_dict,grupo=grupo,form_selecionar_analise=form_selecionar_analise,tipo_analise=tipo_analise,form_manual=form_manual)
 #--------------------------------------------------------------------------------------------------------
 
 #Função para download dos resultados
@@ -335,6 +345,7 @@ def reset():
     global dias
     global nome_arquivo
     global grupo 
+    global tipo_analise
     limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
 
     download_flag = ''
@@ -353,6 +364,7 @@ def reset():
         'te': 0.0
     }
     grupo = '-selecionar-'
+    tipo_analise = '-selecionar-'
     cargas_dict = {
             'Carga':[],
             'Potência (kW)':[],

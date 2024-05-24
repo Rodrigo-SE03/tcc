@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,SubmitField,FloatField,IntegerField,SelectField
+from datetime import datetime
+from wtforms import StringField,SubmitField,FloatField,IntegerField,SelectField,FieldList
 from wtforms.validators import DataRequired,Length,NumberRange,Regexp
 
 class FormAddCarga(FlaskForm):
@@ -30,6 +31,10 @@ class SelecionarGrupo(FlaskForm):
     grupo = SelectField('Grupo tarifário desejado', validators= [DataRequired()],choices=['-selecionar-','Grupo B','Grupo A'])
     selecionar = SubmitField('Selecionar', validators= [DataRequired()])
 
+class SelecionarAnalise(FlaskForm):
+    tipo = SelectField('Modelo de análise desejada', validators= [DataRequired()],choices=['-selecionar-','Automático','Manual'])
+    selecionar = SubmitField('Selecionar', validators= [DataRequired()])
+
 class FormTarifasB(FlaskForm):
     convencional = FloatField('Valor da tarifa convencional (R$/kWh)', validators= [DataRequired()])
     branca_fp = FloatField('Tarifa Branca - horário fora de ponta (R$/kWh)', validators= [DataRequired()])
@@ -57,6 +62,18 @@ class FormFatura(FlaskForm):
     dem_c_p = IntegerField('Demanda Contratada na Ponta (kW) - Manter 0 Para Modalidade Verde ',validators=[NumberRange(min=0,max=15000,message="Valor inválido")],default=0)
 
     reg = SubmitField('Registrar', validators= [DataRequired()])
+
+class FormManual(FlaskForm):
+    mes = SelectField('Mês da fatura mais recente', validators= [DataRequired()],choices=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'])
+    ano = IntegerField('Ano da fatura mais recente',validators=[NumberRange(min=2000,max=2100,message="Valor inválido")],default=datetime.today().year)
+    demanda_p = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    demanda_fp = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    consumo_p = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    consumo_fp = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    consumo_hr = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    ufer = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    ufer_hr = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
+    dmcr = FieldList(FloatField(validators= [DataRequired()],default=0),min_entries=12,max_entries=12)
 
 class FormSalvarFatura(FlaskForm):
     nome = StringField('Nome do arquivo', validators= [DataRequired()])
