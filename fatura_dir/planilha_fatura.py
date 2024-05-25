@@ -26,6 +26,8 @@ def tab_atual(fatura_dict,writer,categoria):
             'Demanda Registrada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
             'Demanda Registrada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
             'Custo da Demanda': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda Verde (atual)'])),
+            'Demanda Não Utilizada': list(reversed(fatura_dict['Demanda']['Demanda Verde Não Utilizada'])),
+            'Custo com Demanda Não Utilizada': list(reversed(fatura_dict['Demanda']['Custos com Demanda Verde Não Utilizada'])),
             'Ultrapassagem Registrada': list(reversed(fatura_dict['Demanda']['Demanda Verde Ultrapassada (atual)'])),
             'Custo da Ultrapassagem': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda Verde (atual)'])),
             'Consumo na Ponta': list(reversed(fatura_dict['Consumo']['Consumo P'])),
@@ -37,18 +39,22 @@ def tab_atual(fatura_dict,writer,categoria):
             'DMCR': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
             'Custo da DMCR': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
         }
-        total_row = ['Total','-','-',sum(dados_dict['Custo da Demanda']),
+        total_row = ['Total','-','-',sum(dados_dict['Custo da Demanda']),'-',sum(dados_dict['Custo com Demanda Não Utilizada']),
                      '-',sum(dados_dict['Custo da Ultrapassagem']),sum(dados_dict['Consumo na Ponta']),sum(dados_dict['Custo do Consumo na Ponta']),
                      sum(dados_dict['Consumo Fora Ponta']),sum(dados_dict['Custo do Consumo Fora Ponta']),sum(dados_dict['UFER']),sum(dados_dict['Custo da UFER']),
                      '-',sum(dados_dict['Custo da DMCR'])]
-        total_modalidade = total_row[3]+total_row[5]+total_row[7]+total_row[9]
+        total_modalidade = total_row[3]+total_row[5]+total_row[7]+total_row[9]+total_row[11]
     else:
         dados_dict = {
             'Mês': list(reversed(fatura_dict['Mês'])),
             'Demanda Registrada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Medida'])),
             'Custo da Demanda na Ponta': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda P (atual)'])),
+            'Demanda Não Utilizada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Não Utilizada'])),
+            'Custo com Demanda Não Utilizada na Ponta': list(reversed(fatura_dict['Demanda']['Custos com Demanda P Não Utilizada'])),
             'Demanda Registrada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Medida'])),
             'Custo da Demanda Fora Ponta': list(reversed(fatura_dict['Demanda']['Custos com Demanda - Demanda FP (atual)'])),
+            'Demanda Não Utilizada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Não Utilizada'])),
+            'Custo com Demanda Não Utilizada Fora Ponta': list(reversed(fatura_dict['Demanda']['Custos com Demanda FP Não Utilizada'])),
             'Ultrapassagem Registrada na Ponta': list(reversed(fatura_dict['Demanda']['Demanda P Ultrapassada (atual)'])),
             'Custo da Ultrapassagem na Ponta': list(reversed(fatura_dict['Demanda']['Custos com Ultrapassagem - Demanda P (atual)'])),
             'Ultrapassagem Registrada Fora Ponta': list(reversed(fatura_dict['Demanda']['Demanda FP Ultrapassada (atual)'])),
@@ -62,14 +68,14 @@ def tab_atual(fatura_dict,writer,categoria):
             'DMCR': list(reversed(fatura_dict['Reativo']['Demanda Reativa Medida'])),
             'Custo da DMCR': list(reversed(fatura_dict['Reativo']['Custo da Demanda Reativa'])),
         }
-        total_row = ['Total','-',sum(dados_dict['Custo da Demanda na Ponta']),'-',sum(dados_dict['Custo da Demanda Fora Ponta']),
+        total_row = ['Total','-',sum(dados_dict['Custo da Demanda na Ponta']),'-',sum(dados_dict['Custo com Demanda Não Utilizada na Ponta']),'-',sum(dados_dict['Custo da Demanda Fora Ponta']),'-',sum(dados_dict['Custo com Demanda Não Utilizada Fora Ponta']),
                      '-',sum(dados_dict['Custo da Ultrapassagem na Ponta']),'-',sum(dados_dict['Custo da Ultrapassagem Fora Ponta']),
                      sum(dados_dict['Consumo na Ponta']),sum(dados_dict['Custo do Consumo na Ponta']),sum(dados_dict['Consumo Fora Ponta']),sum(dados_dict['Custo do Consumo Fora Ponta']),
                      sum(dados_dict['UFER']),sum(dados_dict['Custo da UFER']),'-',sum(dados_dict['Custo da DMCR'])]
-        total_modalidade = total_row[2]+total_row[4]+total_row[6]+total_row[8]+total_row[10]+total_row[12]
+        total_modalidade = total_row[2]+total_row[4]+total_row[6]+total_row[8]+total_row[10]+total_row[12]+total_row[14]+total_row[16]
 
     workbook = writer.book
-    sheet_name = 'Dados Atuais'
+    sheet_name = 'Dados_Atuais'
     worksheet = workbook.add_worksheet(sheet_name)
 
     estilos_fatura.geral(workbook=workbook,worksheet=worksheet,categoria=categoria,dados_dict=dados_dict,total_row=total_row)

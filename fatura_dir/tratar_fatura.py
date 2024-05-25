@@ -239,7 +239,6 @@ def ler_fatura(file,folder,tarifas,dem_c):
     
 #Função para o cálculo da demanda contratada ideal
 def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
-
     t_fp = tarifas['verde'][2]
     t_p = tarifas['azul'][3]
     categoria = 'Verde'
@@ -247,13 +246,17 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         ult_atual = []
         custos_ult_atual = []
         custos_dem_atual = []
+        dem_nao_ut = []
+        custos_dem_nao_ut = []
         demandas = []
         i=0
         while i<len(dem_p):
             demandas.append(dem_fp[i] if dem_fp[i] > dem_p[i] else dem_p[i])
+            dem_nao_ut.append((dem_c-demandas[i]) if dem_c>demandas[i] else 0)
             ult_atual.append((demandas[i] - dem_c) if demandas[i]>dem_c*1.05 else 0)
             custos_ult_atual.append(ult_atual[i]*2*t_fp)
-            custos_dem_atual.append(t_fp*(dem_c if dem_c>dem_fp[i] else dem_fp[i]))
+            custos_dem_atual.append(t_fp*demandas[i])
+            custos_dem_nao_ut.append(t_fp*((dem_c-demandas[i]) if dem_c>demandas[i] else 0))
             i+=1
         
     else:
@@ -262,23 +265,31 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
         dem_c_p = dem_c[1]
 
         ult_atual_fp = []
+        dem_nao_ut_fp = []
         custos_ult_fp_atual = []
         custos_dem_fp_atual = []
+        custos_dem_nao_ut_fp = []
         i=0
         for dem in dem_fp:
             ult_atual_fp.append((dem-dem_c_fp) if dem>dem_c_fp*1.05 else 0)
+            dem_nao_ut_fp.append((dem_c_fp-dem_fp[i]) if dem_c_fp>dem_fp[i] else 0)
             custos_ult_fp_atual.append(ult_atual_fp[i]*2*t_fp)
-            custos_dem_fp_atual.append(t_fp*(dem_c_fp if dem_c_fp>dem_fp[i] else dem_fp[i]))
+            custos_dem_fp_atual.append(t_fp*dem_fp[i])
+            custos_dem_nao_ut_fp.append(t_fp*((dem_c_fp-dem_fp[i]) if dem_c_fp>dem_fp[i] else 0))
             i+=1
         
         ult_atual_p = []
+        dem_nao_ut_p = []
         custos_ult_p_atual = []
         custos_dem_p_atual = []
+        custos_dem_nao_ut_p = []
         i=0
         for dem in dem_p:
             ult_atual_p.append((dem-dem_c_p) if dem>dem_c_p*1.05 else 0)
+            dem_nao_ut_p.append((dem_c_p-dem_p[i]) if dem_c_p>dem_p[i] else 0)
             custos_ult_p_atual.append(ult_atual_p[i]*2*t_p)
             custos_dem_p_atual.append(t_p*(dem_c_p if dem_c_p>dem_p[i] else dem_p[i]))
+            custos_dem_nao_ut_p.append(t_p*((dem_c_p-dem_p[i]) if dem_c_p>dem_p[i] else 0))
             i+=1
     
 
@@ -436,6 +447,7 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             'Demanda Verde Medida': dem_v,
             'Demanda Verde Ultrapassada (atual)': ult_atual,
             'Demanda Verde Ultrapassada': ult_v,
+            'Demanda Verde Não Utilizada': dem_nao_ut,
             'Demanda FP Medida': dem_fp,
             'Demanda FP Ultrapassada': ult_fp,
             'Demanda P Medida': dem_p,
@@ -444,7 +456,8 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             'Custos com Demanda - Demanda Verde (atual)': custos_dem_atual,               
             'Custos com Ultrapassagem - Demanda Verde': custos_ult_v,
             'Custos com Ultrapassagem - Demanda Verde (atual)': custos_ult_atual,
-            'Custos com Demanda - Demanda FP': custos_dem_fp,             
+            'Custos com Demanda - Demanda FP': custos_dem_fp,
+            'Custos com Demanda Verde Não Utilizada': custos_dem_nao_ut,             
             'Custos com Ultrapassagem - Demanda FP': custos_ult_fp,
             'Custos com Demanda - Demanda P': custos_dem_p,
             'Custos com Ultrapassagem - Demanda P': custos_ult_p,
@@ -462,16 +475,20 @@ def calc_demanda(dem_p,dem_fp,dem_c,mes,tarifas):
             'Demanda FP Medida': dem_fp,
             'Demanda FP Ultrapassada': ult_fp,
             'Demanda FP Ultrapassada (atual)': ult_atual_fp,
+            'Demanda FP Não Utilizada': dem_nao_ut_fp,
             'Demanda P Medida': dem_p,
             'Demanda P Ultrapassada': ult_p,
             'Demanda P Ultrapassada (atual)': ult_atual_p,
+            'Demanda P Não Utilizada': dem_nao_ut_p,
             'Custos com Demanda - Demanda Verde': custos_dem_v,             
             'Custos com Ultrapassagem - Demanda Verde': custos_ult_v,
             'Custos com Demanda - Demanda FP': custos_dem_fp, 
+            'Custos com Demanda FP Não Utilizada': custos_dem_nao_ut_fp, 
             'Custos com Demanda - Demanda FP (atual)': custos_dem_fp_atual,              
             'Custos com Ultrapassagem - Demanda FP': custos_ult_fp,
             'Custos com Ultrapassagem - Demanda FP (atual)': custos_ult_fp_atual,
             'Custos com Demanda - Demanda P': custos_dem_p,
+            'Custos com Demanda P Não Utilizada': custos_dem_nao_ut_p, 
             'Custos com Demanda - Demanda P (atual)': custos_dem_p_atual,
             'Custos com Ultrapassagem - Demanda P': custos_ult_p,
             'Custos com Ultrapassagem - Demanda P (atual)': custos_ult_p_atual,

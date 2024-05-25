@@ -2,11 +2,11 @@
 def graf_consumo(worksheet,workbook,sheet_name,categoria):
     chart = workbook.add_chart({'type':'column'})
     if categoria == 'Verde':
-        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "P",'values':f"={sheet_name}!$H$2:$H$13",'fill':{'color':'#C0504D'},'overlap':-20})
-        chart.add_series({'name': "FP",'values':f"={sheet_name}!$J$2:$J$13",'fill':{'color':'#4F81BD'}})
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "P",'values':f"={sheet_name}!$J$2:$J$13",'fill':{'color':'#C0504D'},'overlap':-20})
+        chart.add_series({'name': "FP",'values':f"={sheet_name}!$L$2:$L$13",'fill':{'color':'#4F81BD'}})
     else:
-        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "P",'values':f"={sheet_name}!$K$2:$K$13",'fill':{'color':'#C0504D'},'overlap':-20})
-        chart.add_series({'name': "FP",'values':f"={sheet_name}!$M$2:$M$13",'fill':{'color':'#4F81BD'}})
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "P",'values':f"={sheet_name}!$O$2:$O$13",'fill':{'color':'#C0504D'},'overlap':-20})
+        chart.add_series({'name': "FP",'values':f"={sheet_name}!$Q$2:$Q$13",'fill':{'color':'#4F81BD'}})
     chart.set_size({'width': 1150, 'height': 350})
     chart.set_y_axis({'num_format': "R$ #,##0.00"})
     chart.set_title({'name':'Custos com Consumo de Energia Ativa'})
@@ -19,11 +19,11 @@ def graf_consumo(worksheet,workbook,sheet_name,categoria):
 def graf_reativos(worksheet,workbook,sheet_name,categoria):
     chart = workbook.add_chart({'type':'column'})
     if categoria == 'Verde':
-        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "UFER",'values':f"={sheet_name}!$L$2:$L$13",'fill':{'color':'#31859C'},'overlap':-20})
-        chart.add_series({'name': "DMCR",'values':f"={sheet_name}!$N$2:$N$13",'fill':{'color':'#E46C0A'}})
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "UFER",'values':f"={sheet_name}!$N$2:$N$13",'fill':{'color':'#31859C'},'overlap':-20})
+        chart.add_series({'name': "DMCR",'values':f"={sheet_name}!$P$2:$P$13",'fill':{'color':'#E46C0A'}})
     else:
-        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "UFER",'values':f"={sheet_name}!$O$2:$O$13",'fill':{'color':'#31859C'},'overlap':-20})
-        chart.add_series({'name': "DMCR",'values':f"={sheet_name}!$Q$2:$Q$13",'fill':{'color':'#E46C0A'}})
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "UFER",'values':f"={sheet_name}!$S$2:$S$13",'fill':{'color':'#31859C'},'overlap':-20})
+        chart.add_series({'name': "DMCR",'values':f"={sheet_name}!$U$2:$U$13",'fill':{'color':'#E46C0A'}})
     chart.set_size({'width': 1150, 'height': 350})
     chart.set_y_axis({'num_format': "R$ #,##0.00"})
     chart.set_title({'name':'Custos com Reativos'})
@@ -36,10 +36,10 @@ def graf_reativos(worksheet,workbook,sheet_name,categoria):
 def graf_ultrapassagem(worksheet,workbook,sheet_name,categoria):
     chart = workbook.add_chart({'type':'column'})
     if categoria == 'Verde':
-        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "Ultrapassagem",'values':f"={sheet_name}!$F$2:$F$13",'fill':{'color':'#8064A2'},'overlap':-20})
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "Ultrapassagem",'values':f"={sheet_name}!$H$2:$H$13",'fill':{'color':'#8064A2'},'overlap':-20})
     else:
-        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "P",'values':f"={sheet_name}!$G$2:$G$13",'fill':{'color':'#31859C'},'overlap':-20})
-        chart.add_series({'name': "FP",'values':f"={sheet_name}!$I$2:$I$13",'fill':{'color':'#8064A2'}})
+        chart.add_series({'categories':f"={sheet_name}!$A$2:$A$13",'name': "P",'values':f"={sheet_name}!$K$2:$K$13",'fill':{'color':'#31859C'},'overlap':-20})
+        chart.add_series({'name': "FP",'values':f"={sheet_name}!$M$2:$M$13",'fill':{'color':'#8064A2'}})
     chart.set_size({'width': 1150, 'height': 350})
     chart.set_y_axis({'num_format': "R$ #,##0.00"})
     chart.set_title({'name':'Multas por Ultrapassagem de Demanda'})
@@ -52,17 +52,29 @@ def graf_ultrapassagem(worksheet,workbook,sheet_name,categoria):
 def graf_composicao(worksheet,workbook,sheet_name,categoria):
     chart = workbook.add_chart({'type':'doughnut'})
     if categoria == 'Verde':
-        chart.add_series({'categories':f"={sheet_name}!$P$3:$P$6",'name': "Custos",'values':f"={sheet_name}!$Q$3:$Q$6",'data_labels': {'percentage':True}})
+        chart.add_series({'categories':f"={sheet_name}!$R$3:$R$7",'name': "Custos",'values':f"={sheet_name}!$S$3:$S$7",'data_labels': {'percentage':True},"points": [
+            {"fill": {"color": "#4F81BD"}},
+            {"fill": {"color": "#E46C0A"}},
+            {"fill": {"color": "#C0504D "}},
+            {"fill": {"color": "#9BBB59"}},
+            {"fill": {"color": "#FFCC00 "}},
+        ]})
     else:
-        chart.add_series({'categories':f"={sheet_name}!$S$3:$S$6",'name': "Custos",'values':f"={sheet_name}!$T$3:$T$6",'data_labels': {'percentage':True}})
+        chart.add_series({'categories':f"={sheet_name}!$W$3:$W$7",'name': "Custos",'values':f"={sheet_name}!$X$3:$X$7",'data_labels': {'percentage':True},"points": [
+            {"fill": {"color": "#4F81BD"}},
+            {"fill": {"color": "#E46C0A"}},
+            {"fill": {"color": "#C0504D "}},
+            {"fill": {"color": "#9BBB59"}},
+            {"fill": {"color": "#FFCC00 "}},
+        ]})
     chart.set_size({'width': 500, 'height': 300})
     chart.set_title({'name':'Composição Anual de Custos'})
     chart.set_legend({'position': 'right'})
     chart.set_style(10)
     if categoria == 'Verde':
-        worksheet.insert_chart('P1', chart)
+        worksheet.insert_chart('Q1', chart)
     else:
-        worksheet.insert_chart('S1', chart)
+        worksheet.insert_chart('V1', chart)
 #--------------------------------------------------------------------------------------------------------
 
 #Gráfico de comparativo de custos entre as modalidades - COMPARATIVO
