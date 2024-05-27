@@ -9,5 +9,3 @@ Erros:
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil;
 
 Melhorias:
--Criar a opção de preenchimento manual dos dados de fatura;
--Colocar nos resultados a coluna de demanda não utilizada e o valor relativo a ela
