@@ -7,5 +7,8 @@ Formulários:
 
 Erros:
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil;
+-Corrigir a planilha modelo de cargas que está com umas fórmulas idiotas lá; -> É só copiar as colunas e excluir as antigas.
+-Arrumar a questão do formato do texto;
+-Corrigir o erro de carregar um modelo sem valores;
 
 Melhorias:
