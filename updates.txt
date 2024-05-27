@@ -10,5 +10,6 @@ Erros:
 -Corrigir a planilha modelo de cargas que está com umas fórmulas idiotas lá; -> É só copiar as colunas e excluir as antigas.
 -Arrumar a questão do formato do texto;
 -Corrigir o erro de carregar um modelo sem valores;
+-Corrigir a soma final (não está considerando a quantidade);
 
 Melhorias:
