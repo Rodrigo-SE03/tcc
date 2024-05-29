@@ -86,7 +86,7 @@ def cargas():
     global download_flag
     form_add_carga = FormAddCarga()
     form_salvar_cargas = FormSalvarCargas()
-    form_info = FormInfo(data = {'ponta':h_p,'dias':dias})
+    form_info = FormInfo(data = {'ponta':h_p,'dias_u':dias['dias_u'],'dias_s':dias['dias_s'],'dias_d':dias['dias_d']})
     
     limpar_pasta(folder=os.path.join(app.root_path,UPLOAD_FOLDER))
     

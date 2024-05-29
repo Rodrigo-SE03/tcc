@@ -66,17 +66,23 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
         du_results = {
             'Consumo FP': [custo['Dias Úteis'][0]/tarifas_dict['branca'][0],custo['Dias Úteis'][0]],
             'Consumo I': [custo['Dias Úteis'][1]/tarifas_dict['branca'][1],custo['Dias Úteis'][1]],
-            'Consumo P': [custo['Dias Úteis'][2]/tarifas_dict['branca'][2],custo['Dias Úteis'][2]]
+            'Consumo P': [custo['Dias Úteis'][2]/tarifas_dict['branca'][2],custo['Dias Úteis'][2]],
+            'Total': [custo['Dias Úteis'][2]/tarifas_dict['branca'][2]+custo['Dias Úteis'][1]/tarifas_dict['branca'][1]+custo['Dias Úteis'][0]/tarifas_dict['branca'][0]
+                      ,custo['Dias Úteis'][0]+custo['Dias Úteis'][1]+custo['Dias Úteis'][2]]
         }
         s_results = {
             'Consumo FP': [custo['Sábados'][0]/tarifas_dict['branca'][0],custo['Sábados'][0]],
             'Consumo I': [custo['Sábados'][1]/tarifas_dict['branca'][1],custo['Sábados'][1]],
-            'Consumo P': [custo['Sábados'][2]/tarifas_dict['branca'][2],custo['Sábados'][2]]
+            'Consumo P': [custo['Sábados'][2]/tarifas_dict['branca'][2],custo['Sábados'][2]],
+            'Total': [custo['Sábados'][2]/tarifas_dict['branca'][2]+custo['Sábados'][1]/tarifas_dict['branca'][1]+custo['Sábados'][0]/tarifas_dict['branca'][0]
+                      ,custo['Sábados'][0]+custo['Sábados'][1]+custo['Sábados'][2]]
         }
         d_results = {
             'Consumo FP': [custo['Domingos'][0]/tarifas_dict['branca'][0],custo['Domingos'][0]],
             'Consumo I': [custo['Domingos'][1]/tarifas_dict['branca'][1],custo['Domingos'][1]],
-            'Consumo P': [custo['Domingos'][2]/tarifas_dict['branca'][2],custo['Domingos'][2]]
+            'Consumo P': [custo['Domingos'][2]/tarifas_dict['branca'][2],custo['Domingos'][2]],
+            'Total': [custo['Domingos'][2]/tarifas_dict['branca'][2]+custo['Domingos'][1]/tarifas_dict['branca'][1]+custo['Domingos'][0]/tarifas_dict['branca'][0]
+                      ,custo['Domingos'][0]+custo['Domingos'][1]+custo['Domingos'][2]]
         }
         mdu_results = {
             'Consumo FP': [custo['Dias Úteis'][0]*dias['dias_u']/tarifas_dict['branca'][0],custo['Dias Úteis'][0]*dias['dias_u']],
@@ -107,32 +113,111 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
         }]
     elif categoria == 'Verde':
         col += 3
+        du_results = {
+            'Consumo FP': [custo['Dias Úteis'][0]/tarifas_dict['verde'][0],custo['Dias Úteis'][0]],
+            'Consumo P': [custo['Dias Úteis'][1]/tarifas_dict['verde'][1],custo['Dias Úteis'][1]],
+            'Demanda': [custo['Dias Úteis'][2]/tarifas_dict['verde'][2],custo['Dias Úteis'][2]],
+            'Total': [custo['Dias Úteis'][1]/tarifas_dict['verde'][1]+custo['Dias Úteis'][0]/tarifas_dict['verde'][0],
+                      custo['Dias Úteis'][0]+custo['Dias Úteis'][1]]
+        }
+        s_results = {
+            'Consumo FP': [custo['Sábados'][0]/tarifas_dict['verde'][0],custo['Sábados'][0]],
+            'Consumo P': [custo['Sábados'][1]/tarifas_dict['verde'][1],custo['Sábados'][1]],
+            'Demanda': ['-','-'],
+            'Total': [custo['Sábados'][1]/tarifas_dict['verde'][1]+custo['Sábados'][0]/tarifas_dict['verde'][0],
+                      custo['Sábados'][0]+custo['Sábados'][1]]
+        }
         d_results = {
-            'Consumo FP': [custo[0]/tarifas_dict['verde'][0],custo[0]],
-            'Consumo P': [custo[1]/tarifas_dict['verde'][1],custo[1]],
-            'Demanda': [custo[2]/tarifas_dict['verde'][2],custo[2]]
+            'Consumo FP': [custo['Domingos'][0]/tarifas_dict['verde'][0],custo['Domingos'][0]],
+            'Consumo P': [custo['Domingos'][1]/tarifas_dict['verde'][1],custo['Domingos'][1]],
+            'Demanda': ['-','-'],
+            'Total': [custo['Domingos'][1]/tarifas_dict['verde'][1]+custo['Domingos'][0]/tarifas_dict['verde'][0],
+                      custo['Domingos'][0]+custo['Domingos'][1]]
         }
-        m_results = {
-            'Consumo FP': [custo[0]*dias/tarifas_dict['verde'][0],custo[0]*dias],
-            'Consumo P': [custo[1]*dias/tarifas_dict['verde'][1],custo[1]*dias],
-            'Demanda': [custo[2]/tarifas_dict['verde'][2],custo[2]],
-            'Total': ['-',(custo[0]+custo[1])*dias+custo[2]]
+        
+        mdu_results = {
+            'Consumo FP': [custo['Dias Úteis'][0]*dias['dias_u']/tarifas_dict['verde'][0],custo['Dias Úteis'][0]*dias['dias_u']],
+            'Consumo P': [custo['Dias Úteis'][1]*dias['dias_u']/tarifas_dict['verde'][1],custo['Dias Úteis'][1]*dias['dias_u']],
+            'Demanda': [custo['Dias Úteis'][2]/tarifas_dict['verde'][2],custo['Dias Úteis'][2]],
+            'Total': ['-',(custo['Dias Úteis'][0]+custo['Dias Úteis'][1])*dias['dias_u']+custo['Dias Úteis'][2]]
         }
+        ms_results = {
+            'Consumo FP': [custo['Sábados'][0]*dias['dias_s']/tarifas_dict['verde'][0],custo['Sábados'][0]*dias['dias_s']],
+            'Consumo P': [custo['Sábados'][1]*dias['dias_s']/tarifas_dict['verde'][1],custo['Sábados'][1]*dias['dias_s']],
+            'Demanda': ['-','-'],
+            'Total': ['-',(custo['Sábados'][0]+custo['Sábados'][1])*dias['dias_s']]
+        }
+        md_results = {
+            'Consumo FP': [custo['Domingos'][0]*dias['dias_d']/tarifas_dict['verde'][0],custo['Domingos'][0]*dias['dias_d']],
+            'Consumo P': [custo['Domingos'][1]*dias['dias_d']/tarifas_dict['verde'][1],custo['Domingos'][1]*dias['dias_d']],
+            'Demanda': ['-','-'],
+            'Total': ['-',(custo['Domingos'][0]+custo['Domingos'][1])*dias['dias_d']]
+        }
+
+        mes_results = [mdu_results,ms_results,md_results]
+        dia_results = [du_results,s_results,d_results]
+        total_results = [{
+            'Consumo FP': [mdu_results['Consumo FP'][0]+ms_results['Consumo FP'][0]+md_results['Consumo FP'][0],mdu_results['Consumo FP'][1]+ms_results['Consumo FP'][1]+md_results['Consumo FP'][1]],
+            'Consumo P': [mdu_results['Consumo P'][0]+ms_results['Consumo P'][0]+md_results['Consumo P'][0],mdu_results['Consumo P'][1]+ms_results['Consumo P'][1]+md_results['Consumo P'][1]],
+            'Demanda': [custo['Dias Úteis'][2]/tarifas_dict['verde'][2],custo['Dias Úteis'][2]],
+            'Total': [mdu_results['Total'][0]+ms_results['Total'][0]+md_results['Total'][0],mdu_results['Total'][1]+ms_results['Total'][1]+md_results['Total'][1]]
+        }]
     else:
         col += 3
+        du_results = {
+            'Consumo FP': [custo['Dias Úteis'][0]/tarifas_dict['azul'][0],custo['Dias Úteis'][0]],
+            'Consumo P': [custo['Dias Úteis'][1]/tarifas_dict['azul'][1],custo['Dias Úteis'][1]],
+            'Demanda FP': [custo['Dias Úteis'][2]/tarifas_dict['azul'][2],custo['Dias Úteis'][2]],
+            'Demanda P': [custo['Dias Úteis'][3]/tarifas_dict['azul'][2],custo['Dias Úteis'][3]],
+            'Total': [custo['Dias Úteis'][1]/tarifas_dict['azul'][1]+custo['Dias Úteis'][0]/tarifas_dict['azul'][0],
+                      custo['Dias Úteis'][0]+custo['Dias Úteis'][1]]
+        }
+        s_results = {
+            'Consumo FP': [custo['Sábados'][0]/tarifas_dict['azul'][0],custo['Sábados'][0]],
+            'Consumo P': [custo['Sábados'][1]/tarifas_dict['azul'][1],custo['Sábados'][1]],
+            'Demanda': ['-','-'],
+            'Total': [custo['Sábados'][1]/tarifas_dict['azul'][1]+custo['Sábados'][0]/tarifas_dict['azul'][0],
+                      custo['Sábados'][0]+custo['Sábados'][1]]
+        }
         d_results = {
-            'Consumo FP': [custo[0]/tarifas_dict['azul'][0],custo[0]],
-            'Consumo P': [custo[1]/tarifas_dict['azul'][1],custo[1]],
-            'Demanda FP': [custo[2]/tarifas_dict['azul'][2],custo[2]],
-            'Demanda P': [custo[3]/tarifas_dict['azul'][3],custo[3]]
+            'Consumo FP': [custo['Domingos'][0]/tarifas_dict['azul'][0],custo['Domingos'][0]],
+            'Consumo P': [custo['Domingos'][1]/tarifas_dict['azul'][1],custo['Domingos'][1]],
+            'Demanda': ['-','-'],
+            'Total': [custo['Domingos'][1]/tarifas_dict['azul'][1]+custo['Domingos'][0]/tarifas_dict['azul'][0],
+                      custo['Domingos'][0]+custo['Domingos'][1]]
         }
-        m_results = {
-            'Consumo FP': [custo[0]*dias/tarifas_dict['azul'][0],custo[0]*dias],
-            'Consumo P': [custo[1]*dias/tarifas_dict['azul'][1],custo[1]*dias],
-            'Demanda FP': [custo[2]/tarifas_dict['azul'][2],custo[2]],
-            'Demanda P': [custo[3]/tarifas_dict['azul'][3],custo[3]],
-            'Total': ['-',(custo[0]+custo[1])*dias+custo[2]+custo[3]]
+
+        mdu_results = {
+            'Consumo FP': [custo['Dias Úteis'][0]*dias['dias_u']/tarifas_dict['azul'][0],custo['Dias Úteis'][0]*dias['dias_u']],
+            'Consumo P': [custo['Dias Úteis'][1]*dias['dias_u']/tarifas_dict['azul'][1],custo['Dias Úteis'][1]*dias['dias_u']],
+            'Demanda FP': [custo['Dias Úteis'][2]/tarifas_dict['azul'][2],custo['Dias Úteis'][2]],
+            'Demanda P': [custo['Dias Úteis'][3]/tarifas_dict['azul'][3],custo['Dias Úteis'][3]],
+            'Total': ['-',(custo['Dias Úteis'][0]+custo['Dias Úteis'][1])*dias['dias_u']+custo['Dias Úteis'][2]+custo['Dias Úteis'][3]]
         }
+        ms_results = {
+            'Consumo FP': [custo['Sábados'][0]*dias['dias_s']/tarifas_dict['azul'][0],custo['Sábados'][0]*dias['dias_s']],
+            'Consumo P': [custo['Sábados'][1]*dias['dias_s']/tarifas_dict['azul'][1],custo['Sábados'][1]*dias['dias_s']],
+            'Demanda FP': ['-','-'],
+            'Demanda P': ['-','-'],
+            'Total': ['-',(custo['Sábados'][0]+custo['Sábados'][1])*dias['dias_s']]
+        }
+        md_results = {
+            'Consumo FP': [custo['Domingos'][0]*dias['dias_d']/tarifas_dict['azul'][0],custo['Domingos'][0]*dias['dias_d']],
+            'Consumo P': [custo['Domingos'][1]*dias['dias_d']/tarifas_dict['azul'][1],custo['Domingos'][1]*dias['dias_d']],
+            'Demanda FP': ['-','-'],
+            'Demanda P': ['-','-'],
+            'Total': ['-',(custo['Domingos'][0]+custo['Domingos'][1])*dias['dias_d']]
+        }
+
+        mes_results = [mdu_results,ms_results,md_results]
+        dia_results = [du_results,s_results,d_results]
+        total_results = [{
+            'Consumo FP': [mdu_results['Consumo FP'][0]+ms_results['Consumo FP'][0]+md_results['Consumo FP'][0],mdu_results['Consumo FP'][1]+ms_results['Consumo FP'][1]+md_results['Consumo FP'][1]],
+            'Consumo P': [mdu_results['Consumo P'][0]+ms_results['Consumo P'][0]+md_results['Consumo P'][0],mdu_results['Consumo P'][1]+ms_results['Consumo P'][1]+md_results['Consumo P'][1]],
+            'Demanda FP': [custo['Dias Úteis'][2]/tarifas_dict['azul'][2],custo['Dias Úteis'][2]],
+            'Demanda P': [custo['Dias Úteis'][3]/tarifas_dict['azul'][3],custo['Dias Úteis'][3]],
+            'Total': [mdu_results['Total'][0]+ms_results['Total'][0]+md_results['Total'][0],mdu_results['Total'][1]+ms_results['Total'][1]+md_results['Total'][1]]
+        }]
 
     border = workbook.add_format({'border':1})
     rs_format = workbook.add_format({'num_format':'R$ #,##0.00','border':1})
@@ -258,12 +343,30 @@ def criar_grafico(worksheet,workbook,categoria,dias):
     else:
         chart_du.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2:$D$1441"})
         chart_du.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2:$E$1441"})
-        line_chart = workbook.add_chart({'type':'line'})
-        line_chart.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
-        line_chart.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
-        line_chart.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$2:$J$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
-        line_chart.set_y2_axis({'name':'Fator de Potência'})
-        chart_du.combine(line_chart)
+        line_chart_du = workbook.add_chart({'type':'line'})
+        line_chart_du.add_series({'categories':f"='Consumo - {categoria}'!$C$2:$C$1441",'name': "FP",'values':f"='Consumo - {categoria}'!$H$2:$H$1441","y2_axis":True,'line':{'color':'red','width':1.5}})
+        line_chart_du.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$2:$I$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+        line_chart_du.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$2:$J$1441","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+        line_chart_du.set_y2_axis({'name':'Fator de Potência'})
+        chart_du.combine(line_chart_du)
+        if dias['dias_s'] != 0:
+            chart_s.add_series({'categories':f"='Consumo - {categoria}'!$C$1444:$C$2883",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$1444:$D$2883"})
+            chart_s.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$1444:$E$2883"})
+            line_chart_s = workbook.add_chart({'type':'line'})
+            line_chart_s.add_series({'categories':f"='Consumo - {categoria}'!$C$1444:$C$2883",'name': "FP",'values':f"='Consumo - {categoria}'!$H$1444:$H$2883","y2_axis":True,'line':{'color':'red','width':1.5}})
+            line_chart_s.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$1444:$I$2883","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+            line_chart_s.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$1444:$J$2883","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+            line_chart_s.set_y2_axis({'name':'Fator de Potência'})
+            chart_s.combine(line_chart_s)
+        if dias['dias_d'] != 0:
+            chart_d.add_series({'categories':f"='Consumo - {categoria}'!$C$2886:$C$4324",'name': "Potência - Fora Ponta",'values':f"='Consumo - {categoria}'!$D$2886:$D$4324"})
+            chart_d.add_series({'name':"Potência - Ponta",'values':f"='Consumo - {categoria}'!$E$2886:$E$4324"})
+            line_chart_d = workbook.add_chart({'type':'line'})
+            line_chart_d.add_series({'categories':f"='Consumo - {categoria}'!$C$2886:$C$4324",'name': "FP",'values':f"='Consumo - {categoria}'!$H$2886:$H$4324","y2_axis":True,'line':{'color':'red','width':1.5}})
+            line_chart_d.add_series({'name':"Limite - FP",'values':f"='Consumo - {categoria}'!$I$2886:$I$4324","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+            line_chart_d.add_series({'name':"Lim2",'values':f"='Consumo - {categoria}'!$J$2886:$J$4324","y2_axis":True,'line':{'color':'#92D050','width':1,'dash_type': 'long_dash'}})
+            line_chart_d.set_y2_axis({'name':'Fator de Potência'})
+            chart_d.combine(line_chart_d)
     
     chart_du.set_x_axis(
     {
@@ -307,11 +410,11 @@ def criar_grafico(worksheet,workbook,categoria,dias):
         if dias['dias_d'] != 0:
             worksheet.insert_chart('AE14', chart_d)
     elif categoria == 'Verde' or categoria == 'Azul':
-        worksheet.insert_chart('L9', chart_du)
+        worksheet.insert_chart('L15', chart_du)
         if dias['dias_s'] != 0:
-            worksheet.insert_chart('Q9', chart_s)
+            worksheet.insert_chart('T15', chart_s)
         if dias['dias_d'] != 0:
-            worksheet.insert_chart('AD9', chart_d)
+            worksheet.insert_chart('AF15', chart_d)
     else:
         chart_du.set_legend({'none': True})
         worksheet.insert_chart('F9', chart_du)

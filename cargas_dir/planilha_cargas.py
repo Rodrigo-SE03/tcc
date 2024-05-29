@@ -114,18 +114,18 @@ def tab_consumo_por_carga(cargas,writer,grupo,h_p):
             equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[1])
             equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[0])
             equip_dict['Total - H'].append(equip_dict['H - Ponta'][i]+equip_dict['H - Fora Ponta'][i])
-            equip_dict['C - Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Ponta'][i])
-            equip_dict['C - Fora Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Fora Ponta'][i])
-            equip_dict['Total - C'].append(equip_dict['Potência (kW)'][i]*equip_dict['Total - H'][i])
+            equip_dict['C - Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Ponta'][i]*cargas['Quantidade'][i])
+            equip_dict['C - Fora Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Fora Ponta'][i]*cargas['Quantidade'][i])
+            equip_dict['Total - C'].append(equip_dict['Potência (kW)'][i]*equip_dict['Total - H'][i]*cargas['Quantidade'][i])
         else:
             equip_dict['H - Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[2])
             equip_dict['H - Intermediário'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[1])
             equip_dict['H - Fora Ponta'].append(calc_intervalo(inicio=cargas['Início'][i],fim=cargas['Fim'][i],h_p=h_p,grupo=grupo,fds=fds)[0])
             equip_dict['Total - H'].append(equip_dict['H - Ponta'][i]+equip_dict['H - Fora Ponta'][i]+equip_dict['H - Intermediário'][i])
-            equip_dict['C - Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Ponta'][i])
-            equip_dict['C - Fora Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Fora Ponta'][i])
-            equip_dict['C - Intermediário'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Intermediário'][i])
-            equip_dict['Total - C'].append(equip_dict['Potência (kW)'][i]*equip_dict['Total - H'][i])
+            equip_dict['C - Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Ponta'][i]*cargas['Quantidade'][i])
+            equip_dict['C - Fora Ponta'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Fora Ponta'][i]*cargas['Quantidade'][i])
+            equip_dict['C - Intermediário'].append(equip_dict['Potência (kW)'][i]*equip_dict['H - Intermediário'][i]*cargas['Quantidade'][i])
+            equip_dict['Total - C'].append(equip_dict['Potência (kW)'][i]*equip_dict['Total - H'][i]*cargas['Quantidade'][i])
         i+=1
 
     df_equip = pd.DataFrame(equip_dict)
@@ -209,37 +209,52 @@ def select_consumo(itens,categoria,h_p):
                     consumo_dict[dia]['Instante'].append(0)
     
     else:
-        consumo_dict = {'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP':[],'Limite - Indutivo':[],'Limite - Capacitivo':[]}
+        consumo_dict = {
+            'Dias Úteis':{'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP':[],'Limite - Indutivo':[],'Limite - Capacitivo':[]},
+            'Sábados':{'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP':[],'Limite - Indutivo':[],'Limite - Capacitivo':[]},
+            'Domingos':{'Horas':[],'Minutos':[],'Instante':[],'Potência FP - kW':[],'Potência P - kW':[],'Potência Reativa FP - kVAr':[],'Potência Reativa P - kVAr':[],'FP':[],'Limite - Indutivo':[],'Limite - Capacitivo':[]},
+        }
         j=0
         for h in range(0,24):
             for m in range(0,60):
-                i=0
-                pot_fp = 0
-                pot_p = 0
-                potr_fp = 0
-                potr_p = 0
-                while i < len(itens['Carga']):
-                    if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]):
-                        if (h*60+m) in postos[0]:
-                            pot_fp += itens['Potência (kW)'][i]*itens['Quantidade'][i]
-                            potr_fp += itens['Potência (kW)'][i]*math.sqrt((1/math.pow(itens['FP'][i],2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
+                for dia in consumo_dict.keys():
+                    i=0
+                    pot_fp = 0
+                    pot_p = 0
+                    potr_fp = 0
+                    potr_p = 0
+                    while i < len(itens['Carga']):
+                        if get_hora(f'{h}:{m}')>=get_hora(itens['Início'][i]) and get_hora(f'{h}:{m}')<get_hora(itens['Fim'][i]) and dia == itens['Dias de Uso'][i]:
+                            if dia == 'Sábados' or dia == 'Domingos':
+                                pot_fp += itens['Potência (kW)'][i]
+                                potr_fp += itens['Potência (kW)'][i]*math.sqrt((1/math.pow(itens['FP'][i],2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
+                            else:
+                                if (h*60+m) in postos[0]:
+                                    pot_fp += itens['Potência (kW)'][i]*itens['Quantidade'][i]
+                                    potr_fp += itens['Potência (kW)'][i]*math.sqrt((1/math.pow(itens['FP'][i],2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
+                                else:
+                                    pot_p += itens['Potência (kW)'][i]*itens['Quantidade'][i]
+                                    potr_p += itens['Potência (kW)'][i]*math.sqrt((1/math.pow((itens['FP'][i]),2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
+                        i+=1
+                    consumo_dict[dia]['Potência FP - kW'].append(pot_fp)
+                    consumo_dict[dia]['Potência P - kW'].append(pot_p)
+                    consumo_dict[dia]['Potência Reativa FP - kVAr'].append(potr_fp)
+                    consumo_dict[dia]['Potência Reativa P - kVAr'].append(potr_p)
+                    if h<h_ponta or h>=(h_ponta+3) or dia == 'Sábados' or dia == 'Domingos':
+                        if consumo_dict[dia]['Potência FP - kW'][j] > 0:
+                            consumo_dict[dia]['FP'].append((consumo_dict[dia]['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict[dia]['Potência FP - kW'][j],2)+math.pow(consumo_dict[dia]['Potência Reativa FP - kVAr'][j],2))) * (-1 if consumo_dict[dia]['Potência Reativa FP - kVAr'][j] < 0 else 1))
                         else:
-                            pot_p += itens['Potência (kW)'][i]*itens['Quantidade'][i]
-                            potr_p += itens['Potência (kW)'][i]*math.sqrt((1/math.pow((itens['FP'][i]),2))-1)*itens['Quantidade'][i] * (1 if itens['FP - Tipo'][i] == "Indutivo" else -1)
-                    i+=1
-                consumo_dict['Potência FP - kW'].append(pot_fp)
-                consumo_dict['Potência P - kW'].append(pot_p)
-                consumo_dict['Potência Reativa FP - kVAr'].append(potr_fp)
-                consumo_dict['Potência Reativa P - kVAr'].append(potr_p)
-                if h<h_ponta or h>=(h_ponta+3):
-                    consumo_dict['FP'].append((consumo_dict['Potência FP - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência FP - kW'][j],2)+math.pow(consumo_dict['Potência Reativa FP - kVAr'][j],2))) * (-1 if consumo_dict['Potência Reativa FP - kVAr'][j] < 0 else 1))
-                else:
-                    consumo_dict['FP'].append((consumo_dict['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict['Potência P - kW'][j],2)+math.pow(consumo_dict['Potência Reativa P - kVAr'][j],2))) * (-1 if consumo_dict['Potência Reativa P - kVAr'][j] < 0 else 1))
-                consumo_dict['Horas'].append(h)
-                consumo_dict['Minutos'].append(m) 
-                consumo_dict['Instante'].append(0) 
-                consumo_dict['Limite - Capacitivo'].append(-0.92)
-                consumo_dict['Limite - Indutivo'].append(0.92)
+                            consumo_dict[dia]['FP'].append(1)
+                    else:
+                        if consumo_dict[dia]['Potência P - kW'][j] > 0:
+                            consumo_dict[dia]['FP'].append((consumo_dict[dia]['Potência P - kW'][j]/math.sqrt(math.pow(consumo_dict[dia]['Potência P - kW'][j],2)+math.pow(consumo_dict[dia]['Potência Reativa P - kVAr'][j],2))) * (-1 if consumo_dict[dia]['Potência Reativa P - kVAr'][j] < 0 else 1))
+                        else:
+                                consumo_dict[dia]['FP'].append(1)
+                    consumo_dict[dia]['Horas'].append(h)
+                    consumo_dict[dia]['Minutos'].append(m) 
+                    consumo_dict[dia]['Instante'].append(0) 
+                    consumo_dict[dia]['Limite - Capacitivo'].append(-0.92)
+                    consumo_dict[dia]['Limite - Indutivo'].append(0.92)
                 j+=1
                 
     return consumo_dict
@@ -268,7 +283,7 @@ def calc_custo(tarifas_dict,equip_dict,categoria,consumo_dict,itens):
 
         custo['Dias Úteis'][2] = demanda*tarifas_dict['verde'][2]
     else: 
-        {'Dias Úteis':[0,0,0,0],'Sábados':[0,0],'Domingos':[0,0]}
+        custo = {'Dias Úteis':[0,0,0,0],'Sábados':[0,0],'Domingos':[0,0]}
 
         #Cálculo da demanda fp (valor máximo da média das potências medidas em 15 minutos)
         demanda_fp = []
@@ -535,7 +550,7 @@ def tab_reativos(categoria,consumo_dict,h_p,tarifas_dict,writer,dias):
                     }
     if categoria == 'Azul':
         demr = [demr_fp,demr_p]
-    consumo_mes = dias*sum(tabela_dict['R$'])
+    consumo_mes = dias['dias_u']*sum(tabela_dict['R$'])
     estilos_cargas.tabela_reativos(categoria=categoria,demr=demr,tabela_dict=tabela_dict,writer=writer,consumo_mes=consumo_mes)
     return [consumo_mes,demr]
 #--------------------------------------------------------------------------------------------------------
