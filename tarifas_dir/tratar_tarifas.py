@@ -25,10 +25,26 @@ def carregar_tarifas(file,folder,grupo):
     if grupo == 'Grupo B':
         tarifas = {'convencional':df.iloc[2,3],
                    'branca': [df.iloc[6,3],df.iloc[7,3],df.iloc[8,3]]}
+        if tarifas['convencional'] != tarifas['convencional']:
+            return 'Arquivo inválido'
+        elif tarifas['branca'][0] != tarifas['branca'][0] or tarifas['branca'][1] != tarifas['branca'][1] or tarifas['branca'][2] != tarifas['branca'][2]: 
+            return 'Arquivo inválido'
+        else:
+            pass
     elif grupo == 'Grupo A':
         tarifas = {'verde': [df.iloc[12,3],df.iloc[13,3],df.iloc[14,3]],
                    'azul': [df.iloc[18,3],df.iloc[19,3],df.iloc[20,3],df.iloc[21,3]],
                    'te': df.iloc[25,3]}
+        print(type(tarifas['te']))
+        for key in tarifas.keys():
+            if key != 'te':
+                for i in range(0,len(tarifas[key])):
+                    if tarifas[key][i] != tarifas[key][i]:
+                        return 'Arquivo inválido'
+            else:
+                if tarifas[key] != tarifas[key]:
+                    return 'Arquivo inválido'
+        
     os.remove(f'{folder}/{file}')
     
     return tarifas

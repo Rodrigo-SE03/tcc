@@ -240,7 +240,6 @@ def tarifas():
                     'azul':[0.0,0.0,0.0,0.0],
                     'te': 0.0
                 }
-                grupo = '-selecionar-'
             else:
                 flash('Tarifas carregadas',category='alert-success')
 
