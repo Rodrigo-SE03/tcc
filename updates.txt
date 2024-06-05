@@ -7,7 +7,7 @@ Formulários:
 
 Erros:
 -Entender e tentar corrigir as diferenças nos valores do teste da Tema Textil;
+-Parece que no preenchimento manual ele não atualiza os meses na esquerda quando carrega os dados;
 
 Melhorias:
 -No modelo da fatura, deixe claro se o mês a ser escrito é o mais antigo ou o mais recente;
--Ver com o professor se é interessante criar um drive com os resultados das análises para disponibilizar no trabalho;

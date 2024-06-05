@@ -88,6 +88,7 @@ def dados_manual(form_manual,dem_c,tarifas,meses,anos):
         'ufer_hr': hr_r
     }
 
+    data = [meses[0],anos[0]]
     meses_formatado = []
     for i in range(0,12):
         meses_formatado.append(f'{meses[i]}/{str(anos[i])[-2:]}')
@@ -102,7 +103,7 @@ def dados_manual(form_manual,dem_c,tarifas,meses,anos):
         'Consumo': consumos_dict,
         'Reativo': reativos_dict
     }
-    return [fatura_dict,historico_dict]
+    return [fatura_dict,historico_dict,data]
 
 #--------------------------------------------------------------------------------------------------------
 
@@ -163,7 +164,7 @@ def ler_excel(file,folder,tarifas,dem_c):
         'ufer_hr': hr_r
     }
 
-    return [fatura_dict,historico_dict]
+    return [fatura_dict,historico_dict,data]
             
 #--------------------------------------------------------------------------------------------------------
 
@@ -172,7 +173,6 @@ def ler_fatura(file,folder,tarifas,dem_c):
 
     reader = PdfReader(f'{folder}/{file}')
     page = reader.pages[1]
-    print(reader.pages[0].extract_text())
     if 'EQUATORIAL ENERGIA' not in reader.pages[0].extract_text():
         return 'Arquivo inválido'
     text = page.extract_text()

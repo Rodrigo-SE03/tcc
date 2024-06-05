@@ -175,14 +175,16 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
         s_results = {
             'Consumo FP': [custo['Sábados'][0]/tarifas_dict['azul'][0],custo['Sábados'][0]],
             'Consumo P': [custo['Sábados'][1]/tarifas_dict['azul'][1],custo['Sábados'][1]],
-            'Demanda': ['-','-'],
+            'Demanda P': ['-','-'],
+            'Demanda FP': ['-','-'],
             'Total': [custo['Sábados'][1]/tarifas_dict['azul'][1]+custo['Sábados'][0]/tarifas_dict['azul'][0],
                       custo['Sábados'][0]+custo['Sábados'][1]]
         }
         d_results = {
             'Consumo FP': [custo['Domingos'][0]/tarifas_dict['azul'][0],custo['Domingos'][0]],
             'Consumo P': [custo['Domingos'][1]/tarifas_dict['azul'][1],custo['Domingos'][1]],
-            'Demanda': ['-','-'],
+            'Demanda P': ['-','-'],
+            'Demanda FP': ['-','-'],
             'Total': [custo['Domingos'][1]/tarifas_dict['azul'][1]+custo['Domingos'][0]/tarifas_dict['azul'][0],
                       custo['Domingos'][0]+custo['Domingos'][1]]
         }
@@ -197,8 +199,8 @@ def custos(custo,writer,workbook,worksheet,categoria,dias,tarifas_dict):
         ms_results = {
             'Consumo FP': [custo['Sábados'][0]*dias['dias_s']/tarifas_dict['azul'][0],custo['Sábados'][0]*dias['dias_s']],
             'Consumo P': [custo['Sábados'][1]*dias['dias_s']/tarifas_dict['azul'][1],custo['Sábados'][1]*dias['dias_s']],
-            'Demanda FP': ['-','-'],
             'Demanda P': ['-','-'],
+            'Demanda FP': ['-','-'],
             'Total': ['-',(custo['Sábados'][0]+custo['Sábados'][1])*dias['dias_s']]
         }
         md_results = {

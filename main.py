@@ -292,7 +292,8 @@ def faturas():
 
     #Procedimento para registrar os dados das faturas anteriores
     if  request.method == 'POST' and 'registrar_dados' in request.form:   
-        fatura_dict,historico_dict = tratar_fatura.dados_manual(dem_c=dem_c,form_manual=form_manual,tarifas=tarifas_dict,meses=meses,anos=anos)
+        fatura_dict,historico_dict,data = tratar_fatura.dados_manual(dem_c=dem_c,form_manual=form_manual,tarifas=tarifas_dict,meses=meses,anos=anos)
+        meses,anos = tratar_fatura.definir_meses(data=data)
         flash('Dados Registrados',category='alert-success')
         return app.redirect(url_for('faturas'))
     #--------------------------------------------------------------------------------------------------------
@@ -350,11 +351,12 @@ def faturas():
         if file and allowed_file(file.filename,'xlsx'):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path,app.config['UPLOAD_FOLDER'], filename))
-            fatura_dict,historico_dict = tratar_fatura.ler_excel(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),tarifas=tarifas_dict,dem_c=dem_c)
+            fatura_dict,historico_dict,data = tratar_fatura.ler_excel(file = filename,folder=os.path.join(app.root_path,UPLOAD_FOLDER),tarifas=tarifas_dict,dem_c=dem_c)
             if fatura_dict == 'Arquivo inválido':
                 flash(fatura_dict,category='alert-danger')
                 fatura_dict = {}
             else:
+                meses,anos = tratar_fatura.definir_meses(data=data)
                 flash('Fatura carregada',category='alert-success')
             return app.redirect(url_for('faturas'))
         else:
