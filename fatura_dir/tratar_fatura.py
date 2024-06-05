@@ -90,7 +90,7 @@ def dados_manual(form_manual,dem_c,tarifas,meses,anos):
 
     meses_formatado = []
     for i in range(0,12):
-        meses_formatado.append(f'{meses[i]}/{anos[i][-2:]}')
+        meses_formatado.append(f'{meses[i]}/{str(anos[i])[-2:]}')
 
     demandas_dict = calc_demanda(dem_p=dem_p,dem_fp=dem_fp,dem_c=dem_c,mes=meses_formatado,tarifas=tarifas)
     consumos_dict = calc_consumos(con_fp=con_fp,con_p=con_p,hr_con=hr_con,mes=meses_formatado,tarifas=tarifas)
