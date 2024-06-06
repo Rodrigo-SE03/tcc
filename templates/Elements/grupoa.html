@@ -16,7 +16,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.verde_dem.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -34,7 +36,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.verde_fp.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -52,7 +56,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.verde_p.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -73,7 +79,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.azul_dem_fp.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -91,7 +99,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.azul_dem_p.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -109,7 +119,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.azul_fp.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -127,7 +139,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.azul_p.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -148,7 +162,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_a.te.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>

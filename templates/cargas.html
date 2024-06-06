@@ -22,9 +22,11 @@
                             {% if form_add_carga.potencia.errors %}
                                 {{ form_add_carga.potencia(class = 'form-control is-invalid') }}
                                 <div class = 'invalid-feedback'>
-                                    {% for erro in form_add_carga.fp.errors %}
+                                    {% for erro in form_add_carga.potencia.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -47,6 +49,12 @@
                                     {% for erro in form_add_carga.fp.errors %}
                                         {% if erro == 'This field is required.' %}
                                             {{ 'Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {% if form_add_carga.fp.data > 1 %}
+                                                {{ 'O valor não deve ser maior que 1' }}
+                                            {% else %}
+                                                {{ 'O valor não deve ser menor que 0' }}
+                                            {% endif %}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -76,8 +84,8 @@
                     </div>
 
                     <div class = "col">
-                        <div class="form-group">
-                            <div class = "row mt-4">
+                        <div class = "row mt-4">
+                            <div class="form-group">
                                 {{ form_add_carga.dia_sem.label(class = 'form-control-label') }}
                                 {{ form_add_carga.dia_sem(class = 'form-control') }}
                             </div>

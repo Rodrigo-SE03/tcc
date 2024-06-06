@@ -13,7 +13,9 @@
                         <div class = 'invalid-feedback'>
                             {% for erro in form_tarifas_b.convencional.errors %}
                                 {% if erro == 'This field is required.' %}
-                                    {{ 'Use "." ao invés de ","' }}
+                                    {{ 'Insira um número. Use "." ao invés de ","' }}
+                                {% else %}
+                                    {{ 'O valor deve ser positivo' }}    
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -33,7 +35,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_b.branca_fp.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -51,7 +55,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_b.branca_i.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -69,7 +75,9 @@
                                 <div class = 'invalid-feedback'>
                                     {% for erro in form_tarifas_b.branca_p.errors %}
                                         {% if erro == 'This field is required.' %}
-                                            {{ 'Use "." ao invés de ","' }}
+                                            {{ 'Insira um número. Use "." ao invés de ","' }}
+                                        {% else %}
+                                            {{ 'O valor deve ser positivo' }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>

@@ -5,12 +5,12 @@ from wtforms.validators import DataRequired,Length,NumberRange,Regexp
 
 class FormAddCarga(FlaskForm):
     nome_equip = StringField('Nome do equipamento', validators= [DataRequired()])
-    potencia = FloatField('Potência (kW)', validators= [DataRequired()])
-    fp = FloatField('Fator de potência', validators= [DataRequired()],default=1)
+    potencia = FloatField('Potência (kW)', validators= [DataRequired(),NumberRange(min=0)])
+    fp = FloatField('Fator de potência', validators= [DataRequired(),NumberRange(min=0,max=1,message='O valor deve ser de 0 a 1')],default=1)
     fp_tipo = SelectField('Tipo de fator de potência', validators= [DataRequired()],choices=['Indutivo','Capacitivo'])
-    qtd = IntegerField('Quantidade', validators= [DataRequired()],default=1)
-    hr_inicio = StringField('Início', validators= [DataRequired(),Regexp(r"^[0-9][0-9][:][0-9][0-9]",message="O formato deve ser hh:mm")],default="00:00")
-    hr_fim = StringField('Fim', validators= [DataRequired(),Regexp(r"^[0-9][0-9][:][0-9][0-9]",message="O formato deve ser hh:mm")],default="00:00")
+    qtd = IntegerField('Quantidade', validators= [DataRequired(),NumberRange(min=1)],default=1)
+    hr_inicio = StringField('Início', validators= [DataRequired(),Regexp(r"^[0-9][0-9][:][0-9][0-9]$",message="O formato deve ser hh:mm")],default="00:00")
+    hr_fim = StringField('Fim', validators= [DataRequired(),Regexp(r"^[0-9][0-9][:][0-9][0-9]$",message="O formato deve ser hh:mm")],default="00:00")
     dia_sem = SelectField('Dias de Uso', validators= [DataRequired()],choices=['Dias Úteis','Sábados','Domingos'])
 
     add_button = SubmitField('Adicionar', validators= [DataRequired()])
@@ -36,24 +36,24 @@ class SelecionarAnalise(FlaskForm):
     selecionar = SubmitField('Selecionar', validators= [DataRequired()])
 
 class FormTarifasB(FlaskForm):
-    convencional = FloatField('Valor da tarifa convencional (R$/kWh)', validators= [DataRequired()])
-    branca_fp = FloatField('Tarifa Branca - horário fora de ponta (R$/kWh)', validators= [DataRequired()])
-    branca_i = FloatField('Tarifa Branca - horário intermediário (R$/kWh)', validators= [DataRequired()])
-    branca_p = FloatField('Tarifa Branca - horário de ponta (R$/kWh)', validators= [DataRequired()])
+    convencional = FloatField('Valor da tarifa convencional (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    branca_fp = FloatField('Tarifa Branca - horário fora de ponta (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    branca_i = FloatField('Tarifa Branca - horário intermediário (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    branca_p = FloatField('Tarifa Branca - horário de ponta (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
 
     registrar_b = SubmitField('Registrar', validators= [DataRequired()])
 
 class FormTarifasA(FlaskForm):
-    verde_fp = FloatField('Valor da tarifa de consumo - horário fora de ponta (R$/kWh)', validators= [DataRequired()])
-    verde_p = FloatField('Valor da tarifa de consumo - horário de ponta (R$/kWh)', validators= [DataRequired()])
-    verde_dem = FloatField('Valor da tarifa de demanda única (R$/kW)', validators= [DataRequired()])
+    verde_fp = FloatField('Valor da tarifa de consumo - horário fora de ponta (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    verde_p = FloatField('Valor da tarifa de consumo - horário de ponta (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    verde_dem = FloatField('Valor da tarifa de demanda única (R$/kW)', validators= [DataRequired(),NumberRange(min=0.000001)])
     
-    azul_fp = FloatField('Valor da tarifa de consumo - horário fora de ponta (R$/kWh)', validators= [DataRequired()])
-    azul_p = FloatField('Valor da tarifa de consumo - horário de ponta (R$/kWh)', validators= [DataRequired()])
-    azul_dem_fp = FloatField('Valor da tarifa de demanda - horário fora de ponta (R$/kW)', validators= [DataRequired()])
-    azul_dem_p = FloatField('Valor da tarifa de demanda - horário de ponta (R$/kW)', validators= [DataRequired()])
+    azul_fp = FloatField('Valor da tarifa de consumo - horário fora de ponta (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    azul_p = FloatField('Valor da tarifa de consumo - horário de ponta (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    azul_dem_fp = FloatField('Valor da tarifa de demanda - horário fora de ponta (R$/kW)', validators= [DataRequired(),NumberRange(min=0.000001)])
+    azul_dem_p = FloatField('Valor da tarifa de demanda - horário de ponta (R$/kW)', validators= [DataRequired(),NumberRange(min=0.000001)])
 
-    te = FloatField('Valor da tarifa de referência reativa - TE do subgrupo B1 (R$/kWh)', validators= [DataRequired()])
+    te = FloatField('Valor da tarifa de referência reativa - TE do subgrupo B1 (R$/kWh)', validators= [DataRequired(),NumberRange(min=0.000001)])
 
     registrar_a = SubmitField('Registrar', validators= [DataRequired()])
 
