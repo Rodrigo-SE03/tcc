@@ -17,8 +17,8 @@ class FormAddCarga(FlaskForm):
 
 class FormInfo(FlaskForm):
     dias_u = IntegerField('Nº de dias úteis', validators= [DataRequired(),NumberRange(min=1,max=23,message="Valor inválido")],default=22)
-    dias_s = IntegerField('Nº de sábados', validators= [DataRequired(),NumberRange(min=0,max=5,message="Valor inválido")],default=4)
-    dias_d = IntegerField('Nº de domingos', validators= [DataRequired(),NumberRange(min=0,max=5,message="Valor inválido")],default=4)
+    dias_s = IntegerField('Nº de sábados', validators= [DataRequired(),NumberRange(min=0,max=7,message="Valor inválido")],default=4)
+    dias_d = IntegerField('Nº de domingos', validators= [DataRequired(),NumberRange(min=0,max=7,message="Valor inválido")],default=4)
     ponta = FloatField('Início do horário de ponta', validators= [DataRequired(),NumberRange(min=0,max=21,message="Valor inválido")],default=18)
 
     registrar_info = SubmitField('Registrar', validators= [DataRequired()])

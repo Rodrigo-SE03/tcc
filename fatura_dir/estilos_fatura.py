@@ -330,7 +330,7 @@ def comparar_geral_style(worksheet,workbook,verde_dict,azul_dict,fatura_dict,cat
     graficos.graf_compara_custos(worksheet=worksheet,workbook=workbook,sheet_name='Comparativo')
 #--------------------------------------------------------------------------------------------------------
     
-def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia):
+def resultados_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia):
     global merge_style
     global mes_style
     workbook = writer.book
@@ -352,8 +352,6 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
             'Demandas Contratadas': fatura_dict['Demanda']['Lista de demandas contratadas'],
             'Custos Anuais': fatura_dict['Demanda']['Lista de custos anuais por demanda contratada']
         }
-
-        # print(custo_dict['Demandas Contratadas'])
 
 
         dem_min = math.ceil((min([dem_c,dem_rec])-100)/5)*5
@@ -385,12 +383,18 @@ def recomendado_style(dados_dict,fatura_dict,ideal,writer,dem_c,dem_rec,economia
         worksheet.set_column(0, last_col+max_col+2, 0.1)
         graficos.graf_demanda_verde(sheet_name=sheet_name,workbook=workbook,worksheet=worksheet,dem_c=dem_c,dem_rec=dem_rec,custo_dict=custo_dict)
 
+        worksheet.merge_range(0,17,0,19,"Modalidade Indicada",merge_format)
+        worksheet.merge_range(0,20,0,21,'Verde',workbook.add_format({"valign": "vcenter","align": "center",'bold':1,"fg_color": "#00B050","border":1}))
+
         worksheet.merge_range(20,12,20,18,"Demanda Contratada Recomendada",merge_format)
         worksheet.merge_range(21,12,21,18,dem_rec,pot_format)
 
         worksheet.merge_range(20,20,20,26,"Economia Estimada",merge_format)
         worksheet.merge_range(21,20,21,26,economia,rs_format)     
     else:
+        worksheet.merge_range(0,17,0,19,"Modalidade Indicada",merge_format)
+        worksheet.merge_range(0,20,0,21,'Azul',workbook.add_format({"valign": "vcenter","align": "center",'bold':1,"fg_color": "#00B0F0","border":1}))
+        
         worksheet.merge_range(20,12,20,18,"Demanda Contratada Recomendada",merge_format)
         worksheet.merge_range(21,12,21,15,"Ponta",pot_format)
         worksheet.merge_range(21,16,21,18,fatura_dict['Demanda']['Demanda Contratada P Indicada'],pot_format)

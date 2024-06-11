@@ -173,7 +173,7 @@ def ler_fatura(file,folder,tarifas,dem_c):
 
     reader = PdfReader(f'{folder}/{file}')
     page = reader.pages[1]
-    if 'EQUATORIAL ENERGIA' not in reader.pages[0].extract_text():
+    if 'EQUATORIAL' not in reader.pages[0].extract_text():
         return 'Arquivo inválido'
     text = page.extract_text()
     text = text.replace('\n',' ')

@@ -381,7 +381,8 @@ def tab_consumo(itens,writer,categoria,h_p,equip_dict,tarifas_dict,dias):
     elif categoria == 'Branca':
         worksheet.set_column('J:R',12)
     if categoria == 'Verde' or 'Azul':
-        worksheet.set_column('Q:Q',16)
+        worksheet.set_column('L:T',16)
+        worksheet.set_column('X:Z',16)
     estilos_cargas.criar_grafico(worksheet,workbook,categoria,dias=dias)
     return [consumo_dict['Dias Úteis'],custos_mensais]
 #--------------------------------------------------------------------------------------------------------

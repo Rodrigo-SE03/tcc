@@ -470,6 +470,8 @@ def tabela_reativos(tabela_dict,writer,demr,categoria,consumo_mes):
         worksheet.write("N3",consumo_mes,rs_format)
         worksheet.write("M4","Total",rs_format)
         worksheet.write("N4",consumo_mes+demr,rs_format)
+        worksheet.autofit()
+        worksheet.set_column('M:N',12)
     else:
         worksheet.merge_range("B1:E1","Valores Ativos",merge_format)
         worksheet.merge_range("B2:C2","Demanda",merge_format)
@@ -488,8 +490,9 @@ def tabela_reativos(tabela_dict,writer,demr,categoria,consumo_mes):
         worksheet.write("O4",consumo_mes,rs_format)
         worksheet.write("N5","Total",rs_format)
         worksheet.write("O5",consumo_mes+demr[0]+demr[1],rs_format)
-         
-    worksheet.autofit()
+        worksheet.autofit()
+        worksheet.set_column('N:O',12)
+
 #--------------------------------------------------------------------------------------------------------
 
 #Definição do estilo visual da tabela comparativa
@@ -542,10 +545,9 @@ def comparativo_style(grupo,comp_dict,pct_dict,writer):
             worksheet.write(9,i+2,key,header_format)
             worksheet.write_column(10,i+2,pct_dict[key],pct_format)
             i+=1
+        worksheet.set_column('C:I',14)
     else:
         worksheet.insert_chart('C11', chart)
         worksheet.write(7,3,comp_dict['Total'][3],pct_format)
-    worksheet.autofit()
-    worksheet.set_column('F:F',14)
-    worksheet.set_column('L:Q',14)
+        worksheet.set_column('C:D',18)
 #--------------------------------------------------------------------------------------------------------

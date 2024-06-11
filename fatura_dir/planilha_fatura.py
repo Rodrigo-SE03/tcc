@@ -165,7 +165,7 @@ def tab_resultados(fatura_dict,writer,ideal,economia):
             f"Proposta - {dem_rec} kW": list(reversed(dem_rec_list)),
             f"Proposta + Tolerância de 5%": list(reversed(lim)),
         }
-        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,ideal=ideal,writer=writer,dem_c=dem_c,dem_rec=dem_rec,economia=economia)
+        estilos_fatura.resultados_style(dados_dict=dados_dict,fatura_dict=fatura_dict,ideal=ideal,writer=writer,dem_c=dem_c,dem_rec=dem_rec,economia=economia)
 
     else:
         if categoria == 'Verde':
@@ -201,4 +201,4 @@ def tab_resultados(fatura_dict,writer,ideal,economia):
             f"Proposta + Tolerância de 5% (FP)": list(reversed(lim_fp)),
             f"Proposta + Tolerância de 5% (P)": list(reversed(lim_p)),
         }
-        estilos_fatura.recomendado_style(dados_dict=dados_dict,fatura_dict=fatura_dict,ideal=ideal,writer=writer,dem_c=[dem_c_fp,dem_c_p],dem_rec=[dem_rec_fp,dem_rec_p],economia=economia)
+        estilos_fatura.resultados_style(dados_dict=dados_dict,fatura_dict=fatura_dict,ideal=ideal,writer=writer,dem_c=[dem_c_fp,dem_c_p],dem_rec=[dem_rec_fp,dem_rec_p],economia=economia)
