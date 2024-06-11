@@ -2,6 +2,7 @@ from PyPDF2 import PdfReader
 import os
 from datetime import date, timedelta
 import pandas as pd
+import re
 
 def demanda_contratada(form_fatura):
     dem_c = 0
@@ -173,9 +174,16 @@ def ler_fatura(file,folder,tarifas,dem_c):
 
     reader = PdfReader(f'{folder}/{file}')
     page = reader.pages[1]
+    if 'Motivo' in page.extract_text(): 
+        page = reader.pages[0]
+        text = page.extract_text()
+        text = re.findall(r'( ([DNOSAJMF][A-Z]+ [ \/0-9,A-Z]+\n){13})',text)[0][0]
+        text = text[1:]
+    else:
+        text = page.extract_text()
     if 'EQUATORIAL' not in reader.pages[0].extract_text():
         return 'Arquivo inválido'
-    text = page.extract_text()
+    
     text = text.replace('\n',' ')
     values = text.split(' ')
     # print(values)
