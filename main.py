@@ -65,7 +65,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #Exclusão de arquivos
 def limpar_pasta(folder):
     for file in os.listdir(folder):
-        if 'modelo' not in file:
+        if 'modelo' not in file and '.png' not in file:
             os.remove(f'{folder}/{file}')
 #--------------------------------------------------------------------------------------------------------
 

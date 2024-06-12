@@ -1,0 +1,221 @@
+{% block body %}
+<!-- Help - Adicionar Cargas -->
+<div class="modal fade" id="adccargas" tabindex="-1" aria-labelledby="adccargaslabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="adccargaslabel">Adicionar Cargas</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Método para adicionar cargas individualmente. Caso a carga desejada não possua fator ou não se deseje fazer a análise de reativos
+            (grupo B) deve ser inserido o valor de 1. Os horários inseridos possuem precisão de 1 minuto, devendo estar de 00:00 a 24:00. Inserir
+            um valor de início superior ao valor de final causará problemas no processamento dos dados. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - info cargas -->
+<div class="modal fade" id="infocargas" tabindex="-1" aria-labelledby="infocargaslabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="infocargaslabel">Parâmetros da Análise</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Esses elementos serão usados na análise do consumo de ponta, fora ponta e intermediário e dos resultados mensais. O horário de ponta 
+            será dado pelo intervalo entre o valor inserido e o fim das próximas 3 horas. Para inserir um horário de início não inteiro, como por
+            exemplo 17:30, é necessário inserir 17.5.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - carregar cargas -->
+<div class="modal fade" id="carregarcargas" tabindex="-1" aria-labelledby="carregarcargaslabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="carregarcargaslabel">Carregar Cargas</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Essa função serve para carregar uma planilha Excel já construída contendo as cargas para a análise. Para obter a planilha
+            base para o preenchimento das cargas basta clicar no botão "Baixar Modelos", presente na barra de navegação superior.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - salvar cargas -->
+<div class="modal fade" id="salvarcargas" tabindex="-1" aria-labelledby="salvarcargaslabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="salvarcargaslabel">Salvar Análise</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Caso todos os dados tenham sido preenchidos corretamente, ao pressionar o botão "Salvar", será gerado um arquivo Excel com
+            o nome inserido na barra de preenchimento, contendo os resultados da análise. Caso não tenham sido preenchidos os dados de tarifa,
+            será necessário ir à página de "Tarifas Praticadas" através da barra de navegação e preencher os valores.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - definir tarifas -->
+<div class="modal fade" id="tarifas" tabindex="-1" aria-labelledby="tarifaslabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="tarifaslabel">Definir Tarifas</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Nessa página serão preenchidos os dados de tarifa que serão aplicados na análise. Primeiramente é necessário selecionar o
+            grupo da unidade consumidora (A ou B). Essa informação pode ser consultada na fatura de energia. A seguir deverão ser informados
+            os valores das tarifas que serão usadas nos cálculos. Os valores das tarifas podem ser encontradas na fatura de energia 
+            ou através de informações disponibilizadas pela concessionária de energia local.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - carregar tarifas -->
+<div class="modal fade" id="carregartarifas" tabindex="-1" aria-labelledby="carregartarifaslabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="carregartarifaslabel">Carregar Tarifas</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Essa função serve para carregar uma planilha Excel já construída contendo os valores das tarifas para a análise. Para obter a planilha
+            base para o preenchimento das tarifas basta clicar no botão "Baixar Modelos", presente na barra de navegação superior.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - analisar fatura -->
+<div class="modal fade" id="fatura" tabindex="-1" aria-labelledby="faturalabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="faturalabel">Analisar Fatura</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Essa análise só pode ser realizada para unidades consumidoras do grupo A. Para liberar os campos de preenchimento 
+            da análise é necessário selecionar o grupo A e preencher os dados das tarifas na página "Tarifas Praticadas", 
+            acessível através da barra de navegação.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - definir demanda contratada -->
+<div class="modal fade" id="demc" tabindex="-1" aria-labelledby="demclabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="demclabel">Definir Demanda Contratada Atual</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Preencher com os valores de demanda contratada atual da unidade consumidora. Caso a unidade esteja na modalidade verde,
+            é necessário preencher o primeiro campo com o valor da demanda contratada e deixar o segundo campo com o valor igual a 0.
+            É possível encontrar os valores de demanda contratada na fatura de energia.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - tipo de preenchimento da fatura -->
+<div class="modal fade" id="tipofatura" tabindex="-1" aria-labelledby="tipofaturalabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="tipofaturalabel">Tipo de Preenchimento</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            O preenchimento manual requer que o usuário insira os dados de consumo e demanda das últimas 12 faturas de energia da unidade
+            consumidora. O preenchimento automático requer que seja carregada a fatura de energia mais recente da unidade consumidora.
+            Até o momento o preenchimento automático só pode ser aplicado para faturas de energia da Equatorial.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - carregar manual -->
+<div class="modal fade" id="carregarmanual" tabindex="-1" aria-labelledby="carregarmanuallabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="carregarmanuallabel">Carregar Histórico</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Essa função serve para carregar uma planilha Excel já construída contendo os dados das faturas dos últimos 12 meses. 
+            Para obter a planilha base para o preenchimento dos dados basta clicar no botão "Baixar Modelos", presente na barra de 
+            navegação superior.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Help - carregar fatura -->
+<div class="modal fade" id="carregarfatura" tabindex="-1" aria-labelledby="carregarfaturalabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="carregarfaturalabel">Carregar Fatura</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Deve ser carregado nesse campo a fatura de energia mais recente da unidade consumidora. A fatura deve estar em formato
+            PDF e deve ter sido retirada da plataforma da distribuidora de energia local para que o programa seja capaz de processar.
+            Faturas fotografadas e digitalizadas não funcionarão. Caso haja algum erro na leitura, é recomendado usar o método de 
+            preenchimento manual.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

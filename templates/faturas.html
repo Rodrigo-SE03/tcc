@@ -2,12 +2,30 @@
 
 
 {% block body %}
-<legend>Analisar Fatura</legend>
+<div class = "row mt-4">
+    <div class = "col">
+        <legend>Analisar Fatura</legend>
+    </div>
+    <div class = "col-md-1 ms-auto">
+        <button type="button" class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#fatura" style="border-color:#212529">
+            <img src="https://img.icons8.com/?size=100&id=83244&format=png&color=000000" class="img" style="width:40px;height:40px;filter:invert(1)">
+        </button>
+    </div>
+</div>
 {% if tarifas_dict != {'convencional': 0.0,'branca': [0.0,0.0,0.0],'verde':[0.0,0.0,0.0],'azul':[0.0,0.0,0.0,0.0], 'te': 0.0} and grupo == 'Grupo A'  %}
 
 <form method="POST">
     {{ form_fatura.csrf_token }}
-    <legend>Definir Demanda Contratada Atual</legend>
+    <div class = "row mt-4">
+        <div class = "col">
+            <legend>Definir Demanda Contratada Atual</legend>
+        </div>
+        <div class = "col-md-1 ms-auto">
+            <button type="button" class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#demc" style="border-color:#212529">
+                <img src="https://img.icons8.com/?size=100&id=83244&format=png&color=000000" class="img" style="width:40px;height:40px;filter:invert(1)">
+            </button>
+        </div>
+    </div>
     <fieldset>
         <div class = "row mt-4">
             <div class = "col">
@@ -30,7 +48,16 @@
 
 {% if dem_c != 0 %}
     <form method="POST">
-        <legend class = 'mt-4'>Tipo de Preenchimento</legend>
+        <div class = "row mt-4">
+            <div class = "col">
+                <legend>Tipo de Preenchimento</legend>
+            </div>
+            <div class = "col-md-1 ms-auto">
+                <button type="button" class="btn btn-primary-outline" data-bs-toggle="modal" data-bs-target="#tipofatura" style="border-color:#212529">
+                    <img src="https://img.icons8.com/?size=100&id=83244&format=png&color=000000" class="img" style="width:40px;height:40px;filter:invert(1)">
+                </button>
+            </div>
+        </div>
         <fieldset>
                 <div class = 'row'>
                         <div class="col">
